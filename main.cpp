@@ -38,7 +38,8 @@ public:
 
     //TEXT ET FONT
     // -> MENU <-
-
+    TTF_Font *menuFont = nullptr;
+    TTF_Text *menuText = nullptr;
     // -> OPTION <-
 
     // -> GAME <-
@@ -65,7 +66,11 @@ public:
         return instance;
     }
 
-private:
+    GameApp(GameApp const &) = delete;
+
+    void operator=(GameApp const &) = delete;
+
+private://constructor
     GameApp() {
         //window + renderer
         window = SDL_CreateWindow("Total Battle 2D",1280,720,0);
@@ -77,12 +82,28 @@ private:
         if (renderer == nullptr) {
             SDL_LogCritical(1,"SDL failed to create the renderer &s", SDL_GetError());
             abort();
+        }//Pour render les text
+        textEngine = TTF_CreateRendererTextEngine(renderer);
+        if (textEngine == nullptr) {
+            SDL_LogCritical(1, "Failed to create textEngine", SDL_GetError());
+            abort();
         }
         //Pour mettre en fullscreen
         SDL_SetRenderLogicalPresentation(renderer, 1920,1080, SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
         // -> MENU <-
-
+        menuFont = TTF_OpenFont("assets/font.ttf",75);
+        if (menuFont == nullptr) {
+            SDL_LogCritical(1, "Failed to load font: %s", SDL_GetError());
+            abort();
+        }
+        menuText = TTF_CreateText(textEngine, menuFont, "TOTAL BATTLE 2D", 25);
+        if (menuText == nullptr) {
+            SDL_LogWarn(0,"failed to create text for menuText", SDL_GetError());
+        }
+        if (TTF_SetTextColor(menuText, r,g,b,255)==false) {
+            SDL_LogWarn(1,"failed to set the color of menuText", SDL_GetError());
+        }
         // -> OPTION <-
 
         // -> GAME <-
@@ -93,7 +114,10 @@ private:
         fpsFont = TTF_OpenFont("assets/font.ttf", 24);
         fpsText = TTF_CreateText(textEngine, fpsFont, "FPS: 0", 20);
         if (fpsText == nullptr) {
-            SDL_LogWarn(0,"failed to create text for fpsText", "FPS: 0", SDL_GetError());
+            SDL_LogWarn(0,"failed to create text for fpsText FPS: 0", SDL_GetError());
+        }
+        if (TTF_SetTextColor(fpsText, 255,255,255,255)==false) {
+            SDL_LogWarn(1,"failed to set the color of fpsText",SDL_GetError());
         }
         fpsTimerID = SDL_AddTimer(250, TimerCallback, &shouldUpdateText);
 
@@ -108,7 +132,9 @@ private:
         SDL_RemoveTimer(fpsTimerID);
         //text et fonts
         TTF_CloseFont(fpsFont);
+        TTF_CloseFont(menuFont);
         TTF_DestroyText(fpsText);
+        TTF_DestroyText(menuText);
         //Texture
     }
 
@@ -161,6 +187,16 @@ private:
     void Menu(float deltaTime) {
         SDL_Event MenuEvents;
 
+        UpdateBackgroundTint(deltaTime);
+
+        //clear everything out
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+        //Background menu
+
+        TTF_DrawRendererText(menuText, 700,300);
+        TTF_DrawRendererText(fpsText, 1800, 10);
+        SDL_RenderPresent(renderer);
     }
     //Choose Character
     void ChooseCharacter(float deltaTime) {
@@ -186,11 +222,6 @@ public:
 
         //fps
         CalculateFPS(deltaTime);
-//         Menu,
-//         ChooseCharacter,
-//         Game,
-//         Options,
-//         Quit,
         switch (StateActuel) {
             case State::Menu:
                 Menu(deltaTime);
