@@ -104,7 +104,7 @@ private://constructor
         if (menuText == nullptr) {
             SDL_LogWarn(0,"failed to create text for menuText", SDL_GetError());
         }
-        if (TTF_SetTextColor(menuText, r,g,b,255)==false) {
+        if (TTF_SetTextColor(menuText, 0,0,0,255)==false) {
             SDL_LogWarn(1,"failed to set the color of menuText", SDL_GetError());
         }
         // -> OPTION <-
@@ -191,6 +191,7 @@ private://constructor
         SDL_Event MenuEvents;
 
         UpdateBackgroundTint(deltaTime);
+        TTF_SetTextColor(menuText, r,g,b,255);
 
         //clear everything out
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
