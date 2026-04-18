@@ -82,15 +82,18 @@ private://constructor
         if (renderer == nullptr) {
             SDL_LogCritical(1,"SDL failed to create the renderer &s", SDL_GetError());
             abort();
-        }//Pour render les text
-        textEngine = TTF_CreateRendererTextEngine(renderer);
-        if (textEngine == nullptr) {
-            SDL_LogCritical(1, "Failed to create textEngine", SDL_GetError());
-            abort();
         }
         //Pour mettre en fullscreen
         SDL_SetRenderLogicalPresentation(renderer, 1920,1080, SDL_LOGICAL_PRESENTATION_LETTERBOX);
-
+        //Pour render les text
+        textEngine = TTF_CreateRendererTextEngine(renderer);
+        if (textEngine == nullptr) {
+            SDL_LogCritical(1, "Failed to create textEngine", SDL_GetError());
+        }//TTF_INIT
+        if (TTF_Init() == false) {
+            SDL_LogCritical(1, "SDL_ttf failed to initialize! %s", SDL_GetError());
+            abort();
+        }
         // -> MENU <-
         menuFont = TTF_OpenFont("assets/font.ttf",75);
         if (menuFont == nullptr) {
@@ -261,6 +264,6 @@ SDL_AppIterate(void *appstate) {
 }
 
 void SDL_AppQuit(void *appstate, SDL_AppResult result) {
-
+    TTF_Quit();
 }
 
