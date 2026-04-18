@@ -8,7 +8,7 @@
 
 enum State {
 Menu,
-ChoixCharacter,
+ChooseCharacter,
 Game,
 Options,
 Quit,
