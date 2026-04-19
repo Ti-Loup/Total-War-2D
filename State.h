@@ -10,7 +10,9 @@ enum State {
 Menu,
 ChooseCharacter,
 Game,
+Tutorial,
 Options,
+Credits,
 Quit,
 };
 #endif //TOTALWAR2D_STATE_H

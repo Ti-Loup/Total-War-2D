@@ -40,6 +40,26 @@ public:
     // -> MENU <-
     TTF_Font *menuFont = nullptr;
     TTF_Text *menuText = nullptr;
+
+    TTF_Font *StartFont = nullptr;
+    TTF_Font *TutorialFont = nullptr;
+    TTF_Font *OptionsFont = nullptr;
+    TTF_Font *QuitFont = nullptr;
+    TTF_Font *CreditsFont = nullptr;
+    TTF_Text *textStart = nullptr;
+    TTF_Text *textTutorial = nullptr;
+    TTF_Text *textOptions = nullptr;
+    TTF_Text *textQuit = nullptr;
+    TTF_Text *textCredits = nullptr;
+
+    //Bouton Menu
+    SDL_FRect BoutonPlay = {760, 600, 400, 80};
+    SDL_FRect BoutonTutorial = {785, 700, 350, 70};
+    SDL_FRect BoutonOptions = {810, 790, 300, 60};
+    SDL_FRect BoutonQuit = {835, 870, 250, 50};
+    SDL_FRect BoutonCredits = {860, 940, 200, 40};
+
+
     // -> OPTION <-
 
     // -> GAME <-
@@ -70,6 +90,12 @@ public:
 
     void operator=(GameApp const &) = delete;
 
+    //AUDIO
+    MIX_Mixer *mixer = nullptr;
+    MIX_Track *trackMusique = nullptr;
+    MIX_Track *trackGame = nullptr;
+    MIX_Track *trackSFX = nullptr;
+
 private://constructor
     GameApp() {
         //window + renderer
@@ -89,7 +115,13 @@ private://constructor
         textEngine = TTF_CreateRendererTextEngine(renderer);
         if (textEngine == nullptr) {
             SDL_LogCritical(1, "Failed to create textEngine", SDL_GetError());
-        }//TTF_INIT
+        }
+        //SDL INIT
+        if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == false) {
+            SDL_LogCritical(1, "failed to initialize SDL %s", SDL_GetError());
+            abort();
+        }
+        //TTF_INIT
         if (TTF_Init() == false) {
             SDL_LogCritical(1, "SDL_ttf failed to initialize! %s", SDL_GetError());
             abort();
@@ -107,6 +139,36 @@ private://constructor
         if (TTF_SetTextColor(menuText, 0,0,0,255)==false) {
             SDL_LogWarn(1,"failed to set the color of menuText", SDL_GetError());
         }
+        //bouton Menu
+        StartFont = TTF_OpenFont("assets/font.ttf",75);
+        TutorialFont = TTF_OpenFont("assets/font.ttf",60);
+        OptionsFont = TTF_OpenFont("assets/font.ttf",50);
+        QuitFont = TTF_OpenFont("assets/font.ttf",40);
+        CreditsFont = TTF_OpenFont("assets/font.ttf",30);
+
+        textStart = TTF_CreateText(textEngine, StartFont, "Start", 25);
+        if (textStart == nullptr) {
+            SDL_LogWarn(1,"failed to create text for textStart", SDL_GetError());
+        }
+        textTutorial = TTF_CreateText(textEngine, TutorialFont, "Tutorial", 25);
+        if (textTutorial == nullptr) {
+            SDL_LogWarn(1,"failed to create text for textTutorial", SDL_GetError());
+        }
+        textOptions = TTF_CreateText(textEngine, OptionsFont, "Options", 25);
+        if (textOptions == nullptr) {
+            SDL_LogWarn(1,"failed to create text for textOptions", SDL_GetError());
+        }
+        textQuit = TTF_CreateText(textEngine, QuitFont, "Quit", 25);
+        if (textQuit == nullptr) {
+            SDL_LogWarn(1,"failed to create text for textQuit", SDL_GetError());
+        }
+        textCredits = TTF_CreateText(textEngine, CreditsFont, "Credits", 25);
+        if (textCredits == nullptr) {
+            SDL_LogWarn(1,"failed to create text for textCredits", SDL_GetError());
+        }
+
+
+
         // -> OPTION <-
 
         // -> GAME <-
@@ -133,12 +195,23 @@ private://constructor
         SDL_DestroyWindow(window);
         // Timer
         SDL_RemoveTimer(fpsTimerID);
-        //text et fonts
+    // ---------------------------------
         TTF_CloseFont(fpsFont);
         TTF_CloseFont(menuFont);
+        TTF_CloseFont(StartFont);
+        TTF_CloseFont(TutorialFont);
+        TTF_CloseFont(OptionsFont);
+        TTF_CloseFont(QuitFont);
+        TTF_CloseFont(CreditsFont);
+    // ---------------------------------
         TTF_DestroyText(fpsText);
         TTF_DestroyText(menuText);
-        //Texture
+        TTF_DestroyText(textStart);
+        TTF_DestroyText(textTutorial);
+        TTF_DestroyText(textOptions);
+        TTF_DestroyText(textQuit);
+        TTF_DestroyText(textCredits);
+    // ---------------------------------
     }
 
     //Boutons
@@ -198,21 +271,76 @@ private://constructor
         SDL_RenderClear(renderer);
         //Background menu
 
+
+
+        //Boutons menu
+        RenderBoutons(BoutonPlay, textStart, 20, 20, 20);
+        RenderBoutons(BoutonTutorial, textTutorial, 20, 20, 20);
+        RenderBoutons(BoutonOptions, textOptions, 20, 20, 20);
+        RenderBoutons(BoutonQuit, textQuit, 20, 20, 20);
+        RenderBoutons(BoutonCredits, textCredits, 20, 20, 20);
+
+
         TTF_DrawRendererText(menuText, 700,300);
         TTF_DrawRendererText(fpsText, 1800, 10);
         SDL_RenderPresent(renderer);
     }
+
+    //Tutorial
+    void Tutorial (float deltaTime) {
+        UpdateBackgroundTint(deltaTime);
+        //clear everything out
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+
+        SDL_RenderPresent(renderer);
+    }
+
+
     //Choose Character
     void ChooseCharacter(float deltaTime) {
+        UpdateBackgroundTint(deltaTime);
 
+
+        //clear everything out
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+
+        SDL_RenderPresent(renderer);
     }
     //Game
     void Game(float deltaTime) {
+        UpdateBackgroundTint(deltaTime);
 
+
+        //clear everything out
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+
+        SDL_RenderPresent(renderer);
     }
+
     //Options
     void Options(float deltaTime) {
+        UpdateBackgroundTint(deltaTime);
 
+
+        //clear everything out
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+
+        SDL_RenderPresent(renderer);
+    }
+
+    void Credits(float deltaTime) {
+        UpdateBackgroundTint(deltaTime);
+
+
+        //clear everything out
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+
+        SDL_RenderPresent(renderer);
     }
 
 
@@ -229,15 +357,21 @@ public:
         switch (StateActuel) {
             case State::Menu:
                 Menu(deltaTime);
-            break;
+                break;
             case State::ChooseCharacter:
                 ChooseCharacter(deltaTime);
                 break;
             case State::Game:
                 Game(deltaTime);
-            break;
+                break;
+            case State::Tutorial:
+                Tutorial(deltaTime);
+                break;
             case State::Options:
                 Options(deltaTime);
+                break;
+            case State::Credits:
+                Credits(deltaTime);
                 break;
             case State::Quit:
                 return SDL_APP_SUCCESS;
@@ -256,6 +390,37 @@ SDL_AppInit(void **appstate, int argc, char *argv[]) {
 SDL_AppResult
 SDL_AppEvent(void *appstate, SDL_Event *event) {
     GameApp &app = GameApp::GetInstance();
+
+    if (event->type == SDL_EVENT_MOUSE_BUTTON_DOWN && event->button.button == SDL_BUTTON_LEFT) {
+        //Les variables
+        float nouveauX, nouveauY;
+
+        //new variables if fullScreen vs window mod
+        SDL_RenderCoordinatesFromWindow(app.renderer, event->button.x, event->button.y, &nouveauX, &nouveauY);
+        SDL_FPoint MousePT = {nouveauX, nouveauY};
+
+        //IF IN MENU
+        if (app.StateActuel == State::Menu) {
+            if (SDL_PointInRectFloat(&MousePT, &app.BoutonPlay)) {
+                app.StateActuel = State::ChooseCharacter;
+            }
+            if (SDL_PointInRectFloat(&MousePT, &app.BoutonTutorial)) {
+                app.StateActuel = State::Tutorial;
+            }
+            if (SDL_PointInRectFloat(&MousePT, &app.BoutonOptions)) {
+                app.StateActuel = State::Options;
+            }
+            if (SDL_PointInRectFloat(&MousePT, &app.BoutonQuit)) {
+                app.StateActuel = State::Quit;
+            }
+            if (SDL_PointInRectFloat(&MousePT, &app.BoutonCredits)) {
+                app.StateActuel = State::Credits;
+            }
+        }
+
+
+    }
+
 
     return SDL_APP_CONTINUE;
 }
