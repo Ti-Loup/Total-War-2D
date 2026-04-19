@@ -126,6 +126,36 @@ private://constructor
             SDL_LogCritical(1, "SDL_ttf failed to initialize! %s", SDL_GetError());
             abort();
         }
+        //Music Menu
+        if (!MIX_Init()) {
+            SDL_LogCritical(1, "SDL_mixer failed to initialize! %s", SDL_GetError());
+            abort();
+        }
+        mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, nullptr);
+        if (!mixer) {
+            SDL_LogWarn(0, "Couldn't create mixer: %s", SDL_GetError());
+        }
+
+        // Musique Menu
+        char *pathMenu = nullptr;
+        SDL_asprintf(&pathMenu, "assets/The Fall of Arcana.mp3", SDL_GetBasePath());
+        MIX_Audio *audioMenu = MIX_LoadAudio(mixer, pathMenu, false);
+        if (audioMenu == nullptr) {
+            SDL_Log("impossible de charger audio de audioMenu%s", SDL_GetError());
+        } else {
+            SDL_Log("audio is working");
+        }
+        SDL_free(pathMenu);
+
+        if (audioMenu) {
+            trackMusique = MIX_CreateTrack(mixer);
+            MIX_SetTrackAudio(trackMusique, audioMenu);
+            MIX_PlayTrack(trackMusique, -1); //loop infini
+        }
+
+
+
+
         // -> MENU <-
         menuFont = TTF_OpenFont("assets/font.ttf",75);
         if (menuFont == nullptr) {
@@ -356,6 +386,9 @@ public:
         CalculateFPS(deltaTime);
         switch (StateActuel) {
             case State::Menu:
+                if (trackMusique && !MIX_TrackPlaying(trackMusique)) {
+                    MIX_PlayTrack(trackMusique, -1);
+                }
                 Menu(deltaTime);
                 break;
             case State::ChooseCharacter:
@@ -417,10 +450,28 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
                 app.StateActuel = State::Credits;
             }
         }
-
-
     }
 
+    if (event->type == SDL_EVENT_KEY_DOWN) {
+        //Mettre le jeu plein ecran
+        if (event->key.scancode == SDL_SCANCODE_F) {
+            //flag
+            Uint32 FullScreenflag = SDL_GetWindowFlags(app.window);
+
+            //si on est en plein ecran alors on retourne en fenetrer
+            if (FullScreenflag & SDL_WINDOW_FULLSCREEN) {
+                SDL_SetWindowFullscreen(app.window, 0); //0 -> fenetrer
+            }
+            //Sinon on va en fullscreen
+            else {
+                SDL_SetWindowFullscreen(app.window, SDL_WINDOW_FULLSCREEN);
+            }
+        }
+        //Pour exit avec escape
+        if (event->key.scancode == SDL_SCANCODE_ESCAPE) {
+            app.StateActuel = State::Quit;
+        }
+    }
 
     return SDL_APP_CONTINUE;
 }
