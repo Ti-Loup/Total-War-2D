@@ -59,6 +59,19 @@ public:
     SDL_FRect BoutonQuit = {835, 870, 250, 50};
     SDL_FRect BoutonCredits = {860, 940, 200, 40};
 
+    // -> Choose Faction <-
+    TTF_Font *factionSelectionTitleFont = nullptr;
+    TTF_Text *factionSelectionTitleText = nullptr;
+    TTF_Font *factionSelectionFactionBonusFont = nullptr;
+    TTF_Text *factionSelectionFactionBonusText = nullptr;
+    TTF_Font *factionSelectionGeneralFont = nullptr;
+    TTF_Text *factionSelectionGeneralKnightText = nullptr;
+    TTF_Text *factionSelectionLoreknightText = nullptr;
+
+    SDL_FRect BoutonKnight = {400, 150, 100,100};
+    SDL_FRect BoutonViking = {900, 150, 100, 100};
+    SDL_FRect BoutonSamurai = {1400, 150, 100, 100};
+
 
     // -> OPTION <-
 
@@ -197,7 +210,26 @@ private://constructor
             SDL_LogWarn(1,"failed to create text for textCredits", SDL_GetError());
         }
 
-
+        // -> Faction Selection <-
+        factionSelectionTitleFont = TTF_OpenFont("assets/font.ttf",50);
+        factionSelectionFactionBonusFont = TTF_OpenFont("assets/font.ttf",40);
+        factionSelectionGeneralFont = TTF_OpenFont("assets/font.ttf",25);
+        factionSelectionTitleText = TTF_CreateText(textEngine,factionSelectionTitleFont, "Faction Selection", 25);
+        if (factionSelectionTitleText == nullptr) {
+            SDL_LogWarn(0,"failed to load the text of factionSelectionTitleText ", SDL_GetError());
+        }
+        factionSelectionFactionBonusText = TTF_CreateText(textEngine, factionSelectionFactionBonusFont,"Faction Bonus", 25);
+        if (factionSelectionFactionBonusText == nullptr) {
+            SDL_LogWarn(0, "failed to lad the text of factionSelectionFactionBonus");
+        }
+        factionSelectionGeneralKnightText = TTF_CreateText(textEngine, factionSelectionGeneralFont, "----- + 5 \n ----- + 2 \n ----- + 2 \n ", 50);
+        if (factionSelectionGeneralKnightText == nullptr) {
+            SDL_LogWarn(0, "failed to load the text of factionSelectionGeneralText", SDL_GetError());
+        }
+        factionSelectionLoreknightText = TTF_CreateText(textEngine, factionSelectionGeneralFont,"Dans un monde de constante guerre ... \nles knights sont des ", 50);
+        if (factionSelectionLoreknightText == nullptr) {
+            SDL_LogWarn(0,"failed to load the text of factionSelectionLoreKnightText", SDL_GetError());
+        }
 
         // -> OPTION <-
 
@@ -233,6 +265,9 @@ private://constructor
         TTF_CloseFont(OptionsFont);
         TTF_CloseFont(QuitFont);
         TTF_CloseFont(CreditsFont);
+        TTF_CloseFont(factionSelectionTitleFont);
+        TTF_CloseFont(factionSelectionFactionBonusFont);
+        TTF_CloseFont(factionSelectionGeneralFont);
     // ---------------------------------
         TTF_DestroyText(fpsText);
         TTF_DestroyText(menuText);
@@ -241,6 +276,10 @@ private://constructor
         TTF_DestroyText(textOptions);
         TTF_DestroyText(textQuit);
         TTF_DestroyText(textCredits);
+        TTF_DestroyText(factionSelectionTitleText);
+        TTF_DestroyText(factionSelectionFactionBonusText);
+        TTF_DestroyText(factionSelectionGeneralKnightText);
+        TTF_DestroyText(factionSelectionLoreknightText);
     // ---------------------------------
     }
 
@@ -316,17 +355,6 @@ private://constructor
         SDL_RenderPresent(renderer);
     }
 
-    //Tutorial
-    void Tutorial (float deltaTime) {
-        UpdateBackgroundTint(deltaTime);
-        //clear everything out
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
-
-        SDL_RenderPresent(renderer);
-    }
-
-
     //Choose Character
     void ChooseCharacter(float deltaTime) {
         UpdateBackgroundTint(deltaTime);
@@ -336,6 +364,11 @@ private://constructor
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
+        //title
+        TTF_DrawRendererText(factionSelectionTitleText, 750, 50);
+        RenderBoutons(BoutonKnight, nullptr, 255,255,0);
+        RenderBoutons(BoutonViking, nullptr, 0,0,255);
+        RenderBoutons(BoutonSamurai, nullptr, 255,0,0);
         SDL_RenderPresent(renderer);
     }
     //Game
@@ -350,6 +383,15 @@ private://constructor
         SDL_RenderPresent(renderer);
     }
 
+    //Tutorial
+    void Tutorial (float deltaTime) {
+        UpdateBackgroundTint(deltaTime);
+        //clear everything out
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+
+        SDL_RenderPresent(renderer);
+    }
     //Options
     void Options(float deltaTime) {
         UpdateBackgroundTint(deltaTime);
