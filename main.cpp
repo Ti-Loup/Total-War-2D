@@ -24,6 +24,9 @@ static Uint32 TimerCallback(void *userdata, SDL_TimerID timerID, Uint32 interval
     *updateFlag = true;
     return interval;
 }
+//to render a circle
+struct Circle { float circleX, circleY, radius; };
+
 //rgb
 Uint8 r = 0, g = 0, b = 0;
 class GameApp final {
@@ -96,6 +99,9 @@ public:
     TTF_Font *fpsFont = nullptr;
     TTF_Text *fpsText = nullptr;
     TTF_TextEngine *textEngine = nullptr;
+
+    //Return Menu Button
+    Circle BoutonReturn = {1875,1025,30};
 
     //Pour le FPS
     std::vector<float> frameTimes;
@@ -343,7 +349,7 @@ private://constructor
     // ---------------------------------
     }
 
-    //Boutons
+    //to render the Buttons
     void RenderBoutons(const SDL_FRect &rect, TTF_Text *buttonText, Uint8 buttonr, Uint8 buttong, Uint8 buttonb) {
         SDL_SetRenderDrawColor(renderer, buttonr, buttong, buttonb, 255);
         SDL_RenderFillRect(renderer, &rect);
@@ -359,7 +365,6 @@ private://constructor
             TTF_DrawRendererText(buttonText, textX, textY);
         }
     }
-
     void UpdateBackgroundTint(const float deltaTime) {
         constexpr float speed = 5.0f;
         colorTime += deltaTime * speed;
@@ -465,6 +470,8 @@ private://constructor
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
+
+        RenderBoutonCercle(BoutonReturn, nullptr, nullptr,80, 80, 80);
         SDL_RenderPresent(renderer);
     }
     //Options
@@ -476,6 +483,8 @@ private://constructor
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
+
+        RenderBoutonCercle(BoutonReturn, nullptr, nullptr,80, 80, 80);
         SDL_RenderPresent(renderer);
     }
 
@@ -491,11 +500,52 @@ private://constructor
         //role 1
         TTF_DrawRendererText(creditsRoleTitleText, 1500,400);
         TTF_DrawRendererText(creditsRoleNameText, 1450, 500);
+
+        RenderBoutonCercle(BoutonReturn, nullptr, nullptr,80, 80, 80);
         SDL_RenderPresent(renderer);
     }
 
 
 public:
+    //To render the circles
+    void RenderCircle(float circleX, float circleY, float radius) {
+        for (float y = -radius; y <= radius; y++) {
+            float distanceX = sqrtf(radius * radius - y * y);
+            SDL_RenderLine(renderer, circleX - distanceX, circleY + y, circleX + distanceX,circleY + y);
+        }
+    }
+    void RenderBoutonCercle(const Circle &circle, TTF_Text *buttonText, SDL_Texture *texture,Uint8 buttonr, Uint8 buttong, Uint8 buttonb) {
+        SDL_SetRenderDrawColor(renderer, 120,40,120,255);
+        RenderCircle(circle.circleX, circle.circleY, circle.radius);
+
+        // Render texture
+        if (texture != nullptr) {
+            SDL_FRect dst = {
+                circle.circleX - circle.radius,
+                circle.circleY - circle.radius,
+                circle.radius * 2,
+                circle.radius * 2
+            };
+            SDL_RenderTexture(renderer, texture, nullptr, &dst);
+        }
+
+        if (buttonText != nullptr) {
+            int textW, textH;
+            TTF_GetTextSize(buttonText, &textW, &textH);
+            TTF_DrawRendererText(buttonText, circle.circleX - textW/2, circle.circleY - textH/2 );
+        }
+    }
+    //if circle been clicked
+    bool ClickInsideCircle(float mouseX, float mouseY, const Circle &circle) {
+        float distanceX = mouseX - circle.circleX;
+        float distanceY = mouseY - circle.circleY;
+        return (distanceX* distanceX + distanceY * distanceY) <= (circle.radius * circle.radius);
+    }
+
+
+
+
+
     SDL_AppResult RunCallBacks() {
         static uint64_t lastTime = SDL_GetTicks();
         //temps global
@@ -585,11 +635,34 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
             if (SDL_PointInRectFloat(&MousePT, &app.BoutonStartCampaign)) {
                 app.StateActuel= State::Game;
             }
+            //Circle
+            if (app.ClickInsideCircle(nouveauX, nouveauY, app.BoutonReturn)) {
+                app.StateActuel = State::Menu;
+            }
+        }
+        //TUTORIAL
+        if (app.StateActuel == State::Tutorial) {
+            if (app.ClickInsideCircle(nouveauX, nouveauY, app.BoutonReturn)) {
+                app.StateActuel = State::Menu;
+            }
+        }
+
+        //IF IN OPTIONS
+        if (app.StateActuel == State::Options) {
+            if (app.ClickInsideCircle(nouveauX, nouveauY, app.BoutonReturn)) {
+                app.StateActuel = State::Menu;
+            }
+        }
+        //IF IN CREDITS
+        if (app.StateActuel == State::Credits) {
+            if (app.ClickInsideCircle(nouveauX, nouveauY, app.BoutonReturn)) {
+                app.StateActuel = State::Menu;
+            }
         }
     }
 
     if (event->type == SDL_EVENT_KEY_DOWN) {
-        //Mettre le jeu plein ecran
+        //To put game in fullscreen
         if (event->key.scancode == SDL_SCANCODE_F) {
             //flag
             Uint32 FullScreenflag = SDL_GetWindowFlags(app.window);
@@ -603,10 +676,16 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
                 SDL_SetWindowFullscreen(app.window, SDL_WINDOW_FULLSCREEN);
             }
         }
-        //Pour exit avec escape
+        //To escape
         if (event->key.scancode == SDL_SCANCODE_ESCAPE) {
             app.StateActuel = State::Quit;
         }
+    }
+
+    //If pressed on windowX -> Exit
+    if (event->type == SDL_EVENT_QUIT) {
+        app.StateActuel = State::Quit;
+        return SDL_APP_CONTINUE;
     }
 
     return SDL_APP_CONTINUE;
