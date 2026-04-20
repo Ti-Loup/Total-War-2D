@@ -67,11 +67,18 @@ public:
     TTF_Font *factionSelectionGeneralFont = nullptr;
     TTF_Text *factionSelectionGeneralKnightText = nullptr;
     TTF_Text *factionSelectionLoreknightText = nullptr;
+    TTF_Text *factionSelectionGeneralVikingText = nullptr;
+    TTF_Text *factionSelectionLoreVikingText = nullptr;
+    TTF_Text *factionSelectionGeneralSamuraiText = nullptr;
+    TTF_Text *factionSelectionLoreSamuraiText = nullptr;
+    TTF_Text *factionSelectionStartCampaignText = nullptr;
 
     SDL_FRect BoutonKnight = {400, 150, 100,100};
     SDL_FRect BoutonViking = {900, 150, 100, 100};
     SDL_FRect BoutonSamurai = {1400, 150, 100, 100};
+    SDL_FRect BoutonStartCampaign = {850, 1000, 250, 40};
 
+    int selectedFaction = 0;
 
     // -> OPTION <-
 
@@ -224,11 +231,31 @@ private://constructor
         }
         factionSelectionGeneralKnightText = TTF_CreateText(textEngine, factionSelectionGeneralFont, "----- + 5 \n ----- + 2 \n ----- + 2 \n ", 50);
         if (factionSelectionGeneralKnightText == nullptr) {
-            SDL_LogWarn(0, "failed to load the text of factionSelectionGeneralText", SDL_GetError());
+            SDL_LogWarn(0, "failed to load the text of factionSelectionGeneralKnightText", SDL_GetError());
         }
         factionSelectionLoreknightText = TTF_CreateText(textEngine, factionSelectionGeneralFont,"Dans un monde de constante guerre ... \nles knights sont des ", 50);
         if (factionSelectionLoreknightText == nullptr) {
             SDL_LogWarn(0,"failed to load the text of factionSelectionLoreKnightText", SDL_GetError());
+        }
+        factionSelectionGeneralVikingText = TTF_CreateText(textEngine, factionSelectionGeneralFont, "----- + 5 \n ----- + 2 \n ----- + 2 \n ", 50);
+        if (factionSelectionGeneralVikingText == nullptr) {
+            SDL_LogWarn(0, "failed to load the text of factionSelectionGeneralVikingText", SDL_GetError());
+        }
+        factionSelectionLoreVikingText = TTF_CreateText(textEngine, factionSelectionGeneralFont,"Dans un monde de constante guerre ... \nles Vikings sont des ...", 50);
+        if (factionSelectionLoreVikingText == nullptr) {
+            SDL_LogWarn(0,"failed to load the text of factionSelectionLoreVikingText", SDL_GetError());
+        }
+        factionSelectionGeneralSamuraiText = TTF_CreateText(textEngine, factionSelectionGeneralFont, "----- + 5 \n ----- + 2 \n ----- + 2 \n ", 50);
+        if (factionSelectionGeneralSamuraiText == nullptr) {
+            SDL_LogWarn(0, "failed to load the text of factionSelectionGeneralSamuraiText", SDL_GetError());
+        }
+        factionSelectionLoreSamuraiText = TTF_CreateText(textEngine, factionSelectionGeneralFont,"Dans un monde de constante guerre ... \nles Samurai sont des ", 50);
+        if (factionSelectionLoreSamuraiText == nullptr) {
+            SDL_LogWarn(0,"failed to load the text of factionSelectionLoreSamuraiText", SDL_GetError());
+        }
+        factionSelectionStartCampaignText = TTF_CreateText(textEngine, factionSelectionGeneralFont, "Start Campaign",25);
+        if (factionSelectionStartCampaignText == nullptr) {
+
         }
 
         // -> OPTION <-
@@ -280,6 +307,11 @@ private://constructor
         TTF_DestroyText(factionSelectionFactionBonusText);
         TTF_DestroyText(factionSelectionGeneralKnightText);
         TTF_DestroyText(factionSelectionLoreknightText);
+        TTF_DestroyText(factionSelectionGeneralVikingText);
+        TTF_DestroyText(factionSelectionLoreVikingText);
+        TTF_DestroyText(factionSelectionGeneralSamuraiText);
+        TTF_DestroyText(factionSelectionLoreSamuraiText);
+        TTF_DestroyText(factionSelectionStartCampaignText);
     // ---------------------------------
     }
 
@@ -366,9 +398,24 @@ private://constructor
 
         //title
         TTF_DrawRendererText(factionSelectionTitleText, 750, 50);
+        TTF_DrawRendererText(factionSelectionFactionBonusText, 1600,400);
         RenderBoutons(BoutonKnight, nullptr, 255,255,0);
         RenderBoutons(BoutonViking, nullptr, 0,0,255);
         RenderBoutons(BoutonSamurai, nullptr, 255,0,0);
+        RenderBoutons(BoutonStartCampaign, factionSelectionStartCampaignText, 60,60,60);
+
+        if (selectedFaction == 0) {
+            TTF_DrawRendererText(factionSelectionGeneralKnightText, 1600,500);
+            TTF_DrawRendererText(factionSelectionLoreknightText, 200, 900);
+        }
+        else if (selectedFaction == 1) {
+            TTF_DrawRendererText(factionSelectionGeneralVikingText, 1600,500);
+            TTF_DrawRendererText(factionSelectionLoreVikingText, 200, 900);
+        }
+        else if (selectedFaction == 2) {
+            TTF_DrawRendererText(factionSelectionGeneralSamuraiText, 1600,500);
+            TTF_DrawRendererText(factionSelectionLoreSamuraiText, 200, 900);
+        }
         SDL_RenderPresent(renderer);
     }
     //Game
@@ -490,6 +537,18 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
             }
             if (SDL_PointInRectFloat(&MousePT, &app.BoutonCredits)) {
                 app.StateActuel = State::Credits;
+            }
+        }
+        //IF IN CHOOSE FACTION
+        if (app.StateActuel == State::ChooseCharacter) {
+            if (SDL_PointInRectFloat(&MousePT, &app.BoutonKnight)) {
+                app.selectedFaction = 0;
+            }
+            if (SDL_PointInRectFloat(&MousePT, &app.BoutonViking)) {
+                app.selectedFaction = 1;
+            }
+            if (SDL_PointInRectFloat(&MousePT, &app.BoutonSamurai)) {
+                app.selectedFaction = 2;
             }
         }
     }
