@@ -84,6 +84,14 @@ public:
 
     // -> GAME <-
 
+    // -> CREDITS <-
+    TTF_Font *creditsTitleFont = nullptr;
+    TTF_Text *creditsTitleText = nullptr;
+    TTF_Font *creditsRoleTitleFont = nullptr;
+    TTF_Text *creditsRoleTitleText = nullptr;
+    TTF_Font *creditsRoleNameFont = nullptr;
+    TTF_Text *creditsRoleNameText = nullptr;
+
     // -> AUTRE <-
     TTF_Font *fpsFont = nullptr;
     TTF_Text *fpsText = nullptr;
@@ -263,7 +271,21 @@ private://constructor
         // -> GAME <-
 
         // -> CREDITS <-
-
+        creditsTitleFont = TTF_OpenFont("assets/font.ttf", 50);
+        creditsRoleTitleFont = TTF_OpenFont("assets/font.ttf", 40);
+        creditsRoleNameFont = TTF_OpenFont("assets/font.ttf", 30);
+        creditsTitleText = TTF_CreateText(textEngine, creditsTitleFont,"Credits", 20);
+        if (creditsTitleText == nullptr) {
+            SDL_LogWarn(0,"failed to load the text of creditsTitleText");
+        }
+        creditsRoleTitleText = TTF_CreateText(textEngine, creditsRoleTitleFont,"Programmer", 25);
+        if (creditsRoleTitleText == nullptr) {
+            SDL_LogWarn(0,"failed to load the text of creditsRoleTitleText");
+        }
+        creditsRoleNameText = TTF_CreateText(textEngine, creditsRoleNameFont, "Louis-Philippe Gauvin", 25);
+        if (creditsRoleNameText == nullptr) {
+            SDL_LogWarn(0,"failed to load the text of creditsRoleNameText");
+        }
         //Autre
         fpsFont = TTF_OpenFont("assets/font.ttf", 24);
         fpsText = TTF_CreateText(textEngine, fpsFont, "FPS: 0", 20);
@@ -295,6 +317,9 @@ private://constructor
         TTF_CloseFont(factionSelectionTitleFont);
         TTF_CloseFont(factionSelectionFactionBonusFont);
         TTF_CloseFont(factionSelectionGeneralFont);
+        TTF_CloseFont(creditsTitleFont);
+        TTF_CloseFont(creditsRoleTitleFont);
+        TTF_CloseFont(creditsRoleNameFont);
     // ---------------------------------
         TTF_DestroyText(fpsText);
         TTF_DestroyText(menuText);
@@ -312,6 +337,9 @@ private://constructor
         TTF_DestroyText(factionSelectionGeneralSamuraiText);
         TTF_DestroyText(factionSelectionLoreSamuraiText);
         TTF_DestroyText(factionSelectionStartCampaignText);
+        TTF_DestroyText(creditsTitleText);
+        TTF_DestroyText(creditsRoleTitleText);
+        TTF_DestroyText(creditsRoleNameText);
     // ---------------------------------
     }
 
@@ -459,6 +487,10 @@ private://constructor
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
+        TTF_DrawRendererText(creditsTitleText, 850,50);
+        //role 1
+        TTF_DrawRendererText(creditsRoleTitleText, 1500,400);
+        TTF_DrawRendererText(creditsRoleNameText, 1450, 500);
         SDL_RenderPresent(renderer);
     }
 
