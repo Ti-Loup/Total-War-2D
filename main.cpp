@@ -84,6 +84,18 @@ public:
     int selectedFaction = 0;
 
     // -> OPTION <-
+    struct VolumeSlider {
+        float x, y, width, height;  // volume bar
+        float value;
+        bool bCursorIsSliding = false;
+    };
+    //slider for the music
+    VolumeSlider volumeMusicSlider = {650,500,600,20,0.5f};
+
+    TTF_Font *optionsTitleFont = nullptr;
+    TTF_Font *optionsMusicFont = nullptr;
+    TTF_Text *optionsTitleText = nullptr;
+    TTF_Text *optionsMusicText = nullptr;
 
     // -> GAME <-
 
@@ -95,7 +107,7 @@ public:
     TTF_Font *creditsRoleNameFont = nullptr;
     TTF_Text *creditsRoleNameText = nullptr;
 
-    // -> AUTRE <-
+    // -> OTHER <-
     TTF_Font *fpsFont = nullptr;
     TTF_Text *fpsText = nullptr;
     TTF_TextEngine *textEngine = nullptr;
@@ -185,7 +197,7 @@ private://constructor
             trackMusique = MIX_CreateTrack(mixer);
             MIX_SetTrackAudio(trackMusique, audioMenu);
             MIX_PlayTrack(trackMusique, -1); //loop infini
-            MIX_SetTrackGain(trackMusique, 0.1f);//volume
+            MIX_SetTrackGain(trackMusique, 0.5f);//volume
         }
 
 
@@ -274,7 +286,10 @@ private://constructor
         }
 
         // -> OPTION <-
-
+        optionsTitleFont = TTF_OpenFont("assets/font.ttf", 50);
+        optionsMusicFont = TTF_OpenFont("assets/font.ttf", 20);
+        optionsTitleText = TTF_CreateText(textEngine, optionsTitleFont,"Options", 25);
+        optionsMusicText = TTF_CreateText(textEngine, optionsMusicFont,"Volume Music", 25);
         // -> GAME <-
 
         // -> CREDITS <-
@@ -327,6 +342,8 @@ private://constructor
         TTF_CloseFont(creditsTitleFont);
         TTF_CloseFont(creditsRoleTitleFont);
         TTF_CloseFont(creditsRoleNameFont);
+        TTF_CloseFont(optionsTitleFont);
+        TTF_CloseFont(optionsMusicFont);
     // ---------------------------------
         TTF_DestroyText(fpsText);
         TTF_DestroyText(menuText);
@@ -347,6 +364,8 @@ private://constructor
         TTF_DestroyText(creditsTitleText);
         TTF_DestroyText(creditsRoleTitleText);
         TTF_DestroyText(creditsRoleNameText);
+        TTF_DestroyText(optionsTitleText);
+        TTF_DestroyText(optionsMusicText);
     // ---------------------------------
     }
 
@@ -366,6 +385,26 @@ private://constructor
             TTF_DrawRendererText(buttonText, textX, textY);
         }
     }
+
+    //To render the sliders
+    void RenderSlider(const VolumeSlider &volumeSlider, const char *music) {
+        //empty part
+        SDL_SetRenderDrawColor(renderer, 255, 204, 204, 255);
+        SDL_FRect emptySlider = {volumeSlider.x, volumeSlider.y, volumeSlider.width, volumeSlider.height};
+        SDL_RenderFillRect(renderer, &emptySlider);
+        //full part
+        SDL_SetRenderDrawColor(renderer, 255, 102, 102, 255);
+        SDL_FRect fullSlider = {volumeSlider.x, volumeSlider.y, volumeSlider.width * volumeSlider.value, volumeSlider.height};
+        SDL_RenderFillRect(renderer, &fullSlider);
+
+        float handleX = volumeSlider.x + volumeSlider.width * volumeSlider.value - 10;
+        float handleY = volumeSlider.y - 10;
+        SDL_FRect handle = {handleX, handleY, 20,40};
+        SDL_SetRenderDrawColor(renderer, 220, 220, 220, 255);
+        SDL_RenderFillRect(renderer, &handle);
+        std::string percentage = std::to_string((int)(volumeSlider.value * 100)) + "%";
+    }
+
     void UpdateBackgroundTint(const float deltaTime) {
         constexpr float speed = 5.0f;
         colorTime += deltaTime * speed;
@@ -416,7 +455,7 @@ private://constructor
         RenderBoutons(BoutonCredits, textCredits, 20, 20, 20);
 
 
-        TTF_DrawRendererText(menuText, 700,300);
+        TTF_DrawRendererText(menuText, 600,150);
         TTF_DrawRendererText(fpsText, 1800, 10);
         SDL_RenderPresent(renderer);
     }
@@ -450,6 +489,8 @@ private://constructor
             TTF_DrawRendererText(factionSelectionGeneralSamuraiText, 1600,500);
             TTF_DrawRendererText(factionSelectionLoreSamuraiText, 200, 900);
         }
+        
+        RenderBoutonCercle(BoutonReturn, nullptr, nullptr,80, 80, 80);
         SDL_RenderPresent(renderer);
     }
     //Game
@@ -484,6 +525,9 @@ private://constructor
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
+        TTF_DrawRendererText(optionsTitleText, 850,50);
+        TTF_DrawRendererText(optionsMusicText, 660,450);
+        RenderSlider(volumeMusicSlider, "Volume Music");
 
         RenderBoutonCercle(BoutonReturn, nullptr, nullptr,80, 80, 80);
         SDL_RenderPresent(renderer);
@@ -542,10 +586,6 @@ public:
         float distanceY = mouseY - circle.circleY;
         return (distanceX* distanceX + distanceY * distanceY) <= (circle.radius * circle.radius);
     }
-
-
-
-
 
     SDL_AppResult RunCallBacks() {
         static uint64_t lastTime = SDL_GetTicks();
@@ -653,6 +693,14 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
             if (app.ClickInsideCircle(nouveauX, nouveauY, app.BoutonReturn)) {
                 app.StateActuel = State::Menu;
             }
+            GameApp::VolumeSlider &s = app.volumeMusicSlider;
+            SDL_FRect sliderRect = {s.x, s.y - 10, s.width, s.height + 20};
+            SDL_FPoint pt = {nouveauX, nouveauY};
+            if (SDL_PointInRectFloat(&pt, &sliderRect)) {
+                s.bCursorIsSliding = true;
+                s.value = std::clamp((nouveauX - s.x) / s.width, 0.0f, 1.0f);
+                MIX_SetTrackGain(app.trackMusique, s.value);//the value of the gain of the music is changing based of the slider
+            }
         }
         //IF IN CREDITS
         if (app.StateActuel == State::Credits) {
@@ -660,6 +708,16 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
                 app.StateActuel = State::Menu;
             }
         }
+    }
+    if (event->type == SDL_EVENT_MOUSE_BUTTON_UP) {
+        app.volumeMusicSlider.bCursorIsSliding = false;
+    }
+    //for the slider
+    if (event->type == SDL_EVENT_MOUSE_MOTION && app.volumeMusicSlider.bCursorIsSliding) {
+        float mouseX, mouseY;
+        SDL_RenderCoordinatesFromWindow(app.renderer, event->motion.x, event->motion.y, &mouseX, &mouseY);
+        app.volumeMusicSlider.value = std::clamp((mouseX - app.volumeMusicSlider.x) / app.volumeMusicSlider.width, 0.0f, 1.0f);
+        MIX_SetTrackGain(app.trackMusique, app.volumeMusicSlider.value);
     }
 
     if (event->type == SDL_EVENT_KEY_DOWN) {
