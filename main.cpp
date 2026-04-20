@@ -185,6 +185,7 @@ private://constructor
             trackMusique = MIX_CreateTrack(mixer);
             MIX_SetTrackAudio(trackMusique, audioMenu);
             MIX_PlayTrack(trackMusique, -1); //loop infini
+            MIX_SetTrackGain(trackMusique, 0.1f);//volume
         }
 
 
