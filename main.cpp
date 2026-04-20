@@ -582,6 +582,9 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
             if (SDL_PointInRectFloat(&MousePT, &app.BoutonSamurai)) {
                 app.selectedFaction = 2;
             }
+            if (SDL_PointInRectFloat(&MousePT, &app.BoutonStartCampaign)) {
+                app.StateActuel= State::Game;
+            }
         }
     }
 
