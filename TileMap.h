@@ -53,4 +53,28 @@ inline TileType GetBiome (float elevation, float moisture){
     return TileType::Grass;
 }
 
+//color of the tiles
+inline SDL_Color TileColor(TileType tileType){
+    switch(tileType){
+    case TileType::DeepWater:
+        return {20, 70, 160, 255};
+    case TileType::ShallowWater:
+        return {50, 120, 200, 255};
+    case TileType::Sand:
+        return {210, 195, 130, 255};
+    case TileType::Grass:
+        return {80,  160,  55, 255};
+    case TileType::Forest:
+        return {25, 95, 25, 255};
+    case TileType::Mountain:
+        return {130,115,100,255};
+    case TileType::Snow:
+        return {255, 235, 245, 255};
+    case TileType::Road:
+        return {155,125,70,255};
+    default:
+        return {0,0,0,255};
+    }
+}
+
 #endif //TOTALWAR2D_TILEMAP_H
