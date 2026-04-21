@@ -13,6 +13,8 @@ add_executable(TotalWar2D main.cpp
         Entity.h
         Player.cpp
         Player.h
+        TileMap.cpp
+        TileMap.h
 )
 
 target_include_directories(TotalWar2D PRIVATE "${MIXER_PATH}/include")

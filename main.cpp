@@ -489,7 +489,7 @@ private://constructor
             TTF_DrawRendererText(factionSelectionGeneralSamuraiText, 1600,500);
             TTF_DrawRendererText(factionSelectionLoreSamuraiText, 200, 900);
         }
-        
+
         RenderBoutonCercle(BoutonReturn, nullptr, nullptr,80, 80, 80);
         SDL_RenderPresent(renderer);
     }
