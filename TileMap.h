@@ -1,7 +1,4 @@
-//
-// TileMap.h — Three-Faction World Map (Knights / Vikings / Samurai)
-// Inspired by the For Honor map layout
-//
+
 #ifndef TOTALWAR2D_TILEMAP_H
 #define TOTALWAR2D_TILEMAP_H
 
@@ -12,6 +9,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
 #include "FastNoiseLite.h"
+#include "Camera.h"
 
 enum class TileType : uint8_t {
     DeepWater,
@@ -209,12 +207,13 @@ public:
         }
     }
 
-    void Render(SDL_Renderer* renderer) const {
+    void Render(SDL_Renderer* renderer, const Camera &camera) const {
         if (!mapTexture) return;
         SDL_FRect dst = {
-            0, 0,
-            (float)(cols * tileSize),
-            (float)(rows * tileSize)
+            -camera.startX * camera.zoom,
+             -camera.startY * camera.zoom,
+            (float)(cols * tileSize) * camera.zoom,
+            (float)(rows * tileSize) * camera.zoom
         };
         SDL_RenderTexture(renderer, mapTexture, nullptr, &dst);
     }

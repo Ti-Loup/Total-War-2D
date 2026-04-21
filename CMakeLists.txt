@@ -16,6 +16,8 @@ add_executable(TotalWar2D main.cpp
         TileMap.cpp
         TileMap.h
         FastNoiseLite.h
+        Camera.cpp
+        Camera.h
 )
 
 target_include_directories(TotalWar2D PRIVATE "${MIXER_PATH}/include")

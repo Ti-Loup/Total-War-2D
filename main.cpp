@@ -17,6 +17,7 @@
 #include "State.h"
 #include "Entity.h"
 #include "TileMap.h"
+#include "Camera.h"
 
 
 
@@ -148,6 +149,11 @@ public:
 
     //For the tileMap
     TileMap* tileMap = nullptr;
+    //For the camera
+    Camera camera;
+    bool bIsMovingCamera = false;
+    float lastMouseX = 0;
+    float lastMouseY = 0;
 private://constructor
     GameApp() {
         //window + renderer
@@ -509,11 +515,25 @@ private://constructor
     //Game
     void Game(float deltaTime) {
         UpdateBackgroundTint(deltaTime);
+        // camera wasd movement
+        const bool* keys = SDL_GetKeyboardState(nullptr);
+        float baseSpeed = 400.f;
+        float multiplierSpeed = 2.f;
+        float currentSpeed = baseSpeed;
+        if (keys[SDL_SCANCODE_LSHIFT]) {
+            currentSpeed *= multiplierSpeed;
+        }
+        if (keys[SDL_SCANCODE_W]) camera.Movement(0, -currentSpeed * deltaTime);
+        if (keys[SDL_SCANCODE_S]) camera.Movement(0,  currentSpeed * deltaTime);
+        if (keys[SDL_SCANCODE_A]) camera.Movement(-currentSpeed * deltaTime, 0);
+        if (keys[SDL_SCANCODE_D]) camera.Movement( currentSpeed* deltaTime, 0);
+        
+
         //clear everything out
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
         //tilemap
-        if (tileMap) tileMap->Render(renderer);
+        if (tileMap) tileMap->Render(renderer, camera);
         //fps
         TTF_DrawRendererText(fpsText, 10, 10);
         SDL_RenderPresent(renderer);
@@ -733,6 +753,31 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
         app.volumeMusicSlider.value = std::clamp((mouseX - app.volumeMusicSlider.x) / app.volumeMusicSlider.width, 0.0f, 1.0f);
         MIX_SetTrackGain(app.trackMusique, app.volumeMusicSlider.value);
     }
+    //holding mouse wheel to move the camera
+    if (event->type == SDL_EVENT_MOUSE_BUTTON_DOWN &&event->button.button == SDL_BUTTON_MIDDLE &&app.StateActuel == State::Game) {
+        app.bIsMovingCamera = true;
+        SDL_RenderCoordinatesFromWindow(app.renderer,
+            event->button.x, event->button.y,
+            &app.lastMouseX, &app.lastMouseY);
+    }
+    if (event->type == SDL_EVENT_MOUSE_BUTTON_UP &&event->button.button == SDL_BUTTON_MIDDLE) {
+        app.bIsMovingCamera= false;
+        }
+    if (event->type == SDL_EVENT_MOUSE_MOTION &&app.bIsMovingCamera &&app.StateActuel == State::Game) {
+        float mx, my;
+        SDL_RenderCoordinatesFromWindow(app.renderer,event->motion.x, event->motion.y, &mx, &my);
+        app.camera.Movement(-(mx - app.lastMouseX), -(my - app.lastMouseY));
+        app.lastMouseX = mx;
+        app.lastMouseY = my;
+        }
+
+    // Zoom
+    if (event->type == SDL_EVENT_MOUSE_WHEEL && app.StateActuel == State::Game) {
+        float factor = (event->wheel.y > 0) ? 1.1f : 0.9f;
+        app.camera.Zoom(factor);
+        }
+
+
 
     if (event->type == SDL_EVENT_KEY_DOWN) {
         //To put game in fullscreen
