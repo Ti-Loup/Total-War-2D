@@ -67,7 +67,9 @@ public:
     TTF_Text *factionSelectionTitleText = nullptr;
     TTF_Font *factionSelectionFactionBonusFont = nullptr;
     TTF_Text *factionSelectionFactionBonusText = nullptr;
-    TTF_Font *factionSelectionGeneralFont = nullptr;
+    TTF_Font *factionSelectionGeneralKnightFont = nullptr;
+    TTF_Font *factionSelectionGeneralVikingFont = nullptr;
+    TTF_Font *factionSelectionGeneralSamuraiFont = nullptr;
     TTF_Text *factionSelectionGeneralKnightText = nullptr;
     TTF_Text *factionSelectionLoreknightText = nullptr;
     TTF_Text *factionSelectionGeneralVikingText = nullptr;
@@ -204,12 +206,12 @@ private://constructor
 
 
         // -> MENU <-
-        menuFont = TTF_OpenFont("assets/font.ttf",75);
+        menuFont = TTF_OpenFont("assets/KnightFont.ttf",108);
         if (menuFont == nullptr) {
             SDL_LogCritical(1, "Failed to load font: %s", SDL_GetError());
             abort();
         }
-        menuText = TTF_CreateText(textEngine, menuFont, "TOTAL BATTLE 2D", 25);
+        menuText = TTF_CreateText(textEngine, menuFont, "Total Battle 2D", 25);
         if (menuText == nullptr) {
             SDL_LogWarn(0,"failed to create text for menuText", SDL_GetError());
         }
@@ -247,7 +249,9 @@ private://constructor
         // -> Faction Selection <-
         factionSelectionTitleFont = TTF_OpenFont("assets/font.ttf",50);
         factionSelectionFactionBonusFont = TTF_OpenFont("assets/font.ttf",40);
-        factionSelectionGeneralFont = TTF_OpenFont("assets/font.ttf",25);
+        factionSelectionGeneralKnightFont = TTF_OpenFont("assets/KnightFont.ttf",35);
+        factionSelectionGeneralVikingFont = TTF_OpenFont("assets/VikingFont.otf",30);
+        factionSelectionGeneralSamuraiFont = TTF_OpenFont("assets/SamuraiFont.ttf",15);
         factionSelectionTitleText = TTF_CreateText(textEngine,factionSelectionTitleFont, "Faction Selection", 25);
         if (factionSelectionTitleText == nullptr) {
             SDL_LogWarn(0,"failed to load the text of factionSelectionTitleText ", SDL_GetError());
@@ -256,31 +260,31 @@ private://constructor
         if (factionSelectionFactionBonusText == nullptr) {
             SDL_LogWarn(0, "failed to lad the text of factionSelectionFactionBonus");
         }
-        factionSelectionGeneralKnightText = TTF_CreateText(textEngine, factionSelectionGeneralFont, "----- + 5 \n ----- + 2 \n ----- + 2 \n ", 50);
+        factionSelectionGeneralKnightText = TTF_CreateText(textEngine, factionSelectionGeneralKnightFont, "----- + 5 \n ----- + 2 \n ----- + 2 \n ", 50);
         if (factionSelectionGeneralKnightText == nullptr) {
             SDL_LogWarn(0, "failed to load the text of factionSelectionGeneralKnightText", SDL_GetError());
         }
-        factionSelectionLoreknightText = TTF_CreateText(textEngine, factionSelectionGeneralFont,"Dans un monde de constante guerre ... \nles knights sont des ", 50);
+        factionSelectionLoreknightText = TTF_CreateText(textEngine, factionSelectionGeneralKnightFont,"Dans un monde de constante guerre ... \nles knights sont des ", 50);
         if (factionSelectionLoreknightText == nullptr) {
             SDL_LogWarn(0,"failed to load the text of factionSelectionLoreKnightText", SDL_GetError());
         }
-        factionSelectionGeneralVikingText = TTF_CreateText(textEngine, factionSelectionGeneralFont, "----- + 5 \n ----- + 2 \n ----- + 2 \n ", 50);
+        factionSelectionGeneralVikingText = TTF_CreateText(textEngine, factionSelectionGeneralVikingFont, "----- + 5 \n ----- + 2 \n ----- + 2 \n ", 50);
         if (factionSelectionGeneralVikingText == nullptr) {
             SDL_LogWarn(0, "failed to load the text of factionSelectionGeneralVikingText", SDL_GetError());
         }
-        factionSelectionLoreVikingText = TTF_CreateText(textEngine, factionSelectionGeneralFont,"Dans un monde de constante guerre ... \nles Vikings sont des ...", 50);
+        factionSelectionLoreVikingText = TTF_CreateText(textEngine, factionSelectionGeneralVikingFont,"Dans un monde de constante guerre ... \nles Vikings sont des ...", 50);
         if (factionSelectionLoreVikingText == nullptr) {
             SDL_LogWarn(0,"failed to load the text of factionSelectionLoreVikingText", SDL_GetError());
         }
-        factionSelectionGeneralSamuraiText = TTF_CreateText(textEngine, factionSelectionGeneralFont, "----- + 5 \n ----- + 2 \n ----- + 2 \n ", 50);
+        factionSelectionGeneralSamuraiText = TTF_CreateText(textEngine, factionSelectionGeneralSamuraiFont, "----- + 5 \n ----- + 2 \n ----- + 2 \n ", 50);
         if (factionSelectionGeneralSamuraiText == nullptr) {
             SDL_LogWarn(0, "failed to load the text of factionSelectionGeneralSamuraiText", SDL_GetError());
         }
-        factionSelectionLoreSamuraiText = TTF_CreateText(textEngine, factionSelectionGeneralFont,"Dans un monde de constante guerre ... \nles Samurai sont des ", 50);
+        factionSelectionLoreSamuraiText = TTF_CreateText(textEngine, factionSelectionGeneralSamuraiFont,"Dans un monde de constante guerre ... \nles Samurai sont des ", 50);
         if (factionSelectionLoreSamuraiText == nullptr) {
             SDL_LogWarn(0,"failed to load the text of factionSelectionLoreSamuraiText", SDL_GetError());
         }
-        factionSelectionStartCampaignText = TTF_CreateText(textEngine, factionSelectionGeneralFont, "Start Campaign",25);
+        factionSelectionStartCampaignText = TTF_CreateText(textEngine, factionSelectionGeneralKnightFont, "Start Campaign",25);
         if (factionSelectionStartCampaignText == nullptr) {
 
         }
@@ -338,7 +342,9 @@ private://constructor
         TTF_CloseFont(CreditsFont);
         TTF_CloseFont(factionSelectionTitleFont);
         TTF_CloseFont(factionSelectionFactionBonusFont);
-        TTF_CloseFont(factionSelectionGeneralFont);
+        TTF_CloseFont(factionSelectionGeneralKnightFont);
+        TTF_CloseFont(factionSelectionGeneralVikingFont);
+        TTF_CloseFont(factionSelectionGeneralSamuraiFont);
         TTF_CloseFont(creditsTitleFont);
         TTF_CloseFont(creditsRoleTitleFont);
         TTF_CloseFont(creditsRoleNameFont);
@@ -455,7 +461,7 @@ private://constructor
         RenderBoutons(BoutonCredits, textCredits, 20, 20, 20);
 
 
-        TTF_DrawRendererText(menuText, 600,150);
+        TTF_DrawRendererText(menuText, 700,150);
         TTF_DrawRendererText(fpsText, 1800, 10);
         SDL_RenderPresent(renderer);
     }
