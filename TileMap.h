@@ -41,26 +41,26 @@ struct ColorEntry {
 //Color of the tiles based on the faction
 static const ColorEntry COLOR_TABLE[] = {
     // EAU
-    {  0,   0, 255, TileType::DeepWater,    FactionZone::Ocean   },
+    {  0,   0, 255, TileType::DeepWater, FactionZone::Ocean   },
     {  0, 150, 255, TileType::ShallowWater, FactionZone::Ocean   },
 
     // VIKINGS
-    { 90, 130,  80, TileType::Grass,        FactionZone::Viking  },
-    { 40,  80,  60, TileType::Forest,       FactionZone::Viking  },
-    {100, 110, 125, TileType::Mountain,     FactionZone::Viking  },
-    {240, 245, 255, TileType::Snow,         FactionZone::Viking  },
+    { 90, 130,  80, TileType::Grass, FactionZone::Viking  },
+    { 40,  80,  60, TileType::Forest, FactionZone::Viking  },
+    {100, 110, 125, TileType::Mountain, FactionZone::Viking  },
+    {240, 245, 255, TileType::Snow, FactionZone::Viking  },
 
     // KNIGHTS
-    {100, 175,  60, TileType::Grass,        FactionZone::Knight  },
-    { 45, 110,  35, TileType::Forest,       FactionZone::Knight  },
-    {130, 110,  90, TileType::Mountain,     FactionZone::Knight  },
-    {210, 190, 120, TileType::Sand,         FactionZone::Knight  },
+    {100, 175,  60, TileType::Grass, FactionZone::Knight  },
+    { 45, 110,  35, TileType::Forest, FactionZone::Knight  },
+    {130, 110,  90, TileType::Mountain, FactionZone::Knight  },
+    {210, 190, 120, TileType::Sand, FactionZone::Knight  },
 
     // SAMURAI
-    { 85, 140,  55, TileType::Grass,        FactionZone::Samurai },
-    { 20,  70,  30, TileType::Forest,       FactionZone::Samurai },
-    { 80,  75,  70, TileType::Mountain,     FactionZone::Samurai },
-    {200, 175, 140, TileType::Sand,         FactionZone::Samurai },
+    { 85, 140,  55, TileType::Grass, FactionZone::Samurai },
+    { 20,  70,  30, TileType::Forest, FactionZone::Samurai },
+    { 80,  75,  70, TileType::Mountain, FactionZone::Samurai },
+    {200, 175, 140, TileType::Sand, FactionZone::Samurai },
     { 40, 130, 140, TileType::ShallowWater, FactionZone::Samurai },
 };
 

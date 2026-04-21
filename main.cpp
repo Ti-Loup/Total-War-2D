@@ -270,27 +270,27 @@ private://constructor
         if (factionSelectionFactionBonusText == nullptr) {
             SDL_LogWarn(0, "failed to lad the text of factionSelectionFactionBonus");
         }
-        factionSelectionGeneralKnightText = TTF_CreateText(textEngine, factionSelectionGeneralKnightFont, "----- + 5 \n ----- + 2 \n ----- + 2 \n ", 50);
+        factionSelectionGeneralKnightText = TTF_CreateText(textEngine, factionSelectionGeneralKnightFont, "Strong start economie\nand crossbows\nFaith is all \n ", 50);
         if (factionSelectionGeneralKnightText == nullptr) {
             SDL_LogWarn(0, "failed to load the text of factionSelectionGeneralKnightText", SDL_GetError());
         }
-        factionSelectionLoreknightText = TTF_CreateText(textEngine, factionSelectionGeneralKnightFont,"Dans un monde de constante guerre ... \nles knights sont des ", 50);
+        factionSelectionLoreknightText = TTF_CreateText(textEngine, factionSelectionGeneralKnightFont,"The Knight are a very respected and a united country\nWith strong crossbow and cavalry, They're putting all their ennemy to their knees\nThey will fight anyone who denies they're rightful King", 250);
         if (factionSelectionLoreknightText == nullptr) {
             SDL_LogWarn(0,"failed to load the text of factionSelectionLoreKnightText", SDL_GetError());
         }
-        factionSelectionGeneralVikingText = TTF_CreateText(textEngine, factionSelectionGeneralVikingFont, "----- + 5 \n ----- + 2 \n ----- + 2 \n ", 50);
+        factionSelectionGeneralVikingText = TTF_CreateText(textEngine, factionSelectionGeneralVikingFont, "Raiding Bonuses \nHas access to strong berserkers\nCan call Odin \nWeak settlements incomes ", 150);
         if (factionSelectionGeneralVikingText == nullptr) {
             SDL_LogWarn(0, "failed to load the text of factionSelectionGeneralVikingText", SDL_GetError());
         }
-        factionSelectionLoreVikingText = TTF_CreateText(textEngine, factionSelectionGeneralVikingFont,"Dans un monde de constante guerre ... \nles Vikings sont des ...", 50);
+        factionSelectionLoreVikingText = TTF_CreateText(textEngine, factionSelectionGeneralVikingFont,"These proud fighters of the north,The Vikings, are strong warriors who's melee skills exceeds all.\nStrenght is the only answer\nThey are ready to fight anyone who denies their jarl ", 250);
         if (factionSelectionLoreVikingText == nullptr) {
             SDL_LogWarn(0,"failed to load the text of factionSelectionLoreVikingText", SDL_GetError());
         }
-        factionSelectionGeneralSamuraiText = TTF_CreateText(textEngine, factionSelectionGeneralSamuraiFont, "----- + 5 \n ----- + 2 \n ----- + 2 \n ", 50);
+        factionSelectionGeneralSamuraiText = TTF_CreateText(textEngine, factionSelectionGeneralSamuraiFont, "Ambush Bonuses\nPowerful Religion Bonuses \nStrong Powder Units \n ", 50);
         if (factionSelectionGeneralSamuraiText == nullptr) {
             SDL_LogWarn(0, "failed to load the text of factionSelectionGeneralSamuraiText", SDL_GetError());
         }
-        factionSelectionLoreSamuraiText = TTF_CreateText(textEngine, factionSelectionGeneralSamuraiFont,"Dans un monde de constante guerre ... \nles Samurai sont des ", 50);
+        factionSelectionLoreSamuraiText = TTF_CreateText(textEngine, factionSelectionGeneralSamuraiFont,"The Samurai have a great respect for tradition and honor\nThey are great fighter with very strong Katana units and strong cavalery\nThey are ready to fight anyone Who denies they're Shogun   ", 250);
         if (factionSelectionLoreSamuraiText == nullptr) {
             SDL_LogWarn(0,"failed to load the text of factionSelectionLoreSamuraiText", SDL_GetError());
         }
@@ -743,6 +743,7 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
             }
         }
     }
+
     if (event->type == SDL_EVENT_MOUSE_BUTTON_UP) {
         app.volumeMusicSlider.bCursorIsSliding = false;
     }
@@ -776,6 +777,7 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
         float factor = (event->wheel.y > 0) ? 1.1f : 0.9f;
         app.camera.Zoom(factor);
         }
+    //When Mouse touch a edge it
 
 
 
