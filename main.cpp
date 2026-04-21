@@ -299,7 +299,8 @@ private://constructor
         optionsTitleText = TTF_CreateText(textEngine, optionsTitleFont,"Options", 25);
         optionsMusicText = TTF_CreateText(textEngine, optionsMusicFont,"Volume Music", 25);
         // -> GAME <-
-
+        tileMap = new TileMap("assets/TileMap.png",16);
+        tileMap->BakeToTexture(renderer);
         // -> CREDITS <-
         creditsTitleFont = TTF_OpenFont("assets/font.ttf", 50);
         creditsRoleTitleFont = TTF_OpenFont("assets/font.ttf", 40);
@@ -512,7 +513,7 @@ private://constructor
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
         //tilemap
-
+        if (tileMap) tileMap->Render(renderer);
         //fps
         TTF_DrawRendererText(fpsText, 10, 10);
         SDL_RenderPresent(renderer);
