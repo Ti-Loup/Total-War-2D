@@ -545,7 +545,28 @@ private://constructor
         if (keys[SDL_SCANCODE_S]) camera.Movement(0,  currentSpeed * deltaTime);
         if (keys[SDL_SCANCODE_A]) camera.Movement(-currentSpeed * deltaTime, 0);
         if (keys[SDL_SCANCODE_D]) camera.Movement( currentSpeed* deltaTime, 0);
-        
+        //camera mouse on edge
+        float mouseX;
+        float mouseY;
+        SDL_GetMouseState(&mouseX, &mouseY);
+        float logicX, logicY;
+        SDL_RenderCoordinatesFromWindow(renderer, mouseX,mouseY,&logicX,&logicY);
+
+        float speed = 400.f;
+        float edgeSize = 25.f;
+        //left
+        if (logicX < edgeSize) {
+            camera.Movement(-speed * deltaTime, 0);
+        }
+        if (logicX > 1920 - edgeSize) {
+            camera.Movement(speed * deltaTime, 0);
+        }
+        if (logicY < edgeSize) {
+            camera.Movement(0, -speed * deltaTime);
+        }
+        if (logicY > 1080 - edgeSize) {
+            camera.Movement(0, speed* deltaTime);
+        }
 
         //clear everything out
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
