@@ -19,6 +19,24 @@
 #include "TileMap.h"
 #include "Camera.h"
 
+/*
+ *TODO LIST For version 0.1.0
+ *
+ *To DO :
+ *Buildings of a region + UI of that region
+ *Money System
+ *Population System
+ *Turn base system
+ *Roads
+ *----------------------------------------------
+ *Character +Movement Maximum per turn
+ *
+ *Finished:
+ *TileMap
+ *Camera (missing mouse touch edge)
+ *
+ */
+
 
 
 //Fonction FPS
@@ -796,6 +814,9 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
                 SDL_SetWindowFullscreen(app.window, SDL_WINDOW_FULLSCREEN);
             }
         }
+
+        //to make the game on pause P
+
         //To escape
         if (event->key.scancode == SDL_SCANCODE_ESCAPE) {
             app.StateActuel = State::Quit;
