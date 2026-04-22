@@ -20,6 +20,8 @@ add_executable(TotalWar2D main.cpp
         Camera.h
         Province.cpp
         Province.h
+        Settlements.cpp
+        Settlements.h
 )
 
 target_include_directories(TotalWar2D PRIVATE "${MIXER_PATH}/include")
