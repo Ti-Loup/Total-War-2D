@@ -8,8 +8,9 @@
 #include <algorithm>
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
-#include "FastNoiseLite.h"
+#include "Province.h"
 #include "Camera.h"
+
 
 enum class TileType : uint8_t {
     DeepWater,
@@ -21,16 +22,10 @@ enum class TileType : uint8_t {
     Snow,
 };
 
-enum class FactionZone : uint8_t {
-    Knight,
-    Viking,
-    Samurai,
-    Ocean
-};
-
 struct Tile {
-    TileType    type = TileType::Grass;
+    TileType type = TileType::Grass;
     FactionZone zone = FactionZone::Ocean;
+    int provinceID = -1;
 };
 
 struct ColorEntry {
@@ -40,7 +35,7 @@ struct ColorEntry {
 };
 //Color of the tiles based on the faction
 static const ColorEntry COLOR_TABLE[] = {
-    // EAU
+    // WATER
     {  0,   0, 255, TileType::DeepWater, FactionZone::Ocean   },
     {  0, 150, 255, TileType::ShallowWater, FactionZone::Ocean   },
 
@@ -106,7 +101,7 @@ public:
     ~TileMap() {
         if (mapTexture) SDL_DestroyTexture(mapTexture);
     }
-
+    //Load the playable areas
     void LoadFromImage(const char* imagePath) {
         SDL_Surface* surface = IMG_Load(imagePath);
         if (!surface) {
@@ -207,6 +202,106 @@ public:
         }
     }
 
+// to charge playable Provinces
+void LoadProvinceMap(const char* imagePath) {
+    SDL_Surface* surface = IMG_Load(imagePath);
+    if (!surface) {
+        SDL_LogCritical(1, "Failed to load ProvinceMap: %s", SDL_GetError());
+        return;
+    }
+    SDL_Surface* converted = SDL_ConvertSurface(surface, SDL_PIXELFORMAT_RGBA8888);
+    SDL_DestroySurface(surface);
+    if (!converted) return;
+
+    Uint8* pixels = (Uint8*)converted->pixels;
+    int pitch = converted->pitch;
+
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols; c++) {
+            Uint8* pixel = pixels + r * pitch + c * 4;
+            Uint8 pr = pixel[3];
+            Uint8 pg = pixel[2];
+            Uint8 pb = pixel[1];
+            tiles[r][c].provinceID = MatchProvince(pr, pg, pb);
+        }
+    }
+    SDL_DestroySurface(converted);
+}
+
+int MatchProvince(Uint8 r, Uint8 g, Uint8 b) {
+    auto match = [](Uint8 a, Uint8 b, int tolerance = 30) {
+        return std::abs((int)a - (int)b) < tolerance;
+    };
+
+    if (match(r,255) && match(g,0)   && match(b,0))   return 0; // Knight Capital
+    if (match(r,255) && match(g,102) && match(b,0))   return 1; // Knight 2
+    if (match(r,255) && match(g,153) && match(b,0))   return 2; // Knight 3
+    if (match(r,0)   && match(g,0)   && match(b,255)) return 3; // Viking Capital
+    if (match(r,0)   && match(g,102) && match(b,255)) return 4; // Viking 2
+    if (match(r,0)   && match(g,153) && match(b,255)) return 5; // Viking 3
+    if (match(r,0)   && match(g,255) && match(b,0))   return 6; // Samurai Capital
+    if (match(r,0)   && match(g,204) && match(b,0))   return 7; // Samurai 2
+    if (match(r,0)   && match(g,153) && match(b,0))   return 8; // Samurai 3
+    return -1; //not playable area
+}
+void RenderProvinceBorders(SDL_Renderer* renderer, const std::vector<Province>& provinces, const Camera& camera) const {
+
+    auto getBorderColor = [](FactionZone zone) -> SDL_Color {
+        switch(zone) {
+            case FactionZone::Knight:  return {255, 215, 0,   255};
+            case FactionZone::Viking:  return {50,  150, 255, 255};
+            case FactionZone::Samurai: return {220, 20,  60,  255};
+            default:                   return {100, 100, 100, 255};
+        }
+    };
+
+    const int BORDER_RADIUS = 1; // radius of the border between regions
+
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols; c++) {
+            int pid = tiles[r][c].provinceID;
+            if (pid == -1) continue;
+
+            // minimum distance for a border
+            int minDist = BORDER_RADIUS + 1;
+            for (int dr = -BORDER_RADIUS; dr <= BORDER_RADIUS; dr++) {
+                for (int dc = -BORDER_RADIUS; dc <= BORDER_RADIUS; dc++) {
+                    int nr = r + dr;
+                    int nc = c + dc;
+                    if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) continue;
+                   int neighborPID = tiles[nr][nc].provinceID;
+                   FactionZone neighborOwner = (neighborPID == -1) ? FactionZone::Ocean : provinces[neighborPID].owner;
+                   FactionZone owner = provinces[pid].owner;
+                   if (neighborOwner != owner) {
+                       int dist = std::abs(dr) + std::abs(dc);
+                       minDist = std::min(minDist, dist);
+                   }
+                }
+            }
+
+            if (minDist > BORDER_RADIUS) continue;
+
+            // alpha progresif
+            float t = 1.0f - (float)(minDist - 1) / (float)BORDER_RADIUS;
+            Uint8 alpha = (Uint8)(t * t * 120.f); // opacity of the l
+
+            if (alpha < 5) continue;
+
+            FactionZone owner = provinces[pid].owner;
+            SDL_Color col = getBorderColor(owner);
+
+            float px = (float)(c * tileSize) * camera.zoom - camera.startX * camera.zoom;
+            float py = (float)(r * tileSize) * camera.zoom - camera.startY * camera.zoom;
+            float ts = (float)tileSize * camera.zoom;
+
+            SDL_FRect rect = {px, py, ts, ts};
+            SDL_SetRenderDrawColor(renderer, col.r, col.g, col.b, alpha);
+            SDL_RenderFillRect(renderer, &rect);
+        }
+    }
+}
     void Render(SDL_Renderer* renderer, const Camera &camera) const {
         if (!mapTexture) return;
         SDL_FRect dst = {

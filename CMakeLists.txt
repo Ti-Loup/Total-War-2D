@@ -18,6 +18,8 @@ add_executable(TotalWar2D main.cpp
         FastNoiseLite.h
         Camera.cpp
         Camera.h
+        Province.cpp
+        Province.h
 )
 
 target_include_directories(TotalWar2D PRIVATE "${MIXER_PATH}/include")

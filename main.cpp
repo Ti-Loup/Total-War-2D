@@ -18,6 +18,7 @@
 #include "Entity.h"
 #include "TileMap.h"
 #include "Camera.h"
+#include "Province.h"
 
 /*
  *TODO LIST For version 0.1.0
@@ -325,6 +326,7 @@ private://constructor
         // -> GAME <-
         tileMap = new TileMap("assets/TileMap.png",16);
         tileMap->BakeToTexture(renderer);
+        tileMap->LoadProvinceMap("assets/ProvinceMap.png");
         // -> CREDITS <-
         creditsTitleFont = TTF_OpenFont("assets/font.ttf", 50);
         creditsRoleTitleFont = TTF_OpenFont("assets/font.ttf", 40);
@@ -405,6 +407,19 @@ private://constructor
         delete tileMap;
 
     }
+    //Provinces name + Faction Zone
+    std::vector<Province> provinces = {
+        {0, "NameRegion1",      FactionZone::Knight, true},
+        {1, "NameRegion2",    FactionZone::Knight, false},
+        {2, "NameRegion3",    FactionZone::Knight, false},
+        {3, "NameRegion1",   FactionZone::Viking, true},
+        {4, "NameRegion2",    FactionZone::Viking, false},
+        {5, "NameRegion3",    FactionZone::Viking, false},
+        {6, "NameRegion1",         FactionZone::Samurai,true},
+        {7, "NameRegion2",    FactionZone::Samurai,false},
+        {8, "NameRegion3",     FactionZone::Samurai,false},
+    };
+
 
     //to render the Buttons
     void RenderBoutons(const SDL_FRect &rect, TTF_Text *buttonText, Uint8 buttonr, Uint8 buttong, Uint8 buttonb) {
@@ -573,6 +588,8 @@ private://constructor
         SDL_RenderClear(renderer);
         //tilemap
         if (tileMap) tileMap->Render(renderer, camera);
+        //provinces map
+        if (tileMap) tileMap->RenderProvinceBorders(renderer, provinces, camera);
         //fps
         TTF_DrawRendererText(fpsText, 10, 10);
         SDL_RenderPresent(renderer);
