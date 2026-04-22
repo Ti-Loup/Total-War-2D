@@ -122,6 +122,11 @@ public:
     TTF_Text *optionsMusicText = nullptr;
 
     // -> GAME <-
+    //kingdomNames
+    TTF_Font *gameKingdomNameFont = nullptr;
+    TTF_Text *gameKingdomKnightNameText = nullptr;
+    TTF_Text *gameKingdomVikingNameText = nullptr;
+    TTF_Text *gameKingdomSamuraiNameText = nullptr;
 
     // -> CREDITS <-
     TTF_Font *creditsTitleFont = nullptr;
@@ -327,6 +332,20 @@ private://constructor
         tileMap = new TileMap("assets/TileMap.png",16);
         tileMap->BakeToTexture(renderer);
         tileMap->LoadProvinceMap("assets/ProvinceMap.png");
+        gameKingdomNameFont = TTF_OpenFont("assets/KnightFont.ttf", 50);
+        gameKingdomKnightNameText = TTF_CreateText(textEngine, gameKingdomNameFont, "Knight Kingdom", 25);
+        if (gameKingdomKnightNameText == nullptr) {
+            SDL_LogWarn(0,"failed to load the text of gameKingdomKnightNameText");
+        }
+        gameKingdomVikingNameText = TTF_CreateText(textEngine, gameKingdomNameFont, "Viking Kingdom", 25);
+        if (gameKingdomVikingNameText == nullptr) {
+            SDL_LogWarn(0,"failed to load the text of gameKingdomVikingNameText");
+        }
+        gameKingdomSamuraiNameText = TTF_CreateText(textEngine, gameKingdomNameFont, "Samurai Kingdom", 25);
+        if (gameKingdomSamuraiNameText == nullptr) {
+            SDL_LogWarn(0,"failed to load the text of gameKingdomSamuraiNameText");
+        }
+
         // -> CREDITS <-
         creditsTitleFont = TTF_OpenFont("assets/font.ttf", 50);
         creditsRoleTitleFont = TTF_OpenFont("assets/font.ttf", 40);
@@ -381,6 +400,7 @@ private://constructor
         TTF_CloseFont(creditsRoleNameFont);
         TTF_CloseFont(optionsTitleFont);
         TTF_CloseFont(optionsMusicFont);
+        TTF_CloseFont(gameKingdomNameFont);
     // ---------------------------------
         TTF_DestroyText(fpsText);
         TTF_DestroyText(menuText);
@@ -403,6 +423,9 @@ private://constructor
         TTF_DestroyText(creditsRoleNameText);
         TTF_DestroyText(optionsTitleText);
         TTF_DestroyText(optionsMusicText);
+        TTF_DestroyText(gameKingdomKnightNameText);
+        TTF_DestroyText(gameKingdomVikingNameText);
+        TTF_DestroyText(gameKingdomSamuraiNameText);
     // ---------------------------------
         delete tileMap;
 
@@ -590,6 +613,77 @@ private://constructor
         if (tileMap) tileMap->Render(renderer, camera);
         //provinces map
         if (tileMap) tileMap->RenderProvinceBorders(renderer, provinces, camera);
+
+        //if camera is far enough the texts of kingdoms + their texture shows
+        if (camera.zoom < 20.f && tileMap) {
+            //faction names inside Territory
+            struct FactionLabel {
+                int      startProvince;
+                int      endProvince;
+                TTF_Text* text;
+            };
+
+            auto getFactionCenter = [&](int p1, int p2, int p3) -> SDL_FPoint {
+                SDL_FPoint c1 = tileMap->GetProvinceCenter(p1);
+                SDL_FPoint c2 = tileMap->GetProvinceCenter(p2);
+                SDL_FPoint c3 = tileMap->GetProvinceCenter(p3);
+                return {
+                    (c1.x + c2.x + c3.x) / 3.f,
+                    (c1.y + c2.y + c3.y) / 3.f
+                };
+            };
+
+            // alpha based on zoom
+            float alpha = std::clamp((0.8f - camera.zoom) / 0.3f, 0.f, 1.f);
+            Uint8 a = (Uint8)(alpha * 255.f);
+
+            SDL_FPoint knightCenter  = getFactionCenter(0, 1, 2);
+            SDL_FPoint vikingCenter  = getFactionCenter(3, 4, 5);
+            SDL_FPoint samuraiCenter = getFactionCenter(6, 7, 8);
+
+            auto worldToScreen = [&](SDL_FPoint wp) -> SDL_FPoint {
+                return {
+                    wp.x * camera.zoom - camera.startX * camera.zoom,
+                    wp.y * camera.zoom - camera.startY * camera.zoom
+                };
+            };
+
+            SDL_FPoint kScreen = worldToScreen(knightCenter);
+            SDL_FPoint vScreen = worldToScreen(vikingCenter);
+            SDL_FPoint sScreen = worldToScreen(samuraiCenter);
+
+            auto renderBanner = [&](SDL_Texture* tex, SDL_FPoint screenPos, Uint8 alpha) {
+                if (!tex) return;
+                SDL_FRect dst = {
+                    screenPos.x - 100.f,
+                    screenPos.y - 40.f,
+                    200.f, 80.f
+                };
+                SDL_SetTextureAlphaMod(tex, alpha);
+                SDL_SetTextureBlendMode(tex, SDL_BLENDMODE_BLEND);
+                SDL_RenderTexture(renderer, tex, nullptr, &dst);
+            };
+
+            //renderBanner(knightBanner,  kScreen, a);
+            //renderBanner(vikingBanner,  vScreen, a);
+            //renderBanner(samuraiBanner, sScreen, a);
+
+
+            TTF_SetTextColor(gameKingdomKnightNameText, 255, 215, 0,   a);
+            TTF_SetTextColor(gameKingdomVikingNameText, 100, 180, 255, a);
+            TTF_SetTextColor(gameKingdomSamuraiNameText,220, 50,  50,  a);
+
+            int textW, textH;
+
+            TTF_GetTextSize(gameKingdomKnightNameText, &textW, &textH);
+            TTF_DrawRendererText(gameKingdomKnightNameText, kScreen.x - textW/2.f, kScreen.y - textH/2.f);
+
+            TTF_GetTextSize(gameKingdomVikingNameText, &textW, &textH);
+            TTF_DrawRendererText(gameKingdomVikingNameText, vScreen.x - textW/2.f, vScreen.y - textH/2.f);
+
+            TTF_GetTextSize(gameKingdomSamuraiNameText, &textW, &textH);
+            TTF_DrawRendererText(gameKingdomSamuraiNameText, sScreen.x - textW/2.f, sScreen.y - textH/2.f);;
+        }
         //fps
         TTF_DrawRendererText(fpsText, 10, 10);
         SDL_RenderPresent(renderer);

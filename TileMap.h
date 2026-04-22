@@ -302,6 +302,24 @@ void RenderProvinceBorders(SDL_Renderer* renderer, const std::vector<Province>& 
         }
     }
 }
+//calculate the center of each provinces to render the Name of the kingdom in game
+SDL_FPoint GetProvinceCenter (int provinceID)const{
+    float sumX = 0;
+    float sumY = 0;
+    int count = 0;
+    for (int r= 0; r<rows;r++){
+        for (int c=0;c<cols; c++){
+         if (tiles[r][c].provinceID == provinceID) {
+                    sumX += c * tileSize + tileSize / 2.f;
+                    sumY += r * tileSize + tileSize / 2.f;
+                    count++;
+                }
+        }
+    }
+    if (count == 0) return {0,0};
+    return {sumX / count, sumY / count};
+}
+
     void Render(SDL_Renderer* renderer, const Camera &camera) const {
         if (!mapTexture) return;
         SDL_FRect dst = {
