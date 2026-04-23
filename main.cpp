@@ -355,7 +355,12 @@ private://constructor
         if (provinceKnightBannerTexture == nullptr) {
             SDL_LogWarn (0,"failed to load the texture of provinceKnightBannerTexture");
         }
+        provinceSamuraiBannerTexture = IMG_LoadTexture(renderer, "assets/SamuraiProvinceTexture.png");
+        if (provinceSamuraiBannerTexture == nullptr) {
+            SDL_LogWarn(0,"failed to load the provinceSamuraiBannerTexture");
+        }
         SDL_SetTextureScaleMode(provinceKnightBannerTexture, SDL_SCALEMODE_NEAREST);
+        SDL_SetTextureScaleMode(provinceSamuraiBannerTexture, SDL_SCALEMODE_NEAREST);
 
         // -> CREDITS <-
         creditsTitleFont = TTF_OpenFont("assets/font.ttf", 50);
@@ -667,21 +672,46 @@ private://constructor
             SDL_FPoint vScreen = worldToScreen(vikingCenter);
             SDL_FPoint sScreen = worldToScreen(samuraiCenter);
 
-            auto renderBanner = [&](SDL_Texture* tex, SDL_FPoint screenPos, Uint8 alpha) {
-                if (!tex) return;
+            //Banner position for the kight
+            auto renderKnightBanner = [&](SDL_Texture* provincesTexture, SDL_FPoint screenPos, Uint8 alpha) {
+                if (!provincesTexture) return;
                 SDL_FRect dst = {
                     screenPos.x - 145.f,
                     screenPos.y - 70.f,
                     275.f, 150.f
                 };
-                SDL_SetTextureAlphaMod(tex, alpha);
-                SDL_SetTextureBlendMode(tex, SDL_BLENDMODE_BLEND);
-                SDL_RenderTexture(renderer, tex, nullptr, &dst);
+                SDL_SetTextureAlphaMod(provincesTexture, alpha);
+                SDL_SetTextureBlendMode(provincesTexture, SDL_BLENDMODE_BLEND);
+                SDL_RenderTexture(renderer, provincesTexture, nullptr, &dst);
+            };
+            //render for the samurai
+            auto renderSamuraiBanner = [&](SDL_Texture* provincesTexture, SDL_FPoint screenPos, Uint8 alpha) {
+                if (!provincesTexture) return;
+                SDL_FRect dst = {
+                    screenPos.x - 140.f,
+                    screenPos.y - 75.f,
+                    275.f, 150.f
+                };
+                SDL_SetTextureAlphaMod(provincesTexture, alpha);
+                SDL_SetTextureBlendMode(provincesTexture, SDL_BLENDMODE_BLEND);
+                SDL_RenderTexture(renderer, provincesTexture, nullptr, &dst);
+            };
+            //render for the viking
+            auto renderVikingBanner = [&](SDL_Texture* provincesTexture, SDL_FPoint screenPos, Uint8 alpha) {
+                if (!provincesTexture) return;
+                SDL_FRect dst = {
+                    screenPos.x - 100.f,
+                    screenPos.y - 70.f,
+                    275.f, 150.f
+                };
+                SDL_SetTextureAlphaMod(provincesTexture, alpha);
+                SDL_SetTextureBlendMode(provincesTexture, SDL_BLENDMODE_BLEND);
+                SDL_RenderTexture(renderer, provincesTexture, nullptr, &dst);
             };
 
-            renderBanner(provinceKnightBannerTexture,  kScreen, a);
-            //renderBanner(vikingBanner,  vScreen, a);
-            //renderBanner(samuraiBanner, sScreen, a);
+            renderKnightBanner(provinceKnightBannerTexture,  kScreen, a);
+            //renderVikingBanner(vikingBanner,  vScreen, a);
+            renderSamuraiBanner(provinceSamuraiBannerTexture, sScreen, a);
 
 
             TTF_SetTextColor(gameKingdomKnightNameText, 140, 100, 42,   a);
