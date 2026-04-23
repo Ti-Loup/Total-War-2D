@@ -60,7 +60,8 @@ public:
     //Ajout du state Menu
     State StateActuel = State::Menu;
     float colorTime = 0.0f;
-
+    //cursor
+    SDL_Cursor *cursor = nullptr;
 
     //TEXT ET FONT
     // -> MENU <-
@@ -215,6 +216,19 @@ private://constructor
         if (TTF_Init() == false) {
             SDL_LogCritical(1, "SDL_ttf failed to initialize! %s", SDL_GetError());
             abort();
+        }
+        //cursor
+        SDL_Surface* cursorSurface = IMG_Load("assets/cursor.png");
+        if (cursorSurface) {
+            // Scale to desired size (e.g. 64x64)
+            SDL_Surface* scaledSurface = SDL_ScaleSurface(cursorSurface, 32, 32, SDL_SCALEMODE_NEAREST);
+            SDL_DestroySurface(cursorSurface);
+
+            if (scaledSurface) {
+                cursor = SDL_CreateColorCursor(scaledSurface, 0, 0);
+                SDL_DestroySurface(scaledSurface);
+                SDL_SetCursor(cursor);
+            }
         }
         //Music Menu
         if (!MIX_Init()) {
@@ -476,6 +490,7 @@ private://constructor
         SDL_DestroyTexture(provinceVikingBannerTexture);
         SDL_DestroyTexture(provinceSamuraiBannerTexture);
     // ---------------------------------
+        SDL_DestroyCursor(cursor);
         delete tileMap;
 
     }
