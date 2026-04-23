@@ -620,6 +620,30 @@ private://constructor
             SDL_RenderRect(renderer, &dst);
         }
     }
+    //UI is above everything else
+    //UI of the region with their castle/villages when you click on a settlement from that province ID
+    void RenderProvinceUI() {
+        //UI is above everything else
+        //UI of the region with their castle/villages when you click on a settlement from that province ID
+        if (bHasClickedOnASettlement) {
+            //ui showns
+            float positionProvinceUI_X = 0.f;
+            float positionProvinceUI_Y = 500.f;
+            float  displayProvinceSizeX = 250.f;
+            float displayProvinceSizeY = 500.f;
+            SDL_FRect provinceUiRect = {
+                positionProvinceUI_X,
+                positionProvinceUI_Y,
+                displayProvinceSizeX,
+                displayProvinceSizeY
+            };
+            SDL_SetRenderDrawColor(renderer, 40, 40, 40, 255);
+            SDL_RenderFillRect(renderer, &provinceUiRect);
+        }
+    }
+
+
+
     void UpdateBackgroundTint(const float deltaTime) {
         constexpr float speed = 5.0f;
         colorTime += deltaTime * speed;
@@ -851,29 +875,11 @@ private://constructor
 
             TTF_GetTextSize(gameKingdomSamuraiNameText, &textW, &textH);
             TTF_DrawRendererText(gameKingdomSamuraiNameText, sScreen.x - textW/2.f, sScreen.y - textH/2.f);;
-
-
-            //UI is above everything else
-            //UI of the region with their castle/villages when you click on a settlement from that province ID
-            if (bHasClickedOnASettlement) {
-                //ui showns
-                float positionProvinceUI_X = 0.f;
-                float positionProvinceUI_Y = 500.f;
-                float  displayProvinceSizeX = 250.f;
-                float displayProvinceSizeY = 500.f;
-            SDL_FRect provinceUiRect = {
-                    positionProvinceUI_X,
-                    positionProvinceUI_Y,
-                    displayProvinceSizeX,
-                    displayProvinceSizeY
-                };
-            SDL_SetRenderDrawColor(renderer, 40, 40, 40, 255);
-            SDL_RenderFillRect(renderer, &provinceUiRect);
-
-            }
-
-
         }
+
+        //Render the UI
+        RenderProvinceUI();
+
         //fps
         TTF_DrawRendererText(fpsText, 10, 10);
         SDL_RenderPresent(renderer);
@@ -1065,9 +1071,26 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
             int tileR = (int)(worldY / app.tileMap->tileSize);
             SDL_Log("Tile: col=%d, row=%d", tileC, tileR);
             //if pressed on a settlement it shows the UI
-            // if () {
-            //     app.bHasClickedOnASettlement = true;
-            // }
+            bool bClickedOutsideOfUI = false;
+             for (int i = 0; i < (int)app.settlements.size(); i++) {
+                const auto &s = app.settlements[i];
+
+                 int settlementSize = 2; //minimum is 2
+                 if (s.settlementData.type == SettlementType::Capital) settlementSize = 4;
+                 else if (s.settlementData.type == SettlementType::Castle) settlementSize = 3;
+
+                 if (tileC >= s.tileCol && tileC < s.tileCol + settlementSize &&tileR >= s.tileRow && tileR < s.tileRow + settlementSize) {
+                     app.bHasClickedOnASettlement = true;
+                     app.selectedSettlementIndex = i;
+                     bClickedOutsideOfUI = true;
+                     break;
+                 }
+             }
+            //if click outside of UI we remove the UI
+            if (!bClickedOutsideOfUI) {
+                app.bHasClickedOnASettlement = false;
+                app.selectedSettlementIndex = -1; //return to original
+            }
 
 
         }
