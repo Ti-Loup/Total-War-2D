@@ -19,6 +19,7 @@
 #include "TileMap.h"
 #include "Camera.h"
 #include "Province.h"
+#include "Settlements.h"
 
 /*
  *TODO LIST For version 0.1.0
@@ -182,6 +183,9 @@ public:
     bool bIsMovingCamera = false;
     float lastMouseX = 0;
     float lastMouseY = 0;
+
+    std::vector<Settlement> settlements;
+
 private://constructor
     GameApp() {
         //window + renderer
@@ -333,9 +337,34 @@ private://constructor
         optionsTitleText = TTF_CreateText(textEngine, optionsTitleFont,"Options", 25);
         optionsMusicText = TTF_CreateText(textEngine, optionsMusicFont,"Volume Music", 25);
         // -> GAME <-
+        //CREATION OF TILES
         tileMap = new TileMap("assets/TileMap.png",16);
         tileMap->BakeToTexture(renderer);
         tileMap->LoadProvinceMap("assets/ProvinceMap.png");
+        //CREATION OF THE SETTLEMENTS
+        //KNIGHT
+        //NORTH REGION
+        settlements.emplace_back(SettlementType::Capital, 0, 25, 45);
+        settlements.emplace_back(SettlementType::Village, 0, 15, 55);
+        settlements.emplace_back(SettlementType::Village, 0, 10, 65);
+        //CAPITAL REGION
+        //SOUTH REGION
+        // Vikings
+        //NORTH CAPITAL
+        settlements.emplace_back(SettlementType::Capital, 3, 60, 10);
+        settlements.emplace_back(SettlementType::Village, 4, 50, 15);
+        settlements.emplace_back(SettlementType::Village, 5, 70, 8);
+        //OUEST REGION
+        //EST REGION
+        // Samurai
+        //OUEST REGION
+
+        //CAPITAL REGION
+        settlements.emplace_back(SettlementType::Capital, 6, 100, 50);
+        settlements.emplace_back(SettlementType::Village, 7, 110, 40);
+        settlements.emplace_back(SettlementType::Village, 8, 95, 60);
+        //OUEST REGION
+
         gameKingdomNameFont = TTF_OpenFont("assets/KnightFont.ttf", 40);
         gameKingdomKnightNameText = TTF_CreateText(textEngine, gameKingdomNameFont, "Knight\nKingdom", 25);
         if (gameKingdomKnightNameText == nullptr) {
@@ -500,6 +529,49 @@ private://constructor
         std::string percentage = std::to_string((int)(volumeSlider.value * 100)) + "%";
     }
 
+    //For the rendering on screen of the settlements. Texture to do
+    void RenderSettlements() {
+        for (const auto& s : settlements) {
+            float positionX = (float)(s.tileCol * tileMap->tileSize) * camera.zoom - camera.startX * camera.zoom;
+            float positionY = (float)(s.tileRow * tileMap->tileSize) * camera.zoom - camera.startY * camera.zoom;
+            float size = (float)tileMap->tileSize * camera.zoom;
+
+            FactionZone zone = provinces[s.settlementData.provinceID].owner;
+
+            //Square color based of faction Color
+            SDL_Color factionColor;
+            if (zone == FactionZone::Knight)       factionColor = {255, 215, 0,   255};
+            else if (zone == FactionZone::Viking)  factionColor = {50,  150, 255, 255};
+            else if (zone == FactionZone::Samurai) factionColor = {220, 20,  60,  255};
+            else                                   factionColor = {150, 150, 150, 255};
+
+            // size of the building based of what they are
+            float displaySize = size;
+            if (s.settlementData.type == SettlementType::Capital) {
+                displaySize = size * 4.f; //4x4
+            }
+            else if (s.settlementData.type == SettlementType::Castle) {
+                displaySize = size * 3.f;
+            }
+            else if (s.settlementData.type == SettlementType::Village) {
+                displaySize = size * 2.f;
+            }
+
+            SDL_FRect dst = {
+                positionX - displaySize / 2.f,
+                positionY - displaySize / 2.f,
+                displaySize,
+                displaySize
+            };
+
+            SDL_SetRenderDrawColor(renderer, factionColor.r, factionColor.g, factionColor.b, 255);
+            SDL_RenderFillRect(renderer, &dst);
+
+            // Bordure noire
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+            SDL_RenderRect(renderer, &dst);
+        }
+    }
     void UpdateBackgroundTint(const float deltaTime) {
         constexpr float speed = 5.0f;
         colorTime += deltaTime * speed;
@@ -633,6 +705,9 @@ private://constructor
         if (tileMap) tileMap->Render(renderer, camera);
         //provinces map
         if (tileMap) tileMap->RenderProvinceBorders(renderer, provinces, camera);
+
+        //Render the settlements
+        RenderSettlements();
 
         //if camera is far enough the texts of kingdoms + their texture shows
         if (camera.zoom < 1.8f && tileMap) {
@@ -909,6 +984,16 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
             if (app.ClickInsideCircle(nouveauX, nouveauY, app.BoutonReturn)) {
                 app.StateActuel = State::Menu;
             }
+        }
+        //IF IN GAME
+        //When pressded it shows the position of 1 tile
+        if (app.StateActuel == State::Game) {
+            // Convertit screen → world tile
+            float worldX = (nouveauX + app.camera.startX * app.camera.zoom) / app.camera.zoom;
+            float worldY = (nouveauY + app.camera.startY * app.camera.zoom) / app.camera.zoom;
+            int tileC = (int)(worldX / app.tileMap->tileSize);
+            int tileR = (int)(worldY / app.tileMap->tileSize);
+            SDL_Log("Tile: col=%d, row=%d", tileC, tileR);
         }
         //TUTORIAL
         if (app.StateActuel == State::Tutorial) {
