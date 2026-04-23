@@ -366,6 +366,7 @@ private://constructor
         settlements.emplace_back(SettlementType::Castle, 1, 22, 28);
         settlements.emplace_back(SettlementType::Village, 1, 16, 12);
         settlements.emplace_back(SettlementType::Village, 1, 29, 34);
+        settlements.emplace_back(SettlementType::Village, 1, 25, 46);
         //SOUTH REGION
         settlements.emplace_back(SettlementType::Castle, 2, 61,56);
         settlements.emplace_back(SettlementType::Village, 2, 67, 50);
@@ -376,6 +377,7 @@ private://constructor
         settlements.emplace_back(SettlementType::Capital, 3, 60, 10);
         settlements.emplace_back(SettlementType::Village, 3, 50, 15);
         settlements.emplace_back(SettlementType::Village, 3, 70, 8);
+        settlements.emplace_back(SettlementType::Village, 3, 83, 15);
         //OUEST REGION
         settlements.emplace_back(SettlementType::Castle, 4, 63, 25);
         settlements.emplace_back(SettlementType::Village, 4, 36, 21);
@@ -521,17 +523,17 @@ private://constructor
     //Provinces name + Faction Zone + which region is a capital
     std::vector<Province> provinces = {
         //knight
-        {0, "NameRegion1",      FactionZone::Knight, true},
-        {1, "NameRegion2",    FactionZone::Knight, false},//north
-        {2, "NameRegion3",    FactionZone::Knight, false},//south
+        {0, "NameRegion1", FactionZone::Knight, true},
+        {1, "NameRegion2", FactionZone::Knight, false},//north
+        {2, "NameRegion3", FactionZone::Knight, false},//south
         //viking
-        {3, "NameRegion1",   FactionZone::Viking, true},
-        {4, "NameRegion2",    FactionZone::Viking, false},
-        {5, "NameRegion3",    FactionZone::Viking, false},
+        {3, "NameRegion1", FactionZone::Viking, true},
+        {4, "NameRegion2", FactionZone::Viking, false},
+        {5, "NameRegion3", FactionZone::Viking, false},
         //samurai
-        {6, "NameRegion1",         FactionZone::Samurai,true},
-        {7, "NameRegion2",    FactionZone::Samurai,false},
-        {8, "NameRegion3",     FactionZone::Samurai,false},
+        {6, "NameRegion1", FactionZone::Samurai,true},
+        {7, "NameRegion2", FactionZone::Samurai,false},
+        {8, "NameRegion3", FactionZone::Samurai,false},
     };
 
 
