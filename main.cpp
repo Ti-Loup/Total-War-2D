@@ -615,7 +615,7 @@ private://constructor
         if (tileMap) tileMap->RenderProvinceBorders(renderer, provinces, camera);
 
         //if camera is far enough the texts of kingdoms + their texture shows
-        if (camera.zoom < 20.f && tileMap) {
+        if (camera.zoom < 1.8f && tileMap) {
             //faction names inside Territory
             struct FactionLabel {
                 int      startProvince;
@@ -634,7 +634,7 @@ private://constructor
             };
 
             // alpha based on zoom
-            float alpha = std::clamp((0.8f - camera.zoom) / 0.3f, 0.f, 1.f);
+            float alpha = std::clamp((1.1f - camera.zoom) / 0.3f, 0.f, 1.f);
             Uint8 a = (Uint8)(alpha * 255.f);
 
             SDL_FPoint knightCenter  = getFactionCenter(0, 1, 2);

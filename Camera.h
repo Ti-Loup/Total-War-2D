@@ -10,7 +10,7 @@ float startX = 0.f;
 float startY = 0.f;
 float zoom = 1.f;
 
-static constexpr float MIN_ZOOM = 0.5f;
+static constexpr float MIN_ZOOM = 0.8f;
 static constexpr float MAX_ZOOM = 4.f;
 
     //Zoom multiply by the factor and his restricted between 0.5 and 4
