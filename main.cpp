@@ -187,6 +187,9 @@ public:
 
     std::vector<Settlement> settlements;
 
+    // UI Campaign
+    bool bHasClickedOnASettlement = false;
+    int selectedSettlementIndex = -1;
 private://constructor
     GameApp() {
         //window + renderer
@@ -849,8 +852,25 @@ private://constructor
             TTF_GetTextSize(gameKingdomSamuraiNameText, &textW, &textH);
             TTF_DrawRendererText(gameKingdomSamuraiNameText, sScreen.x - textW/2.f, sScreen.y - textH/2.f);;
 
-            //UI of the region with their castle/villages when you click on a settlement from that province ID
 
+            //UI is above everything else
+            //UI of the region with their castle/villages when you click on a settlement from that province ID
+            if (bHasClickedOnASettlement) {
+                //ui showns
+                float positionProvinceUI_X = 0.f;
+                float positionProvinceUI_Y = 500.f;
+                float  displayProvinceSizeX = 250.f;
+                float displayProvinceSizeY = 500.f;
+            SDL_FRect provinceUiRect = {
+                    positionProvinceUI_X,
+                    positionProvinceUI_Y,
+                    displayProvinceSizeX,
+                    displayProvinceSizeY
+                };
+            SDL_SetRenderDrawColor(renderer, 40, 40, 40, 255);
+            SDL_RenderFillRect(renderer, &provinceUiRect);
+
+            }
 
 
         }
@@ -1044,6 +1064,12 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
             int tileC = (int)(worldX / app.tileMap->tileSize);
             int tileR = (int)(worldY / app.tileMap->tileSize);
             SDL_Log("Tile: col=%d, row=%d", tileC, tileR);
+            //if pressed on a settlement it shows the UI
+            // if () {
+            //     app.bHasClickedOnASettlement = true;
+            // }
+
+
         }
         //TUTORIAL
         if (app.StateActuel == State::Tutorial) {
