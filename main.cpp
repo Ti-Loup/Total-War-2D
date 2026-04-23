@@ -848,6 +848,11 @@ private://constructor
 
             TTF_GetTextSize(gameKingdomSamuraiNameText, &textW, &textH);
             TTF_DrawRendererText(gameKingdomSamuraiNameText, sScreen.x - textW/2.f, sScreen.y - textH/2.f);;
+
+            //UI of the region with their castle/villages when you click on a settlement from that province ID
+
+
+
         }
         //fps
         TTF_DrawRendererText(fpsText, 10, 10);
