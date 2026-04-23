@@ -128,6 +128,10 @@ public:
     TTF_Text *gameKingdomVikingNameText = nullptr;
     TTF_Text *gameKingdomSamuraiNameText = nullptr;
 
+    //texture provinces when Unzoom
+    SDL_Texture *provinceKnightBannerTexture = nullptr;
+    SDL_Texture *provinceVikingBannerTexture = nullptr;
+    SDL_Texture *provinceSamuraiBannerTexture = nullptr;
     // -> CREDITS <-
     TTF_Font *creditsTitleFont = nullptr;
     TTF_Text *creditsTitleText = nullptr;
@@ -332,19 +336,26 @@ private://constructor
         tileMap = new TileMap("assets/TileMap.png",16);
         tileMap->BakeToTexture(renderer);
         tileMap->LoadProvinceMap("assets/ProvinceMap.png");
-        gameKingdomNameFont = TTF_OpenFont("assets/KnightFont.ttf", 50);
-        gameKingdomKnightNameText = TTF_CreateText(textEngine, gameKingdomNameFont, "Knight Kingdom", 25);
+        gameKingdomNameFont = TTF_OpenFont("assets/KnightFont.ttf", 40);
+        gameKingdomKnightNameText = TTF_CreateText(textEngine, gameKingdomNameFont, "Knight\nKingdom", 25);
         if (gameKingdomKnightNameText == nullptr) {
             SDL_LogWarn(0,"failed to load the text of gameKingdomKnightNameText");
         }
-        gameKingdomVikingNameText = TTF_CreateText(textEngine, gameKingdomNameFont, "Viking Kingdom", 25);
+        gameKingdomVikingNameText = TTF_CreateText(textEngine, gameKingdomNameFont, "Viking\nKingdom", 25);
         if (gameKingdomVikingNameText == nullptr) {
             SDL_LogWarn(0,"failed to load the text of gameKingdomVikingNameText");
         }
-        gameKingdomSamuraiNameText = TTF_CreateText(textEngine, gameKingdomNameFont, "Samurai Kingdom", 25);
+        gameKingdomSamuraiNameText = TTF_CreateText(textEngine, gameKingdomNameFont, "Samurai\nKingdom", 25);
         if (gameKingdomSamuraiNameText == nullptr) {
             SDL_LogWarn(0,"failed to load the text of gameKingdomSamuraiNameText");
         }
+
+        //texture Province dezoom texture
+        provinceKnightBannerTexture = IMG_LoadTexture(renderer, "assets/KnightProvinceTexture.png");
+        if (provinceKnightBannerTexture == nullptr) {
+            SDL_LogWarn (0,"failed to load the texture of provinceKnightBannerTexture");
+        }
+        SDL_SetTextureScaleMode(provinceKnightBannerTexture, SDL_SCALEMODE_NEAREST);
 
         // -> CREDITS <-
         creditsTitleFont = TTF_OpenFont("assets/font.ttf", 50);
@@ -426,6 +437,10 @@ private://constructor
         TTF_DestroyText(gameKingdomKnightNameText);
         TTF_DestroyText(gameKingdomVikingNameText);
         TTF_DestroyText(gameKingdomSamuraiNameText);
+    // ---------------------------------
+        SDL_DestroyTexture(provinceKnightBannerTexture);
+        SDL_DestroyTexture(provinceVikingBannerTexture);
+        SDL_DestroyTexture(provinceSamuraiBannerTexture);
     // ---------------------------------
         delete tileMap;
 
@@ -655,21 +670,21 @@ private://constructor
             auto renderBanner = [&](SDL_Texture* tex, SDL_FPoint screenPos, Uint8 alpha) {
                 if (!tex) return;
                 SDL_FRect dst = {
-                    screenPos.x - 100.f,
-                    screenPos.y - 40.f,
-                    200.f, 80.f
+                    screenPos.x - 135.f,
+                    screenPos.y - 60.f,
+                    250.f, 130.f
                 };
                 SDL_SetTextureAlphaMod(tex, alpha);
                 SDL_SetTextureBlendMode(tex, SDL_BLENDMODE_BLEND);
                 SDL_RenderTexture(renderer, tex, nullptr, &dst);
             };
 
-            //renderBanner(knightBanner,  kScreen, a);
+            renderBanner(provinceKnightBannerTexture,  kScreen, a);
             //renderBanner(vikingBanner,  vScreen, a);
             //renderBanner(samuraiBanner, sScreen, a);
 
 
-            TTF_SetTextColor(gameKingdomKnightNameText, 255, 215, 0,   a);
+            TTF_SetTextColor(gameKingdomKnightNameText, 140, 100, 42,   a);
             TTF_SetTextColor(gameKingdomVikingNameText, 100, 180, 255, a);
             TTF_SetTextColor(gameKingdomSamuraiNameText,220, 50,  50,  a);
 
