@@ -670,9 +670,9 @@ private://constructor
             auto renderBanner = [&](SDL_Texture* tex, SDL_FPoint screenPos, Uint8 alpha) {
                 if (!tex) return;
                 SDL_FRect dst = {
-                    screenPos.x - 135.f,
-                    screenPos.y - 60.f,
-                    250.f, 130.f
+                    screenPos.x - 145.f,
+                    screenPos.y - 70.f,
+                    275.f, 150.f
                 };
                 SDL_SetTextureAlphaMod(tex, alpha);
                 SDL_SetTextureBlendMode(tex, SDL_BLENDMODE_BLEND);
