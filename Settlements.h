@@ -5,12 +5,14 @@
 #ifndef TOTALWAR2D_SETTLEMENTS_H
 #define TOTALWAR2D_SETTLEMENTS_H
 #include "Entity.h"
-
-//Kights
-//Major Castle (8 slot of upgrades)(1 per faction)
-class MajorCastleSettlement : public Entity {
+#include "State.h"
+class Settlement : public Entity {
     public:
+    SettlementComponent settlementData;
+    int tileCol = 0;
+    int tileRow = 0;
 
+    Settlement(SettlementType type, int provinceID, int col, int row);
 };
 
 #endif //TOTALWAR2D_SETTLEMENTS_H

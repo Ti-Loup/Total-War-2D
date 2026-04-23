@@ -1,7 +1,7 @@
 //
 // Created by Louis-Philippe on 4/14/2026.
 //
-
+#include <vector>
 #ifndef TOTALWAR2D_STATE_H
 #define TOTALWAR2D_STATE_H
 
