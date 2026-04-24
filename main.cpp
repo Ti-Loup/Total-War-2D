@@ -724,7 +724,6 @@ private://constructor
 
 
     //BOTTOM UI PANNEL
-        if (bButtonUIBuildingIsPressed) {
             int   count = (int)provinceSettlements.size();
             float cardW = 280.f;
             float cardH = 200.f;
@@ -813,7 +812,8 @@ private://constructor
                         TTF_DrawRendererText(gameStatUIText, cx + 10.f, panelY + 74.f);
                 */
                 // building slots
-                float slotSize = 50.f;
+                if (bButtonUIBuildingIsPressed) {
+                float slotSize = 60.f;
                 float slotGap  = 6.f;
                 int cols = 0;
                 if      (s->settlementData.type == SettlementType::Village) cols = 2; // 2x2 = 4 slots
@@ -1282,48 +1282,57 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
         //IF IN GAME
         //When pressded it shows the position of 1 tile
         if (app.StateActuel == State::Game) {
-            // Convertit screen → world tile
-            float worldX = (nouveauX + app.camera.startX * app.camera.zoom) / app.camera.zoom;
-            float worldY = (nouveauY + app.camera.startY * app.camera.zoom) / app.camera.zoom;
-            int tileC = (int)(worldX / app.tileMap->tileSize);
-            int tileR = (int)(worldY / app.tileMap->tileSize);
-            SDL_Log("Tile: col=%d, row=%d", tileC, tileR);
-            //if pressed on a settlement it shows the UI
-            bool bClickedOutsideOfUI = false;
-             for (int i = 0; i < (int)app.settlements.size(); i++) {
-                const auto &s = app.settlements[i];
+    float worldX = (nouveauX + app.camera.startX * app.camera.zoom) / app.camera.zoom;
+    float worldY = (nouveauY + app.camera.startY * app.camera.zoom) / app.camera.zoom;
+    int tileC = (int)(worldX / app.tileMap->tileSize);
+    int tileR = (int)(worldY / app.tileMap->tileSize);
+    SDL_Log("Tile: col=%d, row=%d", tileC, tileR);
 
-                 int settlementSize = 2; //minimum is 2
-                 if (s.settlementData.type == SettlementType::Capital) settlementSize = 4;
-                 else if (s.settlementData.type == SettlementType::Castle) settlementSize = 3;
-
-                 if (tileC >= s.tileCol && tileC < s.tileCol + settlementSize &&tileR >= s.tileRow && tileR < s.tileRow + settlementSize) {
-                     app.bHasClickedOnASettlement = true;
-                     app.selectedSettlementIndex = i;
-                     bClickedOutsideOfUI = true;
-                     break;
-                 }
-             }
-            //province
-            if (!bClickedOutsideOfUI) {
-                app.bHasClickedOnASettlement = false;
-                app.selectedSettlementIndex = -1; //return to original
-                app.bButtonUIBuildingIsPressed = true;//put it back to the first one
-            }
-            //if we press the garrison Button it change the UI
-            if (SDL_PointInRectFloat(&MousePT, &app.provinceButtonUIBuilding)) {
-                app.bButtonUIBuildingIsPressed = true;
-                //all the other ones are false
-                app.bButtonUIBuildingIsPressed = false;
-            }
-            //if we press the garrison Button it chage the UI
-            if (SDL_PointInRectFloat(&MousePT, &app.provinceButtonUIGarrison)) {
-                app.bButtonUIGarrisonIsPressed = true;
-                //all the other ones are false
-                app.bButtonUIGarrisonIsPressed = false;
-            }
-
+    if (app.bHasClickedOnASettlement) {
+        SDL_FPoint pt = {nouveauX, nouveauY};
+        if (SDL_PointInRectFloat(&pt, &app.provinceButtonUIBuilding)) {
+            app.bButtonUIBuildingIsPressed = true;
+            app.bButtonUIGarrisonIsPressed = false;
+            return SDL_APP_CONTINUE; // ← stop ici, pas de reset
         }
+        if (SDL_PointInRectFloat(&pt, &app.provinceButtonUIGarrison)) {
+            app.bButtonUIGarrisonIsPressed = true;
+            app.bButtonUIBuildingIsPressed = false;
+            return SDL_APP_CONTINUE; // ← stop ici, pas de reset
+        }
+
+        SDL_FRect leftPanel = {0.f, 580.f, 250.f, 500.f};
+        if (SDL_PointInRectFloat(&pt, &leftPanel)) {
+            return SDL_APP_CONTINUE;
+        }
+
+        SDL_FRect bottomPanel = {0.f, 830.f, 1920.f, 250.f};
+        if (SDL_PointInRectFloat(&pt, &bottomPanel)) {
+            return SDL_APP_CONTINUE;
+        }
+    }
+
+    // dection if clicked a settlement
+    bool bClickedOutsideOfUI = false;
+    for (int i = 0; i < (int)app.settlements.size(); i++) {
+        const auto &s = app.settlements[i];
+        int settlementSize = 2;
+        if (s.settlementData.type == SettlementType::Capital) settlementSize = 4;
+        else if (s.settlementData.type == SettlementType::Castle) settlementSize = 3;
+
+        if (tileC >= s.tileCol && tileC < s.tileCol + settlementSize &&
+            tileR >= s.tileRow && tileR < s.tileRow + settlementSize) {
+            app.bHasClickedOnASettlement = true;
+            app.selectedSettlementIndex = i;
+            bClickedOutsideOfUI = true;
+            break;
+        }
+    }
+    if (!bClickedOutsideOfUI) {
+        app.bHasClickedOnASettlement = false;
+        app.selectedSettlementIndex = -1;
+    }
+}
         //TUTORIAL
         if (app.StateActuel == State::Tutorial) {
             if (app.ClickInsideCircle(nouveauX, nouveauY, app.BoutonReturn)) {
