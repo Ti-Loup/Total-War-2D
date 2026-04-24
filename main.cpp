@@ -384,9 +384,13 @@ private://constructor
         //KNIGHT
         //CAPITAL REGION
         settlements.emplace_back(SettlementType::Capital, 0, 42, 50);
+        settlements.back().settlementData.cityName = "Patate";
         settlements.emplace_back(SettlementType::Village, 0, 46, 35);
+        settlements.back().settlementData.cityName = "Patate2";
         settlements.emplace_back(SettlementType::Village, 0, 52, 42);
+        settlements.back().settlementData.cityName = "Patate3";
         settlements.emplace_back(SettlementType::Village, 0, 37, 61);
+        settlements.back().settlementData.cityName = "Patate4";
         //NORTH REGION
         settlements.emplace_back(SettlementType::Castle, 1, 22, 28);
         settlements.emplace_back(SettlementType::Village, 1, 16, 12);
@@ -958,7 +962,7 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
                 SDL_FRect icon = {cx + 10.f, panelY + 10.f, 18.f, 18.f};
                 SDL_RenderFillRect(renderer, &icon);
                 //each settlement Title ->
-                TTF_SetTextString(gameStatUITitleText, typeName.c_str(), 0);
+                TTF_SetTextString(gameStatUITitleText, s->settlementData.cityName.c_str(), 0);
                 TTF_SetTextColor(gameStatUITitleText, 230, 230, 230, 255);
                 TTF_DrawRendererText(gameStatUITitleText, cx + 36.f, panelY + 9.f);
 
