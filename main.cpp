@@ -664,10 +664,10 @@ private://constructor
         factionColor = {255, 215, 0,   255};
     }
     else if (province.owner == FactionZone::Viking) {
-        factionColor = {50,  150, 255, 255};
+        factionColor = {255,0,0,255};
     }
     else if (province.owner == FactionZone::Samurai) {
-        factionColor = {220, 20,  60,  255};
+        factionColor = {0,255, 215,255};
     }
     else {
         factionColor = {150, 150, 150, 255};
@@ -708,18 +708,18 @@ private://constructor
         statY += 36.f;
     };
 
-    drawStat("Income generated:",    std::to_string(incomeTotal) + "g/t", 180, 230, 100);
-    drawStat("Groth:", std::to_string(populationTotal),200, 200, 255);
+    drawStat("Income generated:",    std::to_string(incomeTotal), 180, 230, 100);
+    drawStat("Growth:", std::to_string(populationTotal),180, 230, 100);
     drawStat("Capital:",   province.isCapital ? "Yes" : "No",  255, 215,   0);
 
     //BOTTOM UI PANNEL
     int   count = (int)provinceSettlements.size();
     float cardW = 280.f;
-    float cardH = 160.f;
+    float cardH = 200.f;
     float cardGap = 16.f;
     float totalW = count * cardW + (count - 1) * cardGap;
     float startX = (1920.f - totalW) / 2.f;
-    float panelY = 1080.f - cardH - 20.f;
+    float panelY = 1080.f - cardH - 50.f;
 
     for (int i = 0; i < count; i++) {
         const Settlement* s = provinceSettlements[i];
@@ -753,8 +753,28 @@ private://constructor
                 typeColor = {255,0,0,255}; typeName = "Capital";
             }
         }
-        else if (s->settlementData.type == SettlementType::Castle) { typeColor = {180,180,180,255}; typeName = "Castle";  }
-        else { typeColor = {139, 90, 43,255}; typeName = "Village"; }
+        else if (s->settlementData.type == SettlementType::Castle) {
+            if (province.owner == FactionZone::Knight) {
+                typeColor = {255,215,0,255}; typeName = "Castle";
+            }
+            else if (province.owner == FactionZone::Samurai) {
+                typeColor = {0,255, 215,255}; typeName = "Castle";
+            }
+            else if (province.owner == FactionZone::Viking) {
+                typeColor = {255,0,0,255}; typeName = "Castle";
+            }
+        }
+        else if (s->settlementData.type == SettlementType::Village) {
+            if (province.owner == FactionZone::Knight) {
+                typeColor = {255,215,0,255}; typeName = "Village";
+            }
+            else if (province.owner == FactionZone::Samurai) {
+                typeColor = {0,255, 215,255}; typeName = "Village";
+            }
+            else if (province.owner == FactionZone::Viking) {
+                typeColor = {255,0,0,255}; typeName = "Village";
+            }
+        }
 
         SDL_SetRenderDrawColor(renderer, typeColor.r/3, typeColor.g/3, typeColor.b/3, 200);
         SDL_FRect cardTitle = {cx, panelY, cardW, 38.f};
@@ -768,9 +788,10 @@ private://constructor
         TTF_SetTextString(gameStatUITitleText, typeName.c_str(), 0);
         TTF_SetTextColor(gameStatUITitleText, 230, 230, 230, 255);
         TTF_DrawRendererText(gameStatUITitleText, cx + 36.f, panelY + 9.f);
-
+/*
+ *this should be the UI of each settlement (in front of them)
         // Income text
-        TTF_SetTextString(gameStatUIText, ("+" + std::to_string(s->settlementData.baseIncome) + " gold/turn").c_str(), 0);
+        TTF_SetTextString(gameStatUIText, ("+" + std::to_string(s->settlementData.baseIncome) + " gold").c_str(), 0);
         TTF_SetTextColor(gameStatUIText, 180, 230, 100, 255);
         TTF_DrawRendererText(gameStatUIText, cx + 10.f, panelY + 48.f);
 
@@ -778,7 +799,7 @@ private://constructor
         TTF_SetTextString(gameStatUIText, ("Pop: " + std::to_string(s->settlementData.basePopulation)).c_str(), 0);
         TTF_SetTextColor(gameStatUIText, 180, 200, 255, 255);
         TTF_DrawRendererText(gameStatUIText, cx + 10.f, panelY + 74.f);
-
+*/
         // building slots
         float slotSize = 50.f;
         float slotGap  = 6.f;
@@ -810,7 +831,7 @@ private://constructor
     }
         // Title bottomProvince Title
         float middleTitlePositionX = 835.f;
-        float middleTitlePositionY = 850.f;
+        float middleTitlePositionY = 825.f;
         SDL_SetRenderDrawColor(renderer, factionColor.r, factionColor.g, factionColor.b, 180);
         SDL_FRect titleBottomBar = {middleTitlePositionX, middleTitlePositionY, 250.f, 40.f};
         SDL_RenderFillRect(renderer, &titleBottomBar);
