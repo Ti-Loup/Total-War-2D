@@ -2,6 +2,7 @@
 // Created by Louis-Philippe on 4/14/2026.
 //
 #include <vector>
+#include <string>
 #ifndef TOTALWAR2D_STATE_H
 #define TOTALWAR2D_STATE_H
 
@@ -37,11 +38,14 @@ enum class BuildingType {
 //What a settlement has
 struct SettlementComponent {
     SettlementType type = SettlementType::Village;
-    int provinceID = -1;
+    int provinceID = -1; // the name
     //base stats of a settlement
     int baseIncome = 25; // village 25, castle 100, capital 200
     int basePopulation = 250; //village 250, castle 1000, capital 2500
     int baseGrowthRate = 50;// base population that increase per turn
+    int publicOrder = 0; // the base public order
+    //city name
+    std::string cityName = "Village";
 
     std::vector<BuildingType> buildings; //amount of building available base of SettleentType
 };

@@ -646,7 +646,52 @@ private://constructor
             SDL_RenderRect(renderer, &dst);
 
             //UI elements to show (Public order / Current income of this settlement / Population )
+            if (camera.zoom >= 1.5f) {
+                float labelX = positionX;
+                float labelY = positionY - 60.f; // au-dessus du settlement
 
+                // Nom
+                TTF_SetTextString(gameStatUITitleText, s.settlementData.cityName.c_str(), 0);
+                TTF_SetTextColor(gameStatUITitleText, 255, 255, 255, 255);
+                TTF_DrawRendererText(gameStatUITitleText, labelX, labelY);
+
+                // Income
+                std::string incomeStr = "+" + std::to_string(s.settlementData.baseIncome) + "g";
+                TTF_SetTextString(gameStatUIText, incomeStr.c_str(), 0);
+                TTF_SetTextColor(gameStatUIText, 180, 230, 100, 255);
+                TTF_DrawRendererText(gameStatUIText, labelX, labelY + 22.f);
+
+                // Public Order
+                float squareSize = 14.f;
+                float squareX = labelX;
+                float squareY = labelY + 44.f;
+
+                SDL_FRect poSquare = { squareX, squareY, squareSize, squareSize };
+                //color that change based of public order
+                if (s.settlementData.publicOrder > 0) {
+                    SDL_SetRenderDrawColor(renderer, 80,  200, 80,  255); // vert
+                }
+                else if (s.settlementData.publicOrder < 0) {
+                    SDL_SetRenderDrawColor(renderer, 220, 50,  50,  255); // rouge
+                }
+                else {
+                    SDL_SetRenderDrawColor(renderer, 130, 130, 130, 255); // gris
+                }
+
+                SDL_RenderFillRect(renderer, &poSquare);
+
+                // black border
+                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                SDL_RenderRect(renderer, &poSquare);
+
+                // number next
+                std::string orderStr = std::to_string(s.settlementData.publicOrder);
+                TTF_SetTextString(gameStatUIText, orderStr.c_str(), 0);
+                Uint8 poR = s.settlementData.publicOrder > 0 ? 80  : (s.settlementData.publicOrder < 0 ? 220 : 130);
+                Uint8 poG = s.settlementData.publicOrder > 0 ? 200 : (s.settlementData.publicOrder < 0 ? 50  : 130);
+                TTF_SetTextColor(gameStatUIText, poR, poG, 80, 255);
+                TTF_DrawRendererText(gameStatUIText, squareX + squareSize + 4.f, squareY - 2.f);
+            }
         }
     }
     //UI of the region with their castle/villages when you click on a settlement from that province ID
@@ -802,18 +847,7 @@ private://constructor
                 TTF_SetTextString(gameStatUITitleText, typeName.c_str(), 0);
                 TTF_SetTextColor(gameStatUITitleText, 230, 230, 230, 255);
                 TTF_DrawRendererText(gameStatUITitleText, cx + 36.f, panelY + 9.f);
-                /*
-                 // this should be the UI of each settlement (in front of them city)
-                        // Income text
-                        TTF_SetTextString(gameStatUIText, ("+" + std::to_string(s->settlementData.baseIncome) + " gold").c_str(), 0);
-                        TTF_SetTextColor(gameStatUIText, 180, 230, 100, 255);
-                        TTF_DrawRendererText(gameStatUIText, cx + 10.f, panelY + 48.f);
 
-                        // Population text
-                        TTF_SetTextString(gameStatUIText, ("Pop: " + std::to_string(s->settlementData.basePopulation)).c_str(), 0);
-                        TTF_SetTextColor(gameStatUIText, 180, 200, 255, 255);
-                        TTF_DrawRendererText(gameStatUIText, cx + 10.f, panelY + 74.f);
-                */
                 // building slots
                 if (bButtonUIBuildingIsPressed) {
                 float slotSize = 60.f;
