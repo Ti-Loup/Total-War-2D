@@ -249,8 +249,8 @@ void RenderProvinceBorders(SDL_Renderer* renderer, const std::vector<Province>& 
     auto getBorderColor = [](FactionZone zone) -> SDL_Color {
         switch(zone) {
             case FactionZone::Knight:  return {255, 215, 0,   255};
-            case FactionZone::Viking:  return {50,  150, 255, 255};
-            case FactionZone::Samurai: return {220, 20,  60,  255};
+            case FactionZone::Viking:  return {255,0,0,255};
+            case FactionZone::Samurai: return {0, 200, 160, 255};
             default:                   return {100, 100, 100, 255};
         }
     };

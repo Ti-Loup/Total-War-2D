@@ -614,8 +614,8 @@ private://constructor
             //Square color based of faction Color
             SDL_Color factionColor;
             if (zone == FactionZone::Knight)       factionColor = {255, 215, 0,   255};
-            else if (zone == FactionZone::Viking)  factionColor = {50,  150, 255, 255};
-            else if (zone == FactionZone::Samurai) factionColor = {220, 20,  60,  255};
+            else if (zone == FactionZone::Viking)  factionColor = {255, 0,   0,   255};
+            else if (zone == FactionZone::Samurai) factionColor = {0, 200, 160, 255};
             else                                   factionColor = {150, 150, 150, 255};
 
             // size of the building based of what they are
@@ -1080,8 +1080,8 @@ private://constructor
 
 
             TTF_SetTextColor(gameKingdomKnightNameText, 140, 100, 42,   a);
-            TTF_SetTextColor(gameKingdomVikingNameText, 100, 180, 255, a);
-            TTF_SetTextColor(gameKingdomSamuraiNameText,220, 50,  50,  a);
+            TTF_SetTextColor(gameKingdomVikingNameText, 220,50,50, a);
+            TTF_SetTextColor(gameKingdomSamuraiNameText,0, 200,  160,  a);
 
             int textW, textH;
 
