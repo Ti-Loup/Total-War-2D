@@ -366,7 +366,7 @@ private://constructor
         tileMap->LoadProvinceMap("assets/ProvinceMap.png");
         //UI Font
         gameStatUITitleFont = TTF_OpenFont("assets/Rubik.ttf", 25);
-        gameStatUIFont = TTF_OpenFont("assets/Rubik.ttf", 15);
+        gameStatUIFont = TTF_OpenFont("assets/Rubik.ttf", 20);
         gameStatUITitleText = TTF_CreateText(textEngine, gameStatUITitleFont,"GameStatue", 25);
         if (gameStatUITitleText == nullptr) {
             SDL_LogWarn(0,"failed to create the text gameStatUITitleText",SDL_GetError());
@@ -764,20 +764,20 @@ private://constructor
         SDL_SetRenderDrawColor(renderer, typeColor.r, typeColor.g, typeColor.b, 255);
         SDL_FRect icon = {cx + 10.f, panelY + 10.f, 18.f, 18.f};
         SDL_RenderFillRect(renderer, &icon);
-
+        //each settlement Title ->
         TTF_SetTextString(gameStatUITitleText, typeName.c_str(), 0);
         TTF_SetTextColor(gameStatUITitleText, 230, 230, 230, 255);
         TTF_DrawRendererText(gameStatUITitleText, cx + 36.f, panelY + 9.f);
 
-        // Income
-        TTF_SetTextString(gameStatUITitleText, ("+" + std::to_string(s->settlementData.baseIncome) + " gold/turn").c_str(), 0);
-        TTF_SetTextColor(gameStatUITitleText, 180, 230, 100, 255);
-        TTF_DrawRendererText(gameStatUITitleText, cx + 10.f, panelY + 48.f);
+        // Income text
+        TTF_SetTextString(gameStatUIText, ("+" + std::to_string(s->settlementData.baseIncome) + " gold/turn").c_str(), 0);
+        TTF_SetTextColor(gameStatUIText, 180, 230, 100, 255);
+        TTF_DrawRendererText(gameStatUIText, cx + 10.f, panelY + 48.f);
 
-        // Population
-        TTF_SetTextString(gameStatUITitleText, ("Pop: " + std::to_string(s->settlementData.basePopulation)).c_str(), 0);
-        TTF_SetTextColor(gameStatUITitleText, 180, 200, 255, 255);
-        TTF_DrawRendererText(gameStatUITitleText, cx + 10.f, panelY + 74.f);
+        // Population text
+        TTF_SetTextString(gameStatUIText, ("Pop: " + std::to_string(s->settlementData.basePopulation)).c_str(), 0);
+        TTF_SetTextColor(gameStatUIText, 180, 200, 255, 255);
+        TTF_DrawRendererText(gameStatUIText, cx + 10.f, panelY + 74.f);
 
         // building slots
         float slotSize = 50.f;
