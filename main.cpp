@@ -644,6 +644,9 @@ private://constructor
             // Bordure noire
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             SDL_RenderRect(renderer, &dst);
+
+            //UI elements to show (Public order / Current income of this settlement / Population )
+
         }
     }
     //UI of the region with their castle/villages when you click on a settlement from that province ID
