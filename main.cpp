@@ -131,7 +131,9 @@ public:
     TTF_Text *gameKingdomSamuraiNameText = nullptr;
 
     //UI TextFont
+    TTF_Font *gameStatUITitleFont = nullptr;
     TTF_Font *gameStatUIFont = nullptr;
+    TTF_Text *gameStatUITitleText = nullptr;
     TTF_Text *gameStatUIText = nullptr;
 
     //texture provinces when Unzoom
@@ -363,8 +365,13 @@ private://constructor
         tileMap->BakeToTexture(renderer);
         tileMap->LoadProvinceMap("assets/ProvinceMap.png");
         //UI Font
-        gameStatUIFont = TTF_OpenFont("assets/Rubik.ttf", 25);
-        gameStatUIText = TTF_CreateText(textEngine, gameStatUIFont,"GameStatue", 25);
+        gameStatUITitleFont = TTF_OpenFont("assets/Rubik.ttf", 25);
+        gameStatUIFont = TTF_OpenFont("assets/Rubik.ttf", 15);
+        gameStatUITitleText = TTF_CreateText(textEngine, gameStatUITitleFont,"GameStatue", 25);
+        if (gameStatUITitleText == nullptr) {
+            SDL_LogWarn(0,"failed to create the text gameStatUITitleText",SDL_GetError());
+        }
+        gameStatUIText = TTF_CreateText(textEngine, gameStatUIFont, "GameStatue", 25);
         if (gameStatUIText == nullptr) {
             SDL_LogWarn(0,"failed to create the text gameStatUIText",SDL_GetError());
         }
@@ -499,6 +506,7 @@ private://constructor
         TTF_CloseFont(optionsTitleFont);
         TTF_CloseFont(optionsMusicFont);
         TTF_CloseFont(gameKingdomNameFont);
+        TTF_CloseFont(gameStatUITitleFont);
         TTF_CloseFont(gameStatUIFont);
     // ---------------------------------
         TTF_DestroyText(fpsText);
@@ -525,6 +533,7 @@ private://constructor
         TTF_DestroyText(gameKingdomKnightNameText);
         TTF_DestroyText(gameKingdomVikingNameText);
         TTF_DestroyText(gameKingdomSamuraiNameText);
+        TTF_DestroyText(gameStatUITitleText);
         TTF_DestroyText(gameStatUIText);
     // ---------------------------------
         SDL_DestroyTexture(provinceKnightBannerTexture);
@@ -667,8 +676,8 @@ private://constructor
 
     // LEFT UI PART
         //PROVINCE
-    float leftW = 350.f, leftH = 400.f;//size
-    float leftX = 0.f,   leftY = 680.f;//position
+    float leftW = 250.f, leftH = 500.f;//size
+    float leftX = 0.f,   leftY = 580.f;//position
 
     SDL_SetRenderDrawColor(renderer, 20, 20, 20, 210);
     SDL_FRect leftPanel = {leftX, leftY, leftW, leftH};
@@ -682,9 +691,9 @@ private://constructor
     SDL_RenderRect(renderer, &leftPanel);
 
     // Name province
-    TTF_SetTextString(gameStatUIText, province.name.c_str(), 0);
-    TTF_SetTextColor(gameStatUIText, 255, 255, 255, 255);
-    TTF_DrawRendererText(gameStatUIText, leftX + 10.f, leftY + 8.f);
+    TTF_SetTextString(gameStatUITitleText, province.name.c_str(), 0);
+    TTF_SetTextColor(gameStatUITitleText, 255, 255, 255, 255);
+    TTF_DrawRendererText(gameStatUITitleText, leftX + 10.f, leftY + 8.f);
 
     // Stats
     float statY = leftY + 55.f;
@@ -695,22 +704,22 @@ private://constructor
 
         TTF_SetTextString(gameStatUIText, value.c_str(), 0);
         TTF_SetTextColor(gameStatUIText, valueR, valueG, valueB, 255);
-        TTF_DrawRendererText(gameStatUIText, leftX + 130.f, statY);
+        TTF_DrawRendererText(gameStatUIText, leftX + 175.f, statY);
         statY += 36.f;
     };
 
-    drawStat("Income :",    std::to_string(incomeTotal) + "g/t", 180, 230, 100);
-    drawStat("Population:", std::to_string(populationTotal),200, 200, 255);
-    drawStat("Capital :",   province.isCapital ? "Yes" : "No",  255, 215,   0);
+    drawStat("Income generated:",    std::to_string(incomeTotal) + "g/t", 180, 230, 100);
+    drawStat("Groth:", std::to_string(populationTotal),200, 200, 255);
+    drawStat("Capital:",   province.isCapital ? "Yes" : "No",  255, 215,   0);
 
     //BOTTOM UI PANNEL
-    int   count     = (int)provinceSettlements.size();
-    float cardW     = 280.f;
-    float cardH     = 160.f;
-    float cardGap   = 16.f;
-    float totalW    = count * cardW + (count - 1) * cardGap;
-    float startX    = (1920.f - totalW) / 2.f;
-    float panelY    = 1080.f - cardH - 20.f;
+    int   count = (int)provinceSettlements.size();
+    float cardW = 280.f;
+    float cardH = 160.f;
+    float cardGap = 16.f;
+    float totalW = count * cardW + (count - 1) * cardGap;
+    float startX = (1920.f - totalW) / 2.f;
+    float panelY = 1080.f - cardH - 20.f;
 
     for (int i = 0; i < count; i++) {
         const Settlement* s = provinceSettlements[i];
@@ -733,7 +742,17 @@ private://constructor
         // title of each settlement UI
         SDL_Color typeColor;
         std::string typeName;
-        if (s->settlementData.type == SettlementType::Capital) { typeColor = {255,215,  0,255}; typeName = "Capital"; }
+        if (s->settlementData.type == SettlementType::Capital) {
+            if (province.owner == FactionZone::Knight) {
+                typeColor = {255,215,  0,255}; typeName = "Capital";
+            }
+            else if (province.owner == FactionZone::Samurai) {
+                typeColor = {0,255, 215,255}; typeName = "Capital";
+            }
+            else if (province.owner == FactionZone::Viking) {
+                typeColor = {255,0,0,255}; typeName = "Capital";
+            }
+        }
         else if (s->settlementData.type == SettlementType::Castle) { typeColor = {180,180,180,255}; typeName = "Castle";  }
         else { typeColor = {139, 90, 43,255}; typeName = "Village"; }
 
@@ -746,38 +765,62 @@ private://constructor
         SDL_FRect icon = {cx + 10.f, panelY + 10.f, 18.f, 18.f};
         SDL_RenderFillRect(renderer, &icon);
 
-        TTF_SetTextString(gameStatUIText, typeName.c_str(), 0);
-        TTF_SetTextColor(gameStatUIText, 230, 230, 230, 255);
-        TTF_DrawRendererText(gameStatUIText, cx + 36.f, panelY + 9.f);
+        TTF_SetTextString(gameStatUITitleText, typeName.c_str(), 0);
+        TTF_SetTextColor(gameStatUITitleText, 230, 230, 230, 255);
+        TTF_DrawRendererText(gameStatUITitleText, cx + 36.f, panelY + 9.f);
 
         // Income
-        TTF_SetTextString(gameStatUIText, ("+" + std::to_string(s->settlementData.baseIncome) + " gold/turn").c_str(), 0);
-        TTF_SetTextColor(gameStatUIText, 180, 230, 100, 255);
-        TTF_DrawRendererText(gameStatUIText, cx + 10.f, panelY + 48.f);
+        TTF_SetTextString(gameStatUITitleText, ("+" + std::to_string(s->settlementData.baseIncome) + " gold/turn").c_str(), 0);
+        TTF_SetTextColor(gameStatUITitleText, 180, 230, 100, 255);
+        TTF_DrawRendererText(gameStatUITitleText, cx + 10.f, panelY + 48.f);
 
         // Population
-        TTF_SetTextString(gameStatUIText, ("Pop: " + std::to_string(s->settlementData.basePopulation)).c_str(), 0);
-        TTF_SetTextColor(gameStatUIText, 180, 200, 255, 255);
-        TTF_DrawRendererText(gameStatUIText, cx + 10.f, panelY + 74.f);
+        TTF_SetTextString(gameStatUITitleText, ("Pop: " + std::to_string(s->settlementData.basePopulation)).c_str(), 0);
+        TTF_SetTextColor(gameStatUITitleText, 180, 200, 255, 255);
+        TTF_DrawRendererText(gameStatUITitleText, cx + 10.f, panelY + 74.f);
 
         // building slots
-        float slotSize = 60.f;
+        float slotSize = 50.f;
         float slotGap  = 6.f;
-        float slotStartX = cx + 10.f;
-        float slotY = panelY + cardH - slotSize - 12.f;
+        int cols = 0;
+        if      (s->settlementData.type == SettlementType::Village) cols = 2; // 2x2 = 4 slots
+        else if (s->settlementData.type == SettlementType::Castle)  cols = 3; // 2x3 = 6 slots
+        else if (s->settlementData.type == SettlementType::Capital) cols = 4; // 2x4 = 8 slots
+
+        float gridW     = cols * slotSize + (cols - 1) * slotGap;
+        float slotStartX = cx + (cardW - gridW) / 2.f; // centré dans la carte
+        float row0Y     = panelY + cardH - (slotSize * 2 + slotGap) - 12.f;
+        float row1Y     = row0Y + slotSize + slotGap;
+
 
         for (int b = 0; b < (int)s->settlementData.buildings.size(); b++) {
+            int col = b % cols;
+            int row = b / cols;
+
+            float sx = slotStartX + col * (slotSize + slotGap);
+            float sy = (row == 0) ? row0Y : row1Y;
+
             bool built = (s->settlementData.buildings[b] != BuildingType::None);
             SDL_SetRenderDrawColor(renderer, built ? 80 : 45, built ? 160 : 45, built ? 80 : 45, 255);
-            SDL_FRect slot = {slotStartX + b * (slotSize + slotGap), slotY, slotSize, slotSize};
+            SDL_FRect slot = {sx, sy, slotSize, slotSize};
             SDL_RenderFillRect(renderer, &slot);
             SDL_SetRenderDrawColor(renderer, 90, 90, 90, 255);
             SDL_RenderRect(renderer, &slot);
         }
     }
+        // Title bottomProvince Title
+        float middleTitlePositionX = 835.f;
+        float middleTitlePositionY = 850.f;
+        SDL_SetRenderDrawColor(renderer, factionColor.r, factionColor.g, factionColor.b, 180);
+        SDL_FRect titleBottomBar = {middleTitlePositionX, middleTitlePositionY, 250.f, 40.f};
+        SDL_RenderFillRect(renderer, &titleBottomBar);
+        // Name province for bottomProvince Title
+        TTF_SetTextString(gameStatUITitleText, province.name.c_str(), 0);
+        TTF_SetTextColor(gameStatUITitleText, 255, 255, 255, 255);
+        TTF_DrawRendererText(gameStatUITitleText, middleTitlePositionX + 50.f, middleTitlePositionY + 2.f);
 
     // Restore
-    TTF_SetTextColor(gameStatUIText, 255, 255, 255, 255);
+    TTF_SetTextColor(gameStatUITitleText, 255, 255, 255, 255);
 }
 
 
