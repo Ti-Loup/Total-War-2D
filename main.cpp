@@ -613,10 +613,18 @@ private://constructor
 
             //Square color based of faction Color
             SDL_Color factionColor;
-            if (zone == FactionZone::Knight)       factionColor = {255, 215, 0,   255};
-            else if (zone == FactionZone::Viking)  factionColor = {255, 0,   0,   255};
-            else if (zone == FactionZone::Samurai) factionColor = {0, 200, 160, 255};
-            else                                   factionColor = {150, 150, 150, 255};
+            if (zone == FactionZone::Knight) {
+                factionColor = {255, 215, 0,   255};
+            }
+            else if (zone == FactionZone::Viking) {
+                factionColor = {255, 0,   0,   255};
+            }
+            else if (zone == FactionZone::Samurai) {
+                factionColor = {0, 200, 160, 255};
+            }
+            else {
+                factionColor = {150, 150, 150, 255};
+            }
 
             // size of the building based of what they are
             float displaySize = size;
@@ -646,52 +654,82 @@ private://constructor
             SDL_RenderRect(renderer, &dst);
 
             //UI elements to show (Public order / Current income of this settlement / Population )
-            if (camera.zoom >= 1.5f) {
-                float labelX = positionX;
-                float labelY = positionY - 60.f; // au-dessus du settlement
+           if (camera.zoom >= 1.1f) {
+    // center of the settlement for the UI to show
+    float centerX = positionX + displaySize / 2.f;
+    float bottomY = positionY + displaySize;
 
-                // Nom
-                TTF_SetTextString(gameStatUITitleText, s.settlementData.cityName.c_str(), 0);
-                TTF_SetTextColor(gameStatUITitleText, 255, 255, 255, 255);
-                TTF_DrawRendererText(gameStatUITitleText, labelX, labelY);
+    // Tailles toutes fixes
+    float barW   = 110.f;
+    float barH   = 20.f;
+    float barGap = 3.f;
+    float barX   = centerX - barW / 2.f;
+    float barY   = bottomY + barGap;
 
-                // Income
-                std::string incomeStr = "+" + std::to_string(s.settlementData.baseIncome) + "g";
-                TTF_SetTextString(gameStatUIText, incomeStr.c_str(), 0);
-                TTF_SetTextColor(gameStatUIText, 180, 230, 100, 255);
-                TTF_DrawRendererText(gameStatUIText, labelX, labelY + 22.f);
+    // the name of the settlement
+    TTF_SetTextString(gameStatUITitleText, s.settlementData.cityName.c_str(), 0);
+    TTF_SetTextColor(gameStatUITitleText, 255, 255, 255, 255);
+    int nameW = 0, nameH = 0;
+    TTF_GetTextSize(gameStatUITitleText, &nameW, &nameH);
+    float nameX = centerX - nameW / 2.f;
+    float nameY = barY - nameH - 2.f; // collé au-dessus de la barre
 
-                // Public Order
-                float squareSize = 14.f;
-                float squareX = labelX;
-                float squareY = labelY + 44.f;
+    SDL_SetRenderDrawColor(renderer, 10, 10, 10, 200);
+    SDL_FRect nameBg = {nameX - 4.f, nameY - 2.f, (float)nameW + 8.f, (float)nameH + 4.f};
+    SDL_RenderFillRect(renderer, &nameBg);
+    SDL_SetRenderDrawColor(renderer, factionColor.r, factionColor.g, factionColor.b, 160);
+    SDL_RenderRect(renderer, &nameBg);
+    TTF_DrawRendererText(gameStatUITitleText, nameX, nameY);
 
-                SDL_FRect poSquare = { squareX, squareY, squareSize, squareSize };
-                //color that change based of public order
-                if (s.settlementData.publicOrder > 0) {
-                    SDL_SetRenderDrawColor(renderer, 80,  200, 80,  255); // vert
-                }
-                else if (s.settlementData.publicOrder < 0) {
-                    SDL_SetRenderDrawColor(renderer, 220, 50,  50,  255); // rouge
-                }
-                else {
-                    SDL_SetRenderDrawColor(renderer, 130, 130, 130, 255); // gris
-                }
+    // INFO BAR
+    SDL_SetRenderDrawColor(renderer, 10, 10, 10, 210);
+    SDL_FRect infoBar = {barX, barY, barW, barH};
+    SDL_RenderFillRect(renderer, &infoBar);
+    SDL_SetRenderDrawColor(renderer, factionColor.r, factionColor.g, factionColor.b, 180);
+    SDL_RenderRect(renderer, &infoBar);
 
-                SDL_RenderFillRect(renderer, &poSquare);
+    float iconSize = 11.f;
+    float cursor   = barX + 5.f;
+    float iconY    = barY + (barH - iconSize) / 2.f;
+    float textY    = barY + 2.f;
 
-                // black border
-                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-                SDL_RenderRect(renderer, &poSquare);
+    // iconeIncome gold
+    SDL_SetRenderDrawColor(renderer, 220, 180, 40, 255);
+    SDL_FRect incIcon = {cursor, iconY, iconSize, iconSize};
+    SDL_RenderFillRect(renderer, &incIcon);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 200);
+    SDL_RenderRect(renderer, &incIcon);
+    cursor += iconSize + 3.f;
 
-                // number next
-                std::string orderStr = std::to_string(s.settlementData.publicOrder);
-                TTF_SetTextString(gameStatUIText, orderStr.c_str(), 0);
-                Uint8 poR = s.settlementData.publicOrder > 0 ? 80  : (s.settlementData.publicOrder < 0 ? 220 : 130);
-                Uint8 poG = s.settlementData.publicOrder > 0 ? 200 : (s.settlementData.publicOrder < 0 ? 50  : 130);
-                TTF_SetTextColor(gameStatUIText, poR, poG, 80, 255);
-                TTF_DrawRendererText(gameStatUIText, squareX + squareSize + 4.f, squareY - 2.f);
-            }
+    std::string incomeStr = std::to_string(s.settlementData.baseIncome);
+    TTF_SetTextString(gameStatUIText, incomeStr.c_str(), 0);
+    TTF_SetTextColor(gameStatUIText, 180, 230, 100, 255);
+    TTF_DrawRendererText(gameStatUIText, cursor, textY);
+    int incW = 0, incH = 0;
+    TTF_GetTextSize(gameStatUIText, &incW, &incH);
+    cursor += incW + 7.f;
+
+
+    SDL_SetRenderDrawColor(renderer, 80, 80, 80, 255);
+    SDL_RenderLine(renderer, cursor, barY + 3.f, cursor, barY + barH - 3.f);
+    cursor += 6.f;
+
+    // public order icon
+    int po    = s.settlementData.publicOrder;
+    Uint8 poR = po > 0 ? 80  : (po < 0 ? 220 : 130);
+    Uint8 poG = po > 0 ? 200 : (po < 0 ? 50  : 130);
+    SDL_SetRenderDrawColor(renderer, poR, poG, 80, 255);
+    SDL_FRect poIcon = {cursor, iconY, iconSize, iconSize};
+    SDL_RenderFillRect(renderer, &poIcon);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 200);
+    SDL_RenderRect(renderer, &poIcon);
+    cursor += iconSize + 3.f;
+
+    std::string orderStr = std::to_string(po);
+    TTF_SetTextString(gameStatUIText, orderStr.c_str(), 0);
+    TTF_SetTextColor(gameStatUIText, poR, poG, 80, 255);
+    TTF_DrawRendererText(gameStatUIText, cursor, textY);
+}
         }
     }
     //UI of the region with their castle/villages when you click on a settlement from that province ID
@@ -706,10 +744,13 @@ private://constructor
     for (const auto& s : settlements)
         if (s.settlementData.provinceID == provinceID)provinceSettlements.push_back(&s);
 
-    int incomeTotal = 0, populationTotal = 0;
+    int incomeTotal = 0;
+    int populationTotal = 0;
+    int publicOrderTotal = 0;
     for (auto* s : provinceSettlements) {
         incomeTotal += s->settlementData.baseIncome;
         populationTotal += s->settlementData.basePopulation;
+        publicOrderTotal = s->settlementData.publicOrder;
     }
     //set the color
     SDL_Color factionColor;
@@ -729,8 +770,8 @@ private://constructor
 
     // LEFT UI PART
         //PROVINCE
-    float leftW = 250.f, leftH = 500.f;//size
-    float leftX = 0.f,   leftY = 580.f;//position
+    float leftW = 250.f, leftH = 380.f;//size
+    float leftX = 0.f,   leftY = 700.f;//position
 
     SDL_SetRenderDrawColor(renderer, 20, 20, 20, 210);
     SDL_FRect leftPanel = {leftX, leftY, leftW, leftH};
@@ -750,20 +791,93 @@ private://constructor
 
     // Stats
     float statY = leftY + 55.f;
-    auto drawStat = [&](const std::string& label, const std::string& value, Uint8 valueR, Uint8 valueG, Uint8 valueB) {
-        TTF_SetTextString(gameStatUIText, label.c_str(), 0);
-        TTF_SetTextColor(gameStatUIText, 180, 180, 180, 255);
-        TTF_DrawRendererText(gameStatUIText, leftX + 12.f, statY);
 
-        TTF_SetTextString(gameStatUIText, value.c_str(), 0);
-        TTF_SetTextColor(gameStatUIText, valueR, valueG, valueB, 255);
-        TTF_DrawRendererText(gameStatUIText, leftX + 175.f, statY);
-        statY += 36.f;
-    };
+// GROWTH TITLE SELECTION
+        if (province.owner == FactionZone::Knight) {
+            SDL_SetRenderDrawColor(renderer, 60, 40, 20, 200);
+        }
+        else if (province.owner == FactionZone::Viking) {
+            SDL_SetRenderDrawColor(renderer, 60, 20, 20, 200);
+        }
+        else if (province.owner == FactionZone::Samurai) {
+            SDL_SetRenderDrawColor(renderer, 20, 60, 45, 200);
+        }
+SDL_FRect growthBar = {leftX + 5.f, statY, leftW - 10.f, 28.f};
+SDL_RenderFillRect(renderer, &growthBar);
+TTF_SetTextString(gameStatUITitleText, "Growth", 0);
+TTF_SetTextColor(gameStatUITitleText, 71, 255, 164, 255);
+TTF_DrawRendererText(gameStatUITitleText, leftX + 10.f, statY + 2.f);
+statY += 35.f;
 
-    drawStat("Income generated:",    std::to_string(incomeTotal), 180, 230, 100);
-    drawStat("Growth:", std::to_string(populationTotal),180, 230, 100);
-    drawStat("Capital:",   province.isCapital ? "Yes" : "No",  255, 215,   0);
+// Green Icone + growth amount
+SDL_SetRenderDrawColor(renderer, 80, 200, 80, 255);
+SDL_FRect popIcon = {leftX + 8.f, statY + 3.f, 14.f, 14.f};
+SDL_RenderFillRect(renderer, &popIcon);
+SDL_SetRenderDrawColor(renderer, 0, 0, 0, 200);
+SDL_RenderRect(renderer, &popIcon);
+TTF_SetTextString(gameStatUIText, "Growth:", 0);
+TTF_SetTextColor(gameStatUIText, 180, 180, 180, 255);
+TTF_DrawRendererText(gameStatUIText, leftX + 28.f, statY);
+TTF_SetTextString(gameStatUIText, std::to_string(populationTotal).c_str(), 0);
+TTF_SetTextColor(gameStatUIText, 180, 230, 100, 255);
+TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
+statY += 34.f;
+
+// TAXE PROVINCE TITLE
+        if (province.owner == FactionZone::Knight) {
+            SDL_SetRenderDrawColor(renderer, 60, 40, 20, 200);
+        }
+        else if (province.owner == FactionZone::Viking) {
+            SDL_SetRenderDrawColor(renderer, 60, 20, 20, 200);
+        }
+        else if (province.owner == FactionZone::Samurai) {
+            SDL_SetRenderDrawColor(renderer, 20, 60, 45, 200);
+        }
+SDL_FRect taxBar = {leftX + 5.f, statY, leftW - 10.f, 28.f};
+SDL_RenderFillRect(renderer, &taxBar);
+TTF_SetTextString(gameStatUITitleText, "Tax Province", 0);
+TTF_SetTextColor(gameStatUITitleText, 220, 180, 60, 255);
+TTF_DrawRendererText(gameStatUITitleText, leftX + 10.f, statY + 2.f);
+statY += 35.f;
+
+// income + gold icone
+SDL_SetRenderDrawColor(renderer, 220, 180, 40, 255);
+SDL_FRect incomeIconRect = {leftX + 8.f, statY + 3.f, 14.f, 14.f};
+SDL_RenderFillRect(renderer, &incomeIconRect);
+SDL_SetRenderDrawColor(renderer, 0, 0, 0, 200);
+SDL_RenderRect(renderer, &incomeIconRect);
+TTF_SetTextString(gameStatUIText, "Income", 0);
+TTF_SetTextColor(gameStatUIText, 180, 180, 180, 255);
+TTF_DrawRendererText(gameStatUIText, leftX + 28.f, statY);
+TTF_SetTextString(gameStatUIText, std::to_string(incomeTotal).c_str(), 0);
+TTF_SetTextColor(gameStatUIText, 180, 230, 100, 255);
+TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
+statY += 34.f;
+
+// public Order Icon
+Uint8 poR  = publicOrderTotal > 0 ? 80  : (publicOrderTotal < 0 ? 220 : 130);
+Uint8 poG  = publicOrderTotal > 0 ? 200 : (publicOrderTotal < 0 ? 50  : 130);
+Uint8 poB2 = 80;
+SDL_SetRenderDrawColor(renderer, poR, poG, poB2, 255);
+SDL_FRect poIconRect = {leftX + 8.f, statY + 3.f, 14.f, 14.f};
+SDL_RenderFillRect(renderer, &poIconRect);
+SDL_SetRenderDrawColor(renderer, 0, 0, 0, 200);
+SDL_RenderRect(renderer, &poIconRect);
+TTF_SetTextString(gameStatUIText, "Public order", 0);
+TTF_SetTextColor(gameStatUIText, 180, 180, 180, 255);
+TTF_DrawRendererText(gameStatUIText, leftX + 28.f, statY);
+TTF_SetTextString(gameStatUIText, std::to_string(publicOrderTotal).c_str(), 0);
+TTF_SetTextColor(gameStatUIText, poR, poG, poB2, 255);
+TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
+statY += 34.f;
+
+// Capital
+TTF_SetTextString(gameStatUIText, "Capital:", 0);
+TTF_SetTextColor(gameStatUIText, 180, 180, 180, 255);
+TTF_DrawRendererText(gameStatUIText, leftX + 28.f, statY);
+TTF_SetTextString(gameStatUIText, province.isCapital ? "Yes" : "No", 0);
+TTF_SetTextColor(gameStatUIText, 255, 215, 0, 255);
+TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
 
     //Province UI Different Buttons (buildings, garrison, All buildings, recruit a lord, recruit a hero)
     //Render those Buttons
