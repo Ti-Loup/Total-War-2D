@@ -135,6 +135,8 @@ public:
     float firstButton = 800.f;
     SDL_FRect provinceButtonUIBuilding = {firstButton,1030.f,40.f,40.f};
     SDL_FRect provinceButtonUIGarrison = {firstButton + 50.f,1030.f,40.f,40.f};
+    SDL_Texture *provinceTextureUIBuilding = nullptr;
+    SDL_Texture *provinceTextureUIGarrison = nullptr;
     //UI TextFont
     TTF_Font *gameStatUITitleFont = nullptr;
     TTF_Font *gameStatUIFont = nullptr;
@@ -460,6 +462,19 @@ private://constructor
         SDL_SetTextureScaleMode(provinceKnightBannerTexture, SDL_SCALEMODE_NEAREST);
         SDL_SetTextureScaleMode(provinceSamuraiBannerTexture, SDL_SCALEMODE_NEAREST);
 
+        //Texture Bouton UI Province
+        provinceTextureUIBuilding = IMG_LoadTexture(renderer, "assets/BuildingUILogo.png");
+        if (provinceTextureUIBuilding == nullptr) {
+            SDL_LogWarn(0,"failed to load the texture of provinceTextureUIBuilding", SDL_GetError());
+        }
+        provinceTextureUIGarrison = IMG_LoadTexture(renderer, "assets/GarrisonUILogo.png");
+        if (provinceTextureUIGarrison == nullptr) {
+            SDL_LogWarn(0,"failed to load the texture of provinceTextureUIGarrison", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(provinceTextureUIBuilding, SDL_SCALEMODE_NEAREST);
+        SDL_SetTextureScaleMode(provinceTextureUIGarrison, SDL_SCALEMODE_NEAREST);
+
+
         // -> CREDITS <-
         creditsTitleFont = TTF_OpenFont("assets/font.ttf", 50);
         creditsRoleTitleFont = TTF_OpenFont("assets/font.ttf", 40);
@@ -548,6 +563,8 @@ private://constructor
         SDL_DestroyTexture(provinceKnightBannerTexture);
         SDL_DestroyTexture(provinceVikingBannerTexture);
         SDL_DestroyTexture(provinceSamuraiBannerTexture);
+        SDL_DestroyTexture(provinceTextureUIBuilding);
+        SDL_DestroyTexture(provinceTextureUIGarrison);
     // ---------------------------------
         SDL_DestroyCursor(cursor);
         delete tileMap;
@@ -571,8 +588,8 @@ private://constructor
 
 
     //to render the Buttons
-    void RenderBoutons(const SDL_FRect &rect, TTF_Text *buttonText, Uint8 buttonr, Uint8 buttong, Uint8 buttonb) {
-        SDL_SetRenderDrawColor(renderer, buttonr, buttong, buttonb, 255);
+    void RenderBoutons(const SDL_FRect &rect, TTF_Text *buttonText, Uint8 buttonr, Uint8 buttong, Uint8 buttonb, Uint8 buttona) {
+        SDL_SetRenderDrawColor(renderer, buttonr, buttong, buttonb, buttona);
         SDL_RenderFillRect(renderer, &rect);
         //Dessiner Texte au centre du boutton
         if (buttonText != nullptr) {
@@ -885,11 +902,12 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
 
     //Province UI Different Buttons (buildings, garrison, All buildings, recruit a lord, recruit a hero)
     //Render those Buttons
-    RenderBoutons(provinceButtonUIBuilding, nullptr,40,40,40);
-    RenderBoutons(provinceButtonUIGarrison, nullptr,40,40,40);
+    RenderBoutons(provinceButtonUIBuilding, nullptr,40,40,40,100);
+    SDL_RenderTexture(renderer,provinceTextureUIBuilding,nullptr,&provinceButtonUIBuilding);
+    RenderBoutons(provinceButtonUIGarrison, nullptr,40,40,40,100);
+    SDL_RenderTexture(renderer,provinceTextureUIGarrison,nullptr,&provinceButtonUIGarrison);
 
-
-    //BOTTOM UI PANNEL
+    //-> BOTTOM UI PANNEL <-
             int   count = (int)provinceSettlements.size();
             float cardW = 280.f;
             float cardH = 200.f;
@@ -1060,11 +1078,11 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
 
 
         //Boutons menu
-        RenderBoutons(BoutonPlay, textStart, 20, 20, 20);
-        RenderBoutons(BoutonTutorial, textTutorial, 20, 20, 20);
-        RenderBoutons(BoutonOptions, textOptions, 20, 20, 20);
-        RenderBoutons(BoutonQuit, textQuit, 20, 20, 20);
-        RenderBoutons(BoutonCredits, textCredits, 20, 20, 20);
+        RenderBoutons(BoutonPlay, textStart, 20, 20, 20,255);
+        RenderBoutons(BoutonTutorial, textTutorial, 20, 20, 20,255);
+        RenderBoutons(BoutonOptions, textOptions, 20, 20, 20,255);
+        RenderBoutons(BoutonQuit, textQuit, 20, 20, 20,255);
+        RenderBoutons(BoutonCredits, textCredits, 20, 20, 20,255);
 
 
         TTF_DrawRendererText(menuText, 700,150);
@@ -1084,10 +1102,10 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
         //title
         TTF_DrawRendererText(factionSelectionTitleText, 750, 50);
         TTF_DrawRendererText(factionSelectionFactionBonusText, 1600,400);
-        RenderBoutons(BoutonKnight, nullptr, 255,255,0);
-        RenderBoutons(BoutonViking, nullptr, 0,0,255);
-        RenderBoutons(BoutonSamurai, nullptr, 255,0,0);
-        RenderBoutons(BoutonStartCampaign, factionSelectionStartCampaignText, 60,60,60);
+        RenderBoutons(BoutonKnight, nullptr, 255,255,0,255);
+        RenderBoutons(BoutonViking, nullptr, 0,0,255,255);
+        RenderBoutons(BoutonSamurai, nullptr, 255,0,0,255);
+        RenderBoutons(BoutonStartCampaign, factionSelectionStartCampaignText, 60,60,60,255);
 
         if (selectedFaction == 0) {
             TTF_DrawRendererText(factionSelectionGeneralKnightText, 1600,500);
