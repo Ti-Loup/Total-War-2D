@@ -129,7 +129,12 @@ public:
     TTF_Text *gameKingdomKnightNameText = nullptr;
     TTF_Text *gameKingdomVikingNameText = nullptr;
     TTF_Text *gameKingdomSamuraiNameText = nullptr;
-
+    //Buttons UI
+    bool bButtonUIBuildingIsPressed = true;
+    bool bButtonUIGarrisonIsPressed = false;
+    float firstButton = 800.f;
+    SDL_FRect provinceButtonUIBuilding = {firstButton,1030.f,40.f,40.f};
+    SDL_FRect provinceButtonUIGarrison = {firstButton + 50.f,1030.f,40.f,40.f};
     //UI TextFont
     TTF_Font *gameStatUITitleFont = nullptr;
     TTF_Font *gameStatUIFont = nullptr;
@@ -712,126 +717,138 @@ private://constructor
     drawStat("Growth:", std::to_string(populationTotal),180, 230, 100);
     drawStat("Capital:",   province.isCapital ? "Yes" : "No",  255, 215,   0);
 
+    //Province UI Different Buttons (buildings, garrison, All buildings, recruit a lord, recruit a hero)
+    //Render those Buttons
+    RenderBoutons(provinceButtonUIBuilding, nullptr,40,40,40);
+    RenderBoutons(provinceButtonUIGarrison, nullptr,40,40,40);
+
+
     //BOTTOM UI PANNEL
-    int   count = (int)provinceSettlements.size();
-    float cardW = 280.f;
-    float cardH = 200.f;
-    float cardGap = 16.f;
-    float totalW = count * cardW + (count - 1) * cardGap;
-    float startX = (1920.f - totalW) / 2.f;
-    float panelY = 1080.f - cardH - 50.f;
+        if (bButtonUIBuildingIsPressed) {
+            int   count = (int)provinceSettlements.size();
+            float cardW = 280.f;
+            float cardH = 200.f;
+            float cardGap = 16.f;
+            float totalW = count * cardW + (count - 1) * cardGap;
+            float startX = (1920.f - totalW) / 2.f;
+            float panelY = 1080.f - cardH - 65.f;
 
-    for (int i = 0; i < count; i++) {
-        const Settlement* s = provinceSettlements[i];
-        bool isSelected = (s == &clickedSettlement);
+            for (int i = 0; i < count; i++) {
+                const Settlement* s = provinceSettlements[i];
+                bool isSelected = (s == &clickedSettlement);
 
-        float cx = startX + i * (cardW + cardGap);
+                float cx = startX + i * (cardW + cardGap);
 
-        // Fond carte
-        SDL_SetRenderDrawColor(renderer, isSelected ? 40 : 25, isSelected ? 40 : 25, isSelected ? 40 : 25, 220);
-        SDL_FRect card = {cx, panelY, cardW, cardH};
-        SDL_RenderFillRect(renderer, &card);
+                // Fond carte
+                SDL_SetRenderDrawColor(renderer, isSelected ? 40 : 25, isSelected ? 40 : 25, isSelected ? 40 : 25, 220);
+                SDL_FRect card = {cx, panelY, cardW, cardH};
+                SDL_RenderFillRect(renderer, &card);
 
-        // Border
-        if (isSelected)
-            SDL_SetRenderDrawColor(renderer, factionColor.r, factionColor.g, factionColor.b, 255);
-        else
-            SDL_SetRenderDrawColor(renderer, 70, 70, 70, 255);
-        SDL_RenderRect(renderer, &card);
+                // Border
+                if (isSelected)
+                    SDL_SetRenderDrawColor(renderer, factionColor.r, factionColor.g, factionColor.b, 255);
+                else
+                    SDL_SetRenderDrawColor(renderer, 70, 70, 70, 255);
+                SDL_RenderRect(renderer, &card);
 
-        // title of each settlement UI
-        SDL_Color typeColor;
-        std::string typeName;
-        if (s->settlementData.type == SettlementType::Capital) {
-            if (province.owner == FactionZone::Knight) {
-                typeColor = {255,215,  0,255}; typeName = "Capital";
-            }
-            else if (province.owner == FactionZone::Samurai) {
-                typeColor = {0,255, 215,255}; typeName = "Capital";
-            }
-            else if (province.owner == FactionZone::Viking) {
-                typeColor = {255,0,0,255}; typeName = "Capital";
+                // title of each settlement UI
+                SDL_Color typeColor;
+                std::string typeName;
+                if (s->settlementData.type == SettlementType::Capital) {
+                    if (province.owner == FactionZone::Knight) {
+                        typeColor = {255,215,  0,255}; typeName = "Capital";
+                    }
+                    else if (province.owner == FactionZone::Samurai) {
+                        typeColor = {0,255, 215,255}; typeName = "Capital";
+                    }
+                    else if (province.owner == FactionZone::Viking) {
+                        typeColor = {255,0,0,255}; typeName = "Capital";
+                    }
+                }
+                else if (s->settlementData.type == SettlementType::Castle) {
+                    if (province.owner == FactionZone::Knight) {
+                        typeColor = {255,215,0,255}; typeName = "Castle";
+                    }
+                    else if (province.owner == FactionZone::Samurai) {
+                        typeColor = {0,255, 215,255}; typeName = "Castle";
+                    }
+                    else if (province.owner == FactionZone::Viking) {
+                        typeColor = {255,0,0,255}; typeName = "Castle";
+                    }
+                }
+                else if (s->settlementData.type == SettlementType::Village) {
+                    if (province.owner == FactionZone::Knight) {
+                        typeColor = {255,215,0,255}; typeName = "Village";
+                    }
+                    else if (province.owner == FactionZone::Samurai) {
+                        typeColor = {0,255, 215,255}; typeName = "Village";
+                    }
+                    else if (province.owner == FactionZone::Viking) {
+                        typeColor = {255,0,0,255}; typeName = "Village";
+                    }
+                }
+
+                SDL_SetRenderDrawColor(renderer, typeColor.r/3, typeColor.g/3, typeColor.b/3, 200);
+                SDL_FRect cardTitle = {cx, panelY, cardW, 38.f};
+                SDL_RenderFillRect(renderer, &cardTitle);
+
+                // Icon
+                SDL_SetRenderDrawColor(renderer, typeColor.r, typeColor.g, typeColor.b, 255);
+                SDL_FRect icon = {cx + 10.f, panelY + 10.f, 18.f, 18.f};
+                SDL_RenderFillRect(renderer, &icon);
+                //each settlement Title ->
+                TTF_SetTextString(gameStatUITitleText, typeName.c_str(), 0);
+                TTF_SetTextColor(gameStatUITitleText, 230, 230, 230, 255);
+                TTF_DrawRendererText(gameStatUITitleText, cx + 36.f, panelY + 9.f);
+                /*
+                 // this should be the UI of each settlement (in front of them city)
+                        // Income text
+                        TTF_SetTextString(gameStatUIText, ("+" + std::to_string(s->settlementData.baseIncome) + " gold").c_str(), 0);
+                        TTF_SetTextColor(gameStatUIText, 180, 230, 100, 255);
+                        TTF_DrawRendererText(gameStatUIText, cx + 10.f, panelY + 48.f);
+
+                        // Population text
+                        TTF_SetTextString(gameStatUIText, ("Pop: " + std::to_string(s->settlementData.basePopulation)).c_str(), 0);
+                        TTF_SetTextColor(gameStatUIText, 180, 200, 255, 255);
+                        TTF_DrawRendererText(gameStatUIText, cx + 10.f, panelY + 74.f);
+                */
+                // building slots
+                float slotSize = 50.f;
+                float slotGap  = 6.f;
+                int cols = 0;
+                if      (s->settlementData.type == SettlementType::Village) cols = 2; // 2x2 = 4 slots
+                else if (s->settlementData.type == SettlementType::Castle)  cols = 3; // 2x3 = 6 slots
+                else if (s->settlementData.type == SettlementType::Capital) cols = 4; // 2x4 = 8 slots
+
+                float gridW     = cols * slotSize + (cols - 1) * slotGap;
+                float slotStartX = cx + (cardW - gridW) / 2.f; // centré dans la carte
+                float row0Y     = panelY + cardH - (slotSize * 2 + slotGap) - 12.f;
+                float row1Y     = row0Y + slotSize + slotGap;
+
+
+                for (int b = 0; b < (int)s->settlementData.buildings.size(); b++) {
+                    int col = b % cols;
+                    int row = b / cols;
+
+                    float sx = slotStartX + col * (slotSize + slotGap);
+                    float sy = (row == 0) ? row0Y : row1Y;
+
+                    bool built = (s->settlementData.buildings[b] != BuildingType::None);
+                    SDL_SetRenderDrawColor(renderer, built ? 80 : 45, built ? 160 : 45, built ? 80 : 45, 255);
+                    SDL_FRect slot = {sx, sy, slotSize, slotSize};
+                    SDL_RenderFillRect(renderer, &slot);
+                    SDL_SetRenderDrawColor(renderer, 90, 90, 90, 255);
+                    SDL_RenderRect(renderer, &slot);
+                }
             }
         }
-        else if (s->settlementData.type == SettlementType::Castle) {
-            if (province.owner == FactionZone::Knight) {
-                typeColor = {255,215,0,255}; typeName = "Castle";
-            }
-            else if (province.owner == FactionZone::Samurai) {
-                typeColor = {0,255, 215,255}; typeName = "Castle";
-            }
-            else if (province.owner == FactionZone::Viking) {
-                typeColor = {255,0,0,255}; typeName = "Castle";
-            }
+        if (bButtonUIGarrisonIsPressed) {
+            //To Do later the garrison with Their Unit cards
+
         }
-        else if (s->settlementData.type == SettlementType::Village) {
-            if (province.owner == FactionZone::Knight) {
-                typeColor = {255,215,0,255}; typeName = "Village";
-            }
-            else if (province.owner == FactionZone::Samurai) {
-                typeColor = {0,255, 215,255}; typeName = "Village";
-            }
-            else if (province.owner == FactionZone::Viking) {
-                typeColor = {255,0,0,255}; typeName = "Village";
-            }
-        }
-
-        SDL_SetRenderDrawColor(renderer, typeColor.r/3, typeColor.g/3, typeColor.b/3, 200);
-        SDL_FRect cardTitle = {cx, panelY, cardW, 38.f};
-        SDL_RenderFillRect(renderer, &cardTitle);
-
-        // Icon
-        SDL_SetRenderDrawColor(renderer, typeColor.r, typeColor.g, typeColor.b, 255);
-        SDL_FRect icon = {cx + 10.f, panelY + 10.f, 18.f, 18.f};
-        SDL_RenderFillRect(renderer, &icon);
-        //each settlement Title ->
-        TTF_SetTextString(gameStatUITitleText, typeName.c_str(), 0);
-        TTF_SetTextColor(gameStatUITitleText, 230, 230, 230, 255);
-        TTF_DrawRendererText(gameStatUITitleText, cx + 36.f, panelY + 9.f);
-/*
- *this should be the UI of each settlement (in front of them)
-        // Income text
-        TTF_SetTextString(gameStatUIText, ("+" + std::to_string(s->settlementData.baseIncome) + " gold").c_str(), 0);
-        TTF_SetTextColor(gameStatUIText, 180, 230, 100, 255);
-        TTF_DrawRendererText(gameStatUIText, cx + 10.f, panelY + 48.f);
-
-        // Population text
-        TTF_SetTextString(gameStatUIText, ("Pop: " + std::to_string(s->settlementData.basePopulation)).c_str(), 0);
-        TTF_SetTextColor(gameStatUIText, 180, 200, 255, 255);
-        TTF_DrawRendererText(gameStatUIText, cx + 10.f, panelY + 74.f);
-*/
-        // building slots
-        float slotSize = 50.f;
-        float slotGap  = 6.f;
-        int cols = 0;
-        if      (s->settlementData.type == SettlementType::Village) cols = 2; // 2x2 = 4 slots
-        else if (s->settlementData.type == SettlementType::Castle)  cols = 3; // 2x3 = 6 slots
-        else if (s->settlementData.type == SettlementType::Capital) cols = 4; // 2x4 = 8 slots
-
-        float gridW     = cols * slotSize + (cols - 1) * slotGap;
-        float slotStartX = cx + (cardW - gridW) / 2.f; // centré dans la carte
-        float row0Y     = panelY + cardH - (slotSize * 2 + slotGap) - 12.f;
-        float row1Y     = row0Y + slotSize + slotGap;
-
-
-        for (int b = 0; b < (int)s->settlementData.buildings.size(); b++) {
-            int col = b % cols;
-            int row = b / cols;
-
-            float sx = slotStartX + col * (slotSize + slotGap);
-            float sy = (row == 0) ? row0Y : row1Y;
-
-            bool built = (s->settlementData.buildings[b] != BuildingType::None);
-            SDL_SetRenderDrawColor(renderer, built ? 80 : 45, built ? 160 : 45, built ? 80 : 45, 255);
-            SDL_FRect slot = {sx, sy, slotSize, slotSize};
-            SDL_RenderFillRect(renderer, &slot);
-            SDL_SetRenderDrawColor(renderer, 90, 90, 90, 255);
-            SDL_RenderRect(renderer, &slot);
-        }
-    }
         // Title bottomProvince Title
         float middleTitlePositionX = 835.f;
-        float middleTitlePositionY = 825.f;
+        float middleTitlePositionY = 770.f;
         SDL_SetRenderDrawColor(renderer, factionColor.r, factionColor.g, factionColor.b, 180);
         SDL_FRect titleBottomBar = {middleTitlePositionX, middleTitlePositionY, 250.f, 40.f};
         SDL_RenderFillRect(renderer, &titleBottomBar);
@@ -1287,12 +1304,24 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
                      break;
                  }
              }
-            //if click outside of UI we remove the UI
+            //province
             if (!bClickedOutsideOfUI) {
                 app.bHasClickedOnASettlement = false;
                 app.selectedSettlementIndex = -1; //return to original
+                app.bButtonUIBuildingIsPressed = true;//put it back to the first one
             }
-
+            //if we press the garrison Button it change the UI
+            if (SDL_PointInRectFloat(&MousePT, &app.provinceButtonUIBuilding)) {
+                app.bButtonUIBuildingIsPressed = true;
+                //all the other ones are false
+                app.bButtonUIBuildingIsPressed = false;
+            }
+            //if we press the garrison Button it chage the UI
+            if (SDL_PointInRectFloat(&MousePT, &app.provinceButtonUIGarrison)) {
+                app.bButtonUIGarrisonIsPressed = true;
+                //all the other ones are false
+                app.bButtonUIGarrisonIsPressed = false;
+            }
 
         }
         //TUTORIAL
