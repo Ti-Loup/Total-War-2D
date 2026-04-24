@@ -1333,6 +1333,7 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
     }
     if (!bClickedOutsideOfUI) {
         app.bHasClickedOnASettlement = false;
+        app.bButtonUIBuildingIsPressed = true;//so it always go back to the base one
         app.selectedSettlementIndex = -1;
     }
 }
