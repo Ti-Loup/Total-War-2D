@@ -208,9 +208,11 @@ public:
     int buildMenuSlotIndex       = -1;
     int buildMenuSettlementIndex = -1;
     int hoveredCategory          = -1;
+    int hoveredCardIndex = -1;
     // 0=Military 1=AdvMilitary 2=Defence 3=Economy 4=Religion
     BuildingType hoveredBuilding = BuildingType::None;
-    SDL_FRect mainBuildingSlotScreenRect = {0,0,0,0};
+    std::vector<SDL_FRect> mainBuildingSlotRects;
+    SDL_FRect mainBuildingPopupRect = {0,0,0,0};
 
     //Provinces name + Faction Zone + which region is a capital
     std::vector<Province> provinces = {
@@ -927,7 +929,9 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
             float totalW = count * cardW + (count - 1) * cardGap;
             float startX = (1920.f - totalW) / 2.f;
             float panelY = 1080.f - cardH - 65.f;
-
+            //clear mainBuildingSlot before the for
+            mainBuildingSlotRects.clear();
+             mainBuildingSlotRects.resize(count, {0,0,0,0});
             for (int i = 0; i < count; i++) {
                 const Settlement* s = provinceSettlements[i];
                 bool isSelected = (s == &clickedSettlement);
@@ -1051,32 +1055,47 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
                             TTF_SetTextColor(gameStatUIText, 255, 255, 255, 255);
                             TTF_DrawRendererText(gameStatUIText, sx + 4.f, sy + 4.f);
 
-                            if (isSelected) {
-                                mainBuildingSlotScreenRect = slot;
+
+                                mainBuildingSlotRects[i] = slot;
+                            //which card is the mouse on
+                            float mx, my;
+                            SDL_GetMouseState(&mx, &my);
+                            float lx, ly;
+                            SDL_RenderCoordinatesFromWindow(renderer, mx, my, &lx, &ly);
+                            SDL_FPoint mousePt = {lx, ly};
+                            SDL_FRect slotCheck = {sx, sy, slotSize, slotSize};
+                            if (SDL_PointInRectFloat(&mousePt, &slotCheck)) {
+                                hoveredCardIndex = i;
                             }
                         }
                     }
                 }
             }
         //TIER CHAIN POPUP
-if (hoveredSlotIndex == 0 && bButtonUIBuildingIsPressed && selectedSettlementIndex >= 0) {
-    const Settlement* sel = &settlements[selectedSettlementIndex];
+    if (hoveredSlotIndex == 0 && bButtonUIBuildingIsPressed && hoveredCardIndex >= 0) {
+        const Settlement* sel = provinceSettlements[hoveredCardIndex];
     int currentTier = sel->settlementData.settlementTier;
-    constexpr int maxTier = 5;
+    int maxTier = 3;//for the villages
+    //for castle and capital its 5
+    if (sel->settlementData.type == SettlementType::Castle || sel->settlementData.type == SettlementType::Capital) {
+        maxTier = 5;
+    }
+
 
     float tileW  = 64.f;
     float tileH  = 64.f;
     float arrowH = 22.f;
     float totalH = maxTier * tileH + (maxTier - 1) * arrowH;
 
-    float popX = mainBuildingSlotScreenRect.x + (mainBuildingSlotScreenRect.w - tileW) / 2.f;
-    float popY = mainBuildingSlotScreenRect.y - totalH - 15.f;
+    float popX = mainBuildingSlotRects[hoveredCardIndex].x + (mainBuildingSlotRects[hoveredCardIndex].w - tileW) / 2.f;
+    float popY = mainBuildingSlotRects[hoveredCardIndex].y - totalH - 15.f;
     if (popY < 5.f) popY = 5.f;
 
     // Fond du popup
     SDL_SetRenderDrawColor(renderer, 10, 10, 10, 230);
     SDL_FRect bgRect = {popX - 12.f, popY - 8.f, tileW + 24.f, totalH + 16.f};
     SDL_RenderFillRect(renderer, &bgRect);
+    mainBuildingPopupRect = bgRect;
     SDL_SetRenderDrawColor(renderer, factionColor.r, factionColor.g, factionColor.b, 120);
     SDL_RenderRect(renderer, &bgRect);
 
@@ -1117,11 +1136,11 @@ if (hoveredSlotIndex == 0 && bButtonUIBuildingIsPressed && selectedSettlementInd
             popX + (tileW - tw) / 2.f,
             ty + tileH - th - 5.f);
 
-        // Flèche vers le haut (entre ce tier et le suivant)
+        // up arrow between this current and next building upgrade
         if (t > 1) {
-            float cx        = popX + tileW / 2.f;
-            float tipY      = ty + tileH + 2.f;
-            float baseY     = ty + tileH + arrowH - 2.f;
+            float cx  = popX + tileW / 2.f;
+            float tipY = ty + tileH + 2.f;
+            float baseY = ty + tileH + arrowH - 2.f;
             SDL_SetRenderDrawColor(renderer, 0, 180, 0, 200);
             SDL_RenderLine(renderer, (int)cx, (int)tipY,  (int)cx, (int)baseY);
             SDL_RenderLine(renderer, (int)cx, (int)tipY,  (int)(cx - 6), (int)(tipY + 8));
@@ -1672,7 +1691,24 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
         float mx, my;
         SDL_RenderCoordinatesFromWindow(app.renderer, event->motion.x, event->motion.y, &mx, &my);
         SDL_FPoint pt = {mx, my};
-        app.hoveredSlotIndex = SDL_PointInRectFloat(&pt, &app.mainBuildingSlotScreenRect) ? 0 : -1;
+
+        bool onAnySlot = false;
+        for (int i = 0; i < (int)app.mainBuildingSlotRects.size(); i++) {
+            if (SDL_PointInRectFloat(&pt, &app.mainBuildingSlotRects[i])) {
+                app.hoveredSlotIndex = 0;
+                app.hoveredCardIndex = i;
+                onAnySlot = true;
+                break;
+            }
+        }
+        //little gap for the popup
+        SDL_FRect popupWithGap = app.mainBuildingPopupRect;
+        popupWithGap.h += 20.f; // couvre le gap de 15px + marge
+        bool onPopup = SDL_PointInRectFloat(&pt, &popupWithGap);
+        if (!onAnySlot && !onPopup) {
+            app.hoveredSlotIndex = -1;
+            app.hoveredCardIndex = -1;
+        }
     }
 
     // Zoom
