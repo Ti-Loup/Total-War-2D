@@ -1064,7 +1064,7 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
     TTF_SetTextColor(gameStatUITitleText, 255, 255, 255, 255);
 
 
-        if (hoveredSlotIndex > 0) {
+        if (hoveredSlotIndex >= 0) {
             float mouseX, mouseY;
             SDL_GetMouseState(&mouseX, &mouseY);
             float logicX, logicY;
@@ -1106,7 +1106,7 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
             }
         }
 
-        if (buildMenuSlotIndex > 0 && buildMenuSettlementIndex >= 0) {
+        if (buildMenuSlotIndex >= 0 && buildMenuSettlementIndex >= 0) {
     const Settlement& sel = settlements[buildMenuSettlementIndex];
     FactionZone faction = provinces[sel.settlementData.provinceID].owner;
 
@@ -1149,7 +1149,7 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
 
         // Si cette catégorie est survolée → affiche ses bâtiments
         if (hoveredCategory == i) {
-            auto buildings = GetBuildingsForCategory(cats[i].cat, faction);
+            auto buildings = GetBuildingsForCategory(cats[i].cat, faction,sel.settlementData.type);
             float subW = 150.f, subH = 40.f, subGap = 6.f;
             float subX = bx;
             float subY = by - (buildings.size() * (subH + subGap));
@@ -1711,8 +1711,11 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
         if (SDL_PointInRectFloat(&pt, &bottomPanel)) {
             if (SDL_PointInRectFloat(&pt, &bottomPanel)) {
                 // Vérifie si on clique sur un slot vide → ouvre le menu
-                if (app.hoveredSlotIndex > 0 && app.buildMenuSettlementIndex == -1) {
-                    // trouve quel settlement correspond au slot survolé
+                if (app.hoveredSlotIndex == 0) {
+                    // Slot 0 = upgrade du bâtiment principal (Village→Castle, Castle→Capital...)
+                    app.settlements[app.selectedSettlementIndex].UpgradeMainBuilding();
+                }
+                else if (app.hoveredSlotIndex >= 1 && app.buildMenuSettlementIndex == -1) {
                     const Settlement& sel = app.settlements[app.selectedSettlementIndex];
                     if (sel.settlementData.buildings[app.hoveredSlotIndex] == BuildingType::None) {
                         app.buildMenuSlotIndex       = app.hoveredSlotIndex;
@@ -1720,7 +1723,7 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
                     }
                 }
                 // Clic sur un bâtiment du sous-menu → construit
-                else if (app.buildMenuSlotIndex > 0 && app.hoveredBuilding != BuildingType::None) {
+                else if (app.buildMenuSlotIndex >= 0 && app.hoveredBuilding != BuildingType::None) {
                     app.settlements[app.buildMenuSettlementIndex]
                         .Build(app.buildMenuSlotIndex, app.hoveredBuilding);
                     app.buildMenuSlotIndex       = -1;
@@ -1729,7 +1732,7 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
                     app.hoveredBuilding          = BuildingType::None;
                 }
                 // Ferme le menu si on clique ailleurs dans le panel
-                else if (app.buildMenuSlotIndex > 0) {
+                else if (app.buildMenuSlotIndex >= 0) {
                     app.buildMenuSlotIndex       = -1;
                     app.buildMenuSettlementIndex = -1;
                     app.hoveredCategory          = -1;
@@ -1806,7 +1809,7 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
         SDL_RenderCoordinatesFromWindow(app.renderer,event->button.x, event->button.y,&app.lastMouseX, &app.lastMouseY);
 
         if (app.bHasClickedOnASettlement) {
-            if (app.buildMenuSlotIndex > 0 && app.hoveredCategory >= 0) {
+            if (app.buildMenuSlotIndex >= 0 && app.hoveredCategory >= 0) {
                 app.settlements[app.buildMenuSettlementIndex].Build(app.buildMenuSlotIndex, app.hoveredBuilding);
                 app.buildMenuSlotIndex = -1; // close menu
                 app.hoveredCategory    = -1;
@@ -1828,7 +1831,7 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
     SDL_RenderCoordinatesFromWindow(app.renderer, event->motion.x, event->motion.y, &mx, &my);
 
     // Hover catégorie
-    if (app.buildMenuSlotIndex > 0 && app.buildMenuSettlementIndex >= 0) {
+    if (app.buildMenuSlotIndex >= 0 && app.buildMenuSettlementIndex >= 0) {
     float btnW = 110.f, btnH = 40.f, btnGap = 10.f;
     float totalW = 5 * btnW + 4 * btnGap;
     float startX = (1920.f - totalW) / 2.f;
@@ -1875,7 +1878,7 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
                 break;
             }
 
-            auto buildings = GetBuildingsForCategory(cats[i], faction);
+            auto buildings = GetBuildingsForCategory(cats[i], faction,app.settlements[app.buildMenuSettlementIndex].settlementData.type);
             float subW = 150.f;
             float subY = by - ((int)buildings.size() * (subH + subGap));
 
@@ -1895,7 +1898,7 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
         app.hoveredBuilding = BuildingType::None;
         if (app.hoveredCategory >= 0) {
             float bx = startX + app.hoveredCategory * (btnW + btnGap);
-            auto buildings = GetBuildingsForCategory(cats[app.hoveredCategory], faction);
+            auto buildings = GetBuildingsForCategory(cats[app.hoveredCategory], faction,app.settlements[app.buildMenuSettlementIndex].settlementData.type);
             float subW = 150.f;
             float subY = by - ((int)buildings.size() * (subH + subGap));
 
