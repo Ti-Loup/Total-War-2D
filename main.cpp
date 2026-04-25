@@ -1596,7 +1596,7 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
         app.lastMouseX = mx;
         app.lastMouseY = my;
     }
-    
+
     // Zoom
     if (event->type == SDL_EVENT_MOUSE_WHEEL && app.StateActuel == State::Game) {
         float factor = (event->wheel.y > 0) ? 1.1f : 0.9f;

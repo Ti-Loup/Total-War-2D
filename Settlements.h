@@ -15,9 +15,8 @@ class Settlement : public Entity {
     int tileRow = 0;
 
     Settlement(SettlementType type, int provinceID, int col, int row,FactionZone faction);
-    bool Build(int slotIndex, BuildingType type);
-    bool UpgradeMainBuilding();
-    bool UpgradeBuilding(int slotIndex);
+
+
 };
 
 #endif //TOTALWAR2D_SETTLEMENTS_H

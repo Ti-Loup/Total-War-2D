@@ -341,21 +341,21 @@ inline const std::unordered_map<BuildingType, BuildingData>& GetBuildingDatabase
         {BuildingType::Chapel_T2,   {"Shinto Temple",  "Greater worship.",    250, 10, 0, 10, 2, BuildingType::Chapel_T3}},
         {BuildingType::Chapel_T3,   {"Grand Shrine",   "Divine blessing.",    500, 15, 0, 20, 3, BuildingType::None}},
     };
-    return db;
+    return buildingDataBase;
 }
 
 inline const BuildingData* GetBuildingData(BuildingType type) {
-    const auto& db = GetBuildingDatabase();
-    auto it = db.find(type);
-    return (it != db.end()) ? &it->second : nullptr;
+    const auto& buildingDataBase = GetBuildingDatabase();
+    auto it = buildingDataBase.find(type);
+    return (it != buildingDataBase.end()) ? &it->second : nullptr;
 }
 
-inline std::vector<BuildingType> GetBuildingsForCategory(BuildingCategory cat, FactionZone faction, int settlementTier) {
+inline std::vector<BuildingType> GetBuildingsForCategory(BuildingCategory categoryType, FactionZone faction, int settlementTier) {
     int maxTier = settlementTier;
 
     std::vector<BuildingType> results;
 
-    switch (cat) {
+    switch (categoryType) {
         case BuildingCategory::Military:
             if (faction == FactionZone::Knight)
                 results = {BuildingType::Barracks_T1, BuildingType::ArcheryRange_T1, BuildingType::Stable_T1};

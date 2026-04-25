@@ -61,28 +61,3 @@ Settlement::Settlement(SettlementType type, int provinceID, int col, int row, Fa
             break;
     }
 }
-// Returns false if slot is occupied or index is invalid
-bool Settlement::Build(int slotIndex, BuildingType type) {
-    if (slotIndex < 0 || slotIndex >= (int)settlementData.buildings.size()) return false;
-    if (settlementData.buildings[slotIndex] != BuildingType::None)          return false;
-    settlementData.buildings[slotIndex] = type;
-    return true;
-}
-
-// Upgrade slot 0 (the main building chain)
-bool Settlement::UpgradeMainBuilding() {
-    int maxTier = (settlementData.type == SettlementType::Village) ? 3 : 5;
-    if (settlementData.settlementTier >= maxTier) return false;
-    settlementData.settlementTier++;
-    return true;
-}
-
-bool Settlement::UpgradeBuilding(int slotIndex) {
-    if (slotIndex < 0 || slotIndex >= (int)settlementData.buildings.size()) return false;
-    BuildingType current = settlementData.buildings[slotIndex];
-    if (current == BuildingType::None) return false;
-    const BuildingData* data = GetBuildingData(current);
-    if (!data || data->upgradesTo == BuildingType::None) return false;
-    settlementData.buildings[slotIndex] = data->upgradesTo;
-    return true;
-}
