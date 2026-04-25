@@ -1688,8 +1688,15 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
                 };
                 SDL_FPoint pt = {nouveauX, nouveauY};
 
-                if (!SDL_PointInRectFloat(&pt, &globalMenuZone)) {
-                    // Clic en dehors → ferme
+                if (app.hoveredBuilding != BuildingType::None) {
+                    app.settlements[app.buildMenuSettlementIndex]
+                        .Build(app.buildMenuSlotIndex, app.hoveredBuilding);
+                    app.buildMenuSlotIndex       = -1;
+                    app.buildMenuSettlementIndex = -1;
+                    app.hoveredCategory          = -1;
+                    app.hoveredBuilding          = BuildingType::None;
+                }
+                else if (!SDL_PointInRectFloat(&pt, &globalMenuZone)) {
                     app.buildMenuSlotIndex       = -1;
                     app.buildMenuSettlementIndex = -1;
                     app.hoveredCategory          = -1;
@@ -1723,7 +1730,7 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
             return SDL_APP_CONTINUE;
         }
 
-        SDL_FRect bottomPanel = {0.f, 830.f, 1920.f, 250.f};
+        SDL_FRect bottomPanel = {0.f, 830.f, 1920.f, 480.f};
         if (SDL_PointInRectFloat(&pt, &bottomPanel)) {
             if (SDL_PointInRectFloat(&pt, &bottomPanel)) {
                 // Vérifie si on clique sur un slot vide → ouvre le menu
