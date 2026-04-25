@@ -71,10 +71,18 @@ bool Settlement::Build(int slotIndex, BuildingType type) {
 
 // Upgrade slot 0 (the main building chain)
 bool Settlement::UpgradeMainBuilding() {
-    if (settlementData.buildings.empty()) return false;
-    BuildingType current = settlementData.buildings[0];
+    int maxTier = (settlementData.type == SettlementType::Village) ? 3 : 5;
+    if (settlementData.settlementTier >= maxTier) return false;
+    settlementData.settlementTier++;
+    return true;
+}
+
+bool Settlement::UpgradeBuilding(int slotIndex) {
+    if (slotIndex < 0 || slotIndex >= (int)settlementData.buildings.size()) return false;
+    BuildingType current = settlementData.buildings[slotIndex];
+    if (current == BuildingType::None) return false;
     const BuildingData* data = GetBuildingData(current);
     if (!data || data->upgradesTo == BuildingType::None) return false;
-    settlementData.buildings[0] = data->upgradesTo;
+    settlementData.buildings[slotIndex] = data->upgradesTo;
     return true;
 }

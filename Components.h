@@ -73,6 +73,7 @@ struct SettlementComponent {
     int baseIncome = 0;
     int basePopulation = 0;
     int publicOrder  = 0;
+    int settlementTier = 1;
 
     std::vector<BuildingType> buildings;
 

@@ -1042,6 +1042,18 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
         SDL_RenderFillRect(renderer, &slot);
         SDL_SetRenderDrawColor(renderer, 90, 90, 90, 255);
         SDL_RenderRect(renderer, &slot);
+        if (b == 0) {
+            std::string tierStr = "T" + std::to_string(s->settlementData.settlementTier);
+            TTF_SetTextString(gameStatUIText, tierStr.c_str(), 0);
+            TTF_SetTextColor(gameStatUIText, 255, 255, 255, 255);
+            TTF_DrawRendererText(gameStatUIText, sx + 4.f, sy + 4.f);
+
+            int maxTier = (s->settlementData.type == SettlementType::Village) ? 3 : 5;
+            std::string maxStr = "/" + std::to_string(maxTier);
+            TTF_SetTextString(gameStatUIText, maxStr.c_str(), 0);
+            TTF_SetTextColor(gameStatUIText, 180, 180, 180, 255);
+            TTF_DrawRendererText(gameStatUIText, sx + 4.f, sy + 22.f);
+        }
     }
 }
         }
@@ -1149,7 +1161,9 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
 
         // Si cette catégorie est survolée → affiche ses bâtiments
         if (hoveredCategory == i) {
-            auto buildings = GetBuildingsForCategory(cats[i].cat, faction,sel.settlementData.type);
+            auto buildings = GetBuildingsForCategory(cats[i].cat, faction, sel.settlementData.settlementTier);
+
+
             float subW = 150.f, subH = 40.f, subGap = 6.f;
             float subX = bx;
             float subY = by - (buildings.size() * (subH + subGap));
@@ -1438,6 +1452,7 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
             float panelY = 1080.f - cardH - 65.f;
 
             hoveredSlotIndex = -1;
+            hoveredSettlementIndex = -1;
             int cardIdx = 0;
             for (const auto& s : settlements) {
                 if (s.settlementData.provinceID != sel.settlementData.provinceID) continue;
@@ -1462,6 +1477,7 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
                     SDL_FPoint pt = {logicX, logicY};
                     if (SDL_PointInRectFloat(&pt, &slotRect)) {
                         hoveredSlotIndex = b;
+                        hoveredSettlementIndex = cardIdx;
                     }
                 }
                 cardIdx++;
@@ -1711,15 +1727,27 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
         if (SDL_PointInRectFloat(&pt, &bottomPanel)) {
             if (SDL_PointInRectFloat(&pt, &bottomPanel)) {
                 // Vérifie si on clique sur un slot vide → ouvre le menu
-                if (app.hoveredSlotIndex == 0) {
-                    // Slot 0 = upgrade du bâtiment principal (Village→Castle, Castle→Capital...)
-                    app.settlements[app.selectedSettlementIndex].UpgradeMainBuilding();
+                if (app.hoveredSlotIndex == 0 && app.hoveredSettlementIndex >= 0) {
+                    int cardIdx2 = 0;
+                    for (int i = 0; i < (int)app.settlements.size(); i++) {
+                        if (app.settlements[i].settlementData.provinceID != app.settlements[app.selectedSettlementIndex].settlementData.provinceID) continue;
+                        if (cardIdx2 == app.hoveredSettlementIndex) {
+                            app.settlements[i].UpgradeMainBuilding();
+                            break;
+                        }
+                        cardIdx2++;
+                    }
                 }
                 else if (app.hoveredSlotIndex >= 1 && app.buildMenuSettlementIndex == -1) {
                     const Settlement& sel = app.settlements[app.selectedSettlementIndex];
-                    if (sel.settlementData.buildings[app.hoveredSlotIndex] == BuildingType::None) {
+                    BuildingType current = sel.settlementData.buildings[app.hoveredSlotIndex];
+                    if (current == BuildingType::None) {
+                        // Empty slot → open build category menu
                         app.buildMenuSlotIndex       = app.hoveredSlotIndex;
                         app.buildMenuSettlementIndex = app.selectedSettlementIndex;
+                    } else {
+                        // Occupied slot → upgrade it directly
+                        app.settlements[app.selectedSettlementIndex].UpgradeBuilding(app.hoveredSlotIndex);
                     }
                 }
                 // Clic sur un bâtiment du sous-menu → construit
@@ -1878,7 +1906,8 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
                 break;
             }
 
-            auto buildings = GetBuildingsForCategory(cats[i], faction,app.settlements[app.buildMenuSettlementIndex].settlementData.type);
+            auto buildings = GetBuildingsForCategory(cats[i], faction, app.settlements[app.buildMenuSettlementIndex].settlementData.settlementTier);
+
             float subW = 150.f;
             float subY = by - ((int)buildings.size() * (subH + subGap));
 
@@ -1898,7 +1927,7 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
         app.hoveredBuilding = BuildingType::None;
         if (app.hoveredCategory >= 0) {
             float bx = startX + app.hoveredCategory * (btnW + btnGap);
-            auto buildings = GetBuildingsForCategory(cats[app.hoveredCategory], faction,app.settlements[app.buildMenuSettlementIndex].settlementData.type);
+            auto buildings = GetBuildingsForCategory(cats[app.hoveredCategory], faction, app.settlements[app.buildMenuSettlementIndex].settlementData.settlementTier);
             float subW = 150.f;
             float subY = by - ((int)buildings.size() * (subH + subGap));
 

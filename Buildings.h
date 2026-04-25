@@ -224,6 +224,21 @@ struct BuildingData {
 
 inline const std::unordered_map<BuildingType, BuildingData>& GetBuildingDatabase() {
     static std::unordered_map<BuildingType, BuildingData> db = {
+// ── KNIGHT SETTLEMENTS ──
+{BuildingType::Settlement_Village_Knight, {"Knight Village", "A small village.", 0, 0, 0, 0, 1, BuildingType::None}},
+{BuildingType::Settlement_Castle_Knight,  {"Knight Castle",  "A castle.",        0, 0, 0, 0, 1, BuildingType::None}},
+{BuildingType::Settlement_Capital_Knight, {"Knight Capital", "The capital.",     0, 0, 0, 0, 1, BuildingType::None}},
+// ── VIKING SETTLEMENTS ──
+{BuildingType::Settlement_Village_Viking, {"Viking Village", "A small village.", 0, 0, 0, 0, 1, BuildingType::None}},
+{BuildingType::Settlement_Castle_Viking,  {"Viking Longfort","A longfort.",      0, 0, 0, 0, 1, BuildingType::None}},
+{BuildingType::Settlement_Capital_Viking, {"Viking Capital", "The capital.",     0, 0, 0, 0, 1, BuildingType::None}},
+// ── SAMURAI SETTLEMENTS ──
+{BuildingType::Settlement_Village_Samurai, {"Samurai Village","A small village.",0, 0, 0, 0, 1, BuildingType::None}},
+{BuildingType::Settlement_Castle_Samurai,  {"Samurai Castle", "A castle.",       0, 0, 0, 0, 1, BuildingType::None}},
+{BuildingType::Settlement_Capital_Samurai, {"Samurai Capital","The capital.",    0, 0, 0, 0, 1, BuildingType::None}},
+
+
+
         // ── KNIGHT ECONOMY ──
         {BuildingType::Economy_T1, {"Peasant Fields",    "Basic farmland.",          100,  0,  25,  0, 1, BuildingType::Economy_T2}},
         {BuildingType::Economy_T2, {"Manor Fields",      "Established farmland.",    250,  5,  60,  0, 2, BuildingType::Economy_T3}},
@@ -335,8 +350,8 @@ inline const BuildingData* GetBuildingData(BuildingType type) {
     return (it != db.end()) ? &it->second : nullptr;
 }
 
-inline std::vector<BuildingType> GetBuildingsForCategory(BuildingCategory cat, FactionZone faction, SettlementType settlementType) {
-    int maxTier = (settlementType == SettlementType::Village) ? 3 : 5;
+inline std::vector<BuildingType> GetBuildingsForCategory(BuildingCategory cat, FactionZone faction, int settlementTier) {
+    int maxTier = settlementTier;
 
     std::vector<BuildingType> results;
 
