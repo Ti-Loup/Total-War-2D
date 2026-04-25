@@ -662,10 +662,10 @@ private://constructor
                 displaySize = size * 4.f; //4x4
             }
             else if (s.settlementData.type == SettlementType::Castle) {
-                displaySize = size * 3.f;
+                displaySize = size * 3.f; //3x3
             }
             else if (s.settlementData.type == SettlementType::Village) {
-                displaySize = size * 2.f;
+                displaySize = size * 2.f; //2x2
             }
             //aligns all sizes to the grid
             SDL_FRect dst = {
@@ -685,11 +685,11 @@ private://constructor
 
             //UI elements to show (Public order / Current income of this settlement / Population )
            if (camera.zoom >= 1.1f) {
-    // center of the settlement for the UI to show
+            // center of the settlement for the UI to show
     float centerX = positionX + displaySize / 2.f;
     float bottomY = positionY + displaySize;
 
-    // Tailles toutes fixes
+    // size of all UI elements
     float barW   = 110.f;
     float barH   = 20.f;
     float barGap = 3.f;
@@ -705,10 +705,10 @@ private://constructor
     float nameY = barY - nameH - 2.f; // collé au-dessus de la barre
 
     SDL_SetRenderDrawColor(renderer, 10, 10, 10, 200);
-    SDL_FRect nameBg = {nameX - 4.f, nameY - 2.f, (float)nameW + 8.f, (float)nameH + 4.f};
-    SDL_RenderFillRect(renderer, &nameBg);
+    SDL_FRect nameBackground = {nameX - 4.f, nameY - 2.f, (float)nameW + 4.f, (float)nameH + 2.f};
+    SDL_RenderFillRect(renderer, &nameBackground);
     SDL_SetRenderDrawColor(renderer, factionColor.r, factionColor.g, factionColor.b, 160);
-    SDL_RenderRect(renderer, &nameBg);
+    SDL_RenderRect(renderer, &nameBackground);
     TTF_DrawRendererText(gameStatUITitleText, nameX, nameY);
 
     // INFO BAR
@@ -719,18 +719,18 @@ private://constructor
     SDL_RenderRect(renderer, &infoBar);
 
     float iconSize = 11.f;
-    float cursor   = barX + 5.f;
-    float iconY    = barY + (barH - iconSize) / 2.f;
-    float textY    = barY + 2.f;
+    float cursor = barX + 5.f;
+    float iconY = barY + (barH - iconSize) / 2.f;
+    float textY = barY - 2.f;
 
     // iconeIncome gold
     SDL_SetRenderDrawColor(renderer, 220, 180, 40, 255);
-    SDL_FRect incIcon = {cursor, iconY, iconSize, iconSize};
-    SDL_RenderFillRect(renderer, &incIcon);
+    SDL_FRect incomeIcon = {cursor, iconY, iconSize, iconSize};
+    SDL_RenderFillRect(renderer, &incomeIcon);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 200);
-    SDL_RenderRect(renderer, &incIcon);
+    SDL_RenderRect(renderer, &incomeIcon);
     cursor += iconSize + 3.f;
-
+    //the number that shows the income per settlement(baseIncome)
     std::string incomeStr = std::to_string(s.settlementData.baseIncome);
     TTF_SetTextString(gameStatUIText, incomeStr.c_str(), 0);
     TTF_SetTextColor(gameStatUIText, 180, 230, 100, 255);
@@ -745,21 +745,21 @@ private://constructor
     cursor += 6.f;
 
     // public order icon
-    int po    = s.settlementData.publicOrder;
-    Uint8 poR = po > 0 ? 80  : (po < 0 ? 220 : 130);
-    Uint8 poG = po > 0 ? 200 : (po < 0 ? 50  : 130);
+    int publicOrder    = s.settlementData.publicOrder;
+    Uint8 poR = publicOrder > 0 ? 80  : (publicOrder < 0 ? 220 : 130);
+    Uint8 poG = publicOrder > 0 ? 200 : (publicOrder < 0 ? 50  : 130);
     SDL_SetRenderDrawColor(renderer, poR, poG, 80, 255);
-    SDL_FRect poIcon = {cursor, iconY, iconSize, iconSize};
-    SDL_RenderFillRect(renderer, &poIcon);
+    SDL_FRect publicOrderIcon = {cursor, iconY, iconSize, iconSize};
+    SDL_RenderFillRect(renderer, &publicOrderIcon);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 200);
-    SDL_RenderRect(renderer, &poIcon);
+    SDL_RenderRect(renderer, &publicOrderIcon);
     cursor += iconSize + 3.f;
 
-    std::string orderStr = std::to_string(po);
+    std::string orderStr = std::to_string(publicOrder);
     TTF_SetTextString(gameStatUIText, orderStr.c_str(), 0);
-    TTF_SetTextColor(gameStatUIText, poR, poG, 80, 255);
+    TTF_SetTextColor(gameStatUIText, poR, poG, 80, 255);//color change in fonction if it's positive or negative. Texture to do
     TTF_DrawRendererText(gameStatUIText, cursor, textY);
-}
+        }
         }
     }
     //UI of the region with their castle/villages when you click on a settlement from that province ID
@@ -767,7 +767,7 @@ private://constructor
     if (!bHasClickedOnASettlement || selectedSettlementIndex < 0) return;
 
     const Settlement& clickedSettlement = settlements[selectedSettlementIndex];
-    int provinceID = clickedSettlement.settlementData.provinceID;
+    int provinceID = clickedSettlement.settlementData.provinceID;//name of the province
     const Province& province = provinces[provinceID];
 
     std::vector<const Settlement*> provinceSettlements;
@@ -1076,123 +1076,7 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
     TTF_SetTextColor(gameStatUITitleText, 255, 255, 255, 255);
 
 
-        if (hoveredSlotIndex >= 0) {
-            float mouseX, mouseY;
-            SDL_GetMouseState(&mouseX, &mouseY);
-            float logicX, logicY;
-            SDL_RenderCoordinatesFromWindow(renderer, mouseX, mouseY, &logicX, &logicY);
-
-            const Settlement& sel = settlements[selectedSettlementIndex];
-            BuildingType bt = sel.settlementData.buildings[hoveredSlotIndex];
-
-            float tipW = 200.f, tipH = 60.f;
-            float tipX = logicX + 10.f;
-            float tipY = logicY - tipH - 10.f;
-
-            SDL_SetRenderDrawColor(renderer, 20, 20, 20, 220);
-            SDL_FRect tip = {tipX, tipY, tipW, tipH};
-            SDL_RenderFillRect(renderer, &tip);
-            SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
-            SDL_RenderRect(renderer, &tip);
-
-            if (bt == BuildingType::None) {
-                // Slot vide = proposer de construire
-                TTF_SetTextString(gameStatUIText, "Clic droit : Construire", 0);
-                TTF_SetTextColor(gameStatUIText, 180, 230, 100, 255);
-                TTF_DrawRendererText(gameStatUIText, tipX + 8.f, tipY + 8.f);
-                TTF_SetTextString(gameStatUIText, "[Slot libre]", 0);
-                TTF_SetTextColor(gameStatUIText, 130, 130, 130, 255);
-                TTF_DrawRendererText(gameStatUIText, tipX + 8.f, tipY + 30.f);
-            } else {
-                // Slot occupé = affiche le nom du bâtiment
-                const BuildingData* data = GetBuildingData(bt);
-                if (data) {
-                    TTF_SetTextString(gameStatUIText, data->name.c_str(), 0);
-                    TTF_SetTextColor(gameStatUIText, 255, 255, 255, 255);
-                    TTF_DrawRendererText(gameStatUIText, tipX + 8.f, tipY + 8.f);
-                    std::string costStr = "Cout: " + std::to_string(data->cost) + "g";
-                    TTF_SetTextString(gameStatUIText, costStr.c_str(), 0);
-                    TTF_SetTextColor(gameStatUIText, 220, 180, 40, 255);
-                    TTF_DrawRendererText(gameStatUIText, tipX + 8.f, tipY + 30.f);
-                }
-            }
-        }
-
-        if (buildMenuSlotIndex >= 0 && buildMenuSettlementIndex >= 0) {
-    const Settlement& sel = settlements[buildMenuSettlementIndex];
-    FactionZone faction = provinces[sel.settlementData.provinceID].owner;
-
-    // Position du menu — centré sur l'écran, au-dessus des cards
-    float menuY = 1080.f - 200.f - 65.f - 20.f; // juste au-dessus des cards
-
-    // Les 5 catégories
-    struct CatInfo { BuildingCategory cat; const char* label; SDL_Color color; };
-    CatInfo cats[] = {
-        {BuildingCategory::Military,         "Militaire",     {200, 50,  50,  255}},
-        {BuildingCategory::AdvancedMilitary, "Avancé",        {150, 50,  200, 255}},
-        {BuildingCategory::Defence,          "Défense",       {220, 180, 40,  255}},
-        {BuildingCategory::Economy,          "Économie",      {80,  180, 80,  255}},
-        {BuildingCategory::Religion,         "Religion",      {60,  120, 220, 255}},
-    };
-
-    float btnW = 110.f, btnH = 40.f, btnGap = 10.f;
-    float totalW = 5 * btnW + 4 * btnGap;
-    float startX = (1920.f - totalW) / 2.f;
-
-    for (int i = 0; i < 5; i++) {
-        float bx = startX + i * (btnW + btnGap);
-        float by = menuY - btnH - 5.f;
-        bool hovered = (hoveredCategory == i);
-
-        SDL_Color c = cats[i].color;
-        SDL_SetRenderDrawColor(renderer, hovered ? c.r : c.r/2,
-                                         hovered ? c.g : c.g/2,
-                                         hovered ? c.b : c.b/2, 220);
-        SDL_FRect btn = {bx, by, btnW, btnH};
-        SDL_RenderFillRect(renderer, &btn);
-        SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, 255);
-        SDL_RenderRect(renderer, &btn);
-
-        TTF_SetTextString(gameStatUIText, cats[i].label, 0);
-        TTF_SetTextColor(gameStatUIText, 255, 255, 255, 255);
-        int tw, th;
-        TTF_GetTextSize(gameStatUIText, &tw, &th);
-        TTF_DrawRendererText(gameStatUIText, bx + (btnW - tw) / 2.f, by + (btnH - th) / 2.f);
-
-        // Si cette catégorie est survolée → affiche ses bâtiments
-        if (hoveredCategory == i) {
-            auto buildings = GetBuildingsForCategory(cats[i].cat, faction, sel.settlementData.settlementTier);
-
-
-            float subW = 150.f, subH = 40.f, subGap = 6.f;
-            float subX = bx;
-            float subY = by - (buildings.size() * (subH + subGap));
-
-            for (int j = 0; j < (int)buildings.size(); j++) {
-                const BuildingData* data = GetBuildingData(buildings[j]);
-                if (!data) continue;
-
-                float sy = subY + j * (subH + subGap);
-                SDL_SetRenderDrawColor(renderer, 30, 30, 30, 230);
-                SDL_FRect sub = {subX, sy, subW, subH};
-                SDL_RenderFillRect(renderer, &sub);
-                SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, 180);
-                SDL_RenderRect(renderer, &sub);
-
-                TTF_SetTextString(gameStatUIText, data->name.c_str(), 0);
-                TTF_SetTextColor(gameStatUIText, 255, 255, 255, 255);
-                TTF_DrawRendererText(gameStatUIText, subX + 6.f, sy + 4.f);
-
-                std::string costStr = std::to_string(data->cost) + "g";
-                TTF_SetTextString(gameStatUIText, costStr.c_str(), 0);
-                TTF_SetTextColor(gameStatUIText, 220, 180, 40, 255);
-                TTF_DrawRendererText(gameStatUIText, subX + 6.f, sy + 22.f);
-            }
-        }
-    }
 }
-}
-
 
     void UpdateBackgroundTint(const float deltaTime) {
         constexpr float speed = 5.0f;
@@ -1430,61 +1314,6 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
         //Render the UI
         RenderProvinceUI();
 
-        //detection over the slots to upgrade
-        if (bHasClickedOnASettlement && selectedSettlementIndex >= 0) {
-            float mouseX, mouseY;
-            SDL_GetMouseState(&mouseX, &mouseY);
-            float logicX, logicY;
-            SDL_RenderCoordinatesFromWindow(renderer, mouseX, mouseY, &logicX, &logicY);
-
-            const Settlement& sel = settlements[selectedSettlementIndex];
-            int count = 0;
-            for (const auto& s : settlements) {
-                if (s.settlementData.provinceID == sel.settlementData.provinceID) {
-                    count++;
-                }
-            }
-
-            // recalculate the position of the cards
-            float cardW = 280.f, cardH = 200.f, cardGap = 16.f;
-            float totalW = count * cardW + (count - 1) * cardGap;
-            float startX = (1920.f - totalW) / 2.f;
-            float panelY = 1080.f - cardH - 65.f;
-
-            hoveredSlotIndex = -1;
-            hoveredSettlementIndex = -1;
-            int cardIdx = 0;
-            for (const auto& s : settlements) {
-                if (s.settlementData.provinceID != sel.settlementData.provinceID) continue;
-                float cx = startX + cardIdx * (cardW + cardGap);
-
-                float slotSize = 60.f, slotGap = 6.f;
-                int cols = 0;
-                if      (s.settlementData.type == SettlementType::Village) cols = 2;
-                else if (s.settlementData.type == SettlementType::Castle)  cols = 3;
-                else if (s.settlementData.type == SettlementType::Capital) cols = 4;
-
-                float gridW      = cols * slotSize + (cols - 1) * slotGap;
-                float slotStartX = cx + (cardW - gridW) / 2.f;
-                float row0Y      = panelY + cardH - (slotSize * 2 + slotGap) - 12.f;
-                float row1Y      = row0Y + slotSize + slotGap;
-
-                for (int b = 0; b < (int)s.settlementData.buildings.size(); b++) {
-                    int col = b % cols, row = b / cols;
-                    float sx = slotStartX + col * (slotSize + slotGap);
-                    float sy = (row == 0) ? row0Y : row1Y;
-                    SDL_FRect slotRect = {sx, sy, slotSize, slotSize};
-                    SDL_FPoint pt = {logicX, logicY};
-                    if (SDL_PointInRectFloat(&pt, &slotRect)) {
-                        hoveredSlotIndex = b;
-                        hoveredSettlementIndex = cardIdx;
-                    }
-                }
-                cardIdx++;
-            }
-        }
-
-
         //fps
         TTF_DrawRendererText(fpsText, 10, 10);
         SDL_RenderPresent(renderer);
@@ -1669,43 +1498,6 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
         //IF IN GAME
         //When pressded it shows the position of 1 tile
         if (app.StateActuel == State::Game) {
-            if (app.buildMenuSlotIndex > 0) {
-                float btnW = 110.f, btnH = 40.f, btnGap = 10.f;
-                float totalW = 5 * btnW + 4 * btnGap;
-                float startX = (1920.f - totalW) / 2.f;
-                float menuY = 1080.f - 200.f - 65.f - 20.f;
-                float by = menuY - btnH - 5.f;
-                float padding = 20.f;
-                float subH = 40.f, subGap = 6.f;
-                int maxBuildings = 3;
-                float totalMenuH = btnH + maxBuildings * (subH + subGap) + padding * 2;
-
-                SDL_FRect globalMenuZone = {
-                    startX - padding,
-                    by - maxBuildings * (subH + subGap) - padding,
-                    totalW + padding * 2,
-                    totalMenuH
-                };
-                SDL_FPoint pt = {nouveauX, nouveauY};
-
-                if (app.hoveredBuilding != BuildingType::None) {
-                    app.settlements[app.buildMenuSettlementIndex]
-                        .Build(app.buildMenuSlotIndex, app.hoveredBuilding);
-                    app.buildMenuSlotIndex       = -1;
-                    app.buildMenuSettlementIndex = -1;
-                    app.hoveredCategory          = -1;
-                    app.hoveredBuilding          = BuildingType::None;
-                }
-                else if (!SDL_PointInRectFloat(&pt, &globalMenuZone)) {
-                    app.buildMenuSlotIndex       = -1;
-                    app.buildMenuSettlementIndex = -1;
-                    app.hoveredCategory          = -1;
-                    app.hoveredBuilding          = BuildingType::None;
-                }
-            }
-
-
-
     float worldX = (nouveauX + app.camera.startX * app.camera.zoom) / app.camera.zoom;
     float worldY = (nouveauY + app.camera.startY * app.camera.zoom) / app.camera.zoom;
     int tileC = (int)(worldX / app.tileMap->tileSize);
@@ -1725,56 +1517,7 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
             return SDL_APP_CONTINUE; // ← stop ici, pas de reset
         }
 
-        SDL_FRect leftPanel = {0.f, 580.f, 250.f, 500.f};
-        if (SDL_PointInRectFloat(&pt, &leftPanel)) {
             return SDL_APP_CONTINUE;
-        }
-
-        SDL_FRect bottomPanel = {0.f, 830.f, 1920.f, 480.f};
-        if (SDL_PointInRectFloat(&pt, &bottomPanel)) {
-            if (SDL_PointInRectFloat(&pt, &bottomPanel)) {
-                // Vérifie si on clique sur un slot vide → ouvre le menu
-                if (app.hoveredSlotIndex == 0 && app.hoveredSettlementIndex >= 0) {
-                    int cardIdx2 = 0;
-                    for (int i = 0; i < (int)app.settlements.size(); i++) {
-                        if (app.settlements[i].settlementData.provinceID != app.settlements[app.selectedSettlementIndex].settlementData.provinceID) continue;
-                        if (cardIdx2 == app.hoveredSettlementIndex) {
-                            app.settlements[i].UpgradeMainBuilding();
-                            break;
-                        }
-                        cardIdx2++;
-                    }
-                }
-                else if (app.hoveredSlotIndex >= 1 && app.buildMenuSettlementIndex == -1) {
-                    const Settlement& sel = app.settlements[app.selectedSettlementIndex];
-                    BuildingType current = sel.settlementData.buildings[app.hoveredSlotIndex];
-                    if (current == BuildingType::None) {
-                        // Empty slot → open build category menu
-                        app.buildMenuSlotIndex       = app.hoveredSlotIndex;
-                        app.buildMenuSettlementIndex = app.selectedSettlementIndex;
-                    } else {
-                        // Occupied slot → upgrade it directly
-                        app.settlements[app.selectedSettlementIndex].UpgradeBuilding(app.hoveredSlotIndex);
-                    }
-                }
-                // Clic sur un bâtiment du sous-menu → construit
-                else if (app.buildMenuSlotIndex >= 0 && app.hoveredBuilding != BuildingType::None) {
-                    app.settlements[app.buildMenuSettlementIndex]
-                        .Build(app.buildMenuSlotIndex, app.hoveredBuilding);
-                    app.buildMenuSlotIndex       = -1;
-                    app.buildMenuSettlementIndex = -1;
-                    app.hoveredCategory          = -1;
-                    app.hoveredBuilding          = BuildingType::None;
-                }
-                // Ferme le menu si on clique ailleurs dans le panel
-                else if (app.buildMenuSlotIndex >= 0) {
-                    app.buildMenuSlotIndex       = -1;
-                    app.buildMenuSettlementIndex = -1;
-                    app.hoveredCategory          = -1;
-                }
-            }
-            return SDL_APP_CONTINUE;
-        }
     }
 
     // dection if clicked a settlement
@@ -1842,14 +1585,6 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
     if (event->type == SDL_EVENT_MOUSE_BUTTON_DOWN &&event->button.button == SDL_BUTTON_MIDDLE &&app.StateActuel == State::Game) {
         app.bIsMovingCamera = true;
         SDL_RenderCoordinatesFromWindow(app.renderer,event->button.x, event->button.y,&app.lastMouseX, &app.lastMouseY);
-
-        if (app.bHasClickedOnASettlement) {
-            if (app.buildMenuSlotIndex >= 0 && app.hoveredCategory >= 0) {
-                app.settlements[app.buildMenuSettlementIndex].Build(app.buildMenuSlotIndex, app.hoveredBuilding);
-                app.buildMenuSlotIndex = -1; // close menu
-                app.hoveredCategory    = -1;
-            }
-        }
     }
     if (event->type == SDL_EVENT_MOUSE_BUTTON_UP &&event->button.button == SDL_BUTTON_MIDDLE) {
         app.bIsMovingCamera= false;
@@ -1861,96 +1596,7 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
         app.lastMouseX = mx;
         app.lastMouseY = my;
     }
-    if (event->type == SDL_EVENT_MOUSE_MOTION && app.StateActuel == State::Game) {
-        float mx, my;
-    SDL_RenderCoordinatesFromWindow(app.renderer, event->motion.x, event->motion.y, &mx, &my);
-
-    // Hover catégorie
-    if (app.buildMenuSlotIndex >= 0 && app.buildMenuSettlementIndex >= 0) {
-    float btnW = 110.f, btnH = 40.f, btnGap = 10.f;
-    float totalW = 5 * btnW + 4 * btnGap;
-    float startX = (1920.f - totalW) / 2.f;
-    float menuY = 1080.f - 200.f - 65.f - 20.f;
-    float by = menuY - btnH - 5.f;
-
-    BuildingCategory cats[] = {
-        BuildingCategory::Military, BuildingCategory::AdvancedMilitary,
-        BuildingCategory::Defence,  BuildingCategory::Economy,
-        BuildingCategory::Religion,
-    };
-    FactionZone faction = app.provinces[
-        app.settlements[app.buildMenuSettlementIndex].settlementData.provinceID
-    ].owner;
-
-    // Zone globale qui englobe TOUT le menu (boutons + sous-menus + padding)
-    float padding = 20.f;
-    float subH = 40.f, subGap = 6.f;
-    int maxBuildings = 3; // max bâtiments par catégorie
-    float totalMenuH = btnH + maxBuildings * (subH + subGap) + padding * 2;
-
-    SDL_FRect globalMenuZone = {
-        startX - padding,
-        by - maxBuildings * (subH + subGap) - padding,
-        totalW + padding * 2,
-        totalMenuH
-    };
-    SDL_FPoint pt = {mx, my};
-
-    // Si la souris quitte complètement la zone → ferme tout
-    if (!SDL_PointInRectFloat(&pt, &globalMenuZone)) {
-        app.hoveredCategory = -1;
-        app.hoveredBuilding = BuildingType::None;
-    } else {
-        // Sinon, détecte précisément bouton ou sous-menu
-        int newHoveredCategory = app.hoveredCategory; // garde l'ancien si dans la zone
-
-        for (int i = 0; i < 5; i++) {
-            float bx = startX + i * (btnW + btnGap);
-
-            SDL_FRect btn = {bx - 5.f, by - 5.f, btnW + 10.f, btnH + 10.f}; // padding bouton
-            if (SDL_PointInRectFloat(&pt, &btn)) {
-                newHoveredCategory = i;
-                break;
-            }
-
-            auto buildings = GetBuildingsForCategory(cats[i], faction, app.settlements[app.buildMenuSettlementIndex].settlementData.settlementTier);
-
-            float subW = 150.f;
-            float subY = by - ((int)buildings.size() * (subH + subGap));
-
-            for (int j = 0; j < (int)buildings.size(); j++) {
-                float sy = subY + j * (subH + subGap);
-                SDL_FRect sub = {bx - 5.f, sy - 5.f, subW + 10.f, subH + 10.f}; // padding sous-menu
-                if (SDL_PointInRectFloat(&pt, &sub)) {
-                    newHoveredCategory = i;
-                    break;
-                }
-            }
-        }
-
-        app.hoveredCategory = newHoveredCategory;
-
-        // Hover bâtiment précis
-        app.hoveredBuilding = BuildingType::None;
-        if (app.hoveredCategory >= 0) {
-            float bx = startX + app.hoveredCategory * (btnW + btnGap);
-            auto buildings = GetBuildingsForCategory(cats[app.hoveredCategory], faction, app.settlements[app.buildMenuSettlementIndex].settlementData.settlementTier);
-            float subW = 150.f;
-            float subY = by - ((int)buildings.size() * (subH + subGap));
-
-            for (int j = 0; j < (int)buildings.size(); j++) {
-                float sy = subY + j * (subH + subGap);
-                SDL_FRect sub = {bx, sy, subW, subH};
-                if (SDL_PointInRectFloat(&pt, &sub)) {
-                    app.hoveredBuilding = buildings[j];
-                    break;
-                }
-            }
-        }
-    }
-}
-    }
-
+    
     // Zoom
     if (event->type == SDL_EVENT_MOUSE_WHEEL && app.StateActuel == State::Game) {
         float factor = (event->wheel.y > 0) ? 1.1f : 0.9f;

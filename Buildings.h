@@ -223,7 +223,7 @@ struct BuildingData {
 };
 
 inline const std::unordered_map<BuildingType, BuildingData>& GetBuildingDatabase() {
-    static std::unordered_map<BuildingType, BuildingData> db = {
+    static std::unordered_map<BuildingType, BuildingData> buildingDataBase = {
 // ── KNIGHT SETTLEMENTS ──
 {BuildingType::Settlement_Village_Knight, {"Knight Village", "A small village.", 0, 0, 0, 0, 1, BuildingType::None}},
 {BuildingType::Settlement_Castle_Knight,  {"Knight Castle",  "A castle.",        0, 0, 0, 0, 1, BuildingType::None}},
