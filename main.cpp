@@ -210,7 +210,7 @@ public:
     int hoveredCategory          = -1;
     // 0=Military 1=AdvMilitary 2=Defence 3=Economy 4=Religion
     BuildingType hoveredBuilding = BuildingType::None;
-
+    SDL_FRect mainBuildingSlotScreenRect = {0,0,0,0};
 
     //Provinces name + Faction Zone + which region is a capital
     std::vector<Province> provinces = {
@@ -916,6 +916,9 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
     RenderBoutons(provinceButtonUIGarrison, nullptr,40,40,40,100);
     SDL_RenderTexture(renderer,provinceTextureUIGarrison,nullptr,&provinceButtonUIGarrison);
 
+
+
+
     //-> BOTTOM UI PANNEL <-
             int   count = (int)provinceSettlements.size();
             float cardW = 280.f;
@@ -995,71 +998,140 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
 
                 // building slots
                 if (bButtonUIBuildingIsPressed) {
-    float slotSize = 60.f;
-    float slotGap  = 6.f;
-    int cols = 0;
-    if      (s->settlementData.type == SettlementType::Village) cols = 2;
-    else if (s->settlementData.type == SettlementType::Castle)  cols = 3;
-    else if (s->settlementData.type == SettlementType::Capital) cols = 4;
+                    float slotSize = 60.f;
+                    float slotGap  = 6.f;
+                    int cols = 0;
+                    if      (s->settlementData.type == SettlementType::Village) cols = 2;
+                    else if (s->settlementData.type == SettlementType::Castle)  cols = 3;
+                    else if (s->settlementData.type == SettlementType::Capital) cols = 4;
 
-    float gridW      = cols * slotSize + (cols - 1) * slotGap;
-    float slotStartX = cx + (cardW - gridW) / 2.f;
-    float row0Y      = panelY + cardH - (slotSize * 2 + slotGap) - 12.f;
-    float row1Y      = row0Y + slotSize + slotGap;
+                    float gridW      = cols * slotSize + (cols - 1) * slotGap;
+                    float slotStartX = cx + (cardW - gridW) / 2.f;
+                    float row0Y      = panelY + cardH - (slotSize * 2 + slotGap) - 12.f;
+                    float row1Y      = row0Y + slotSize + slotGap;
 
-    for (int b = 0; b < (int)s->settlementData.buildings.size(); b++) {
-        BuildingType bt = s->settlementData.buildings[b];
+                    for (int b = 0; b < (int)s->settlementData.buildings.size(); b++) {
+                        BuildingType buildingType = s->settlementData.buildings[b];
 
-        int col = b % cols;
-        int row = b / cols;
+                        int col = b % cols;
+                        int row = b / cols;
 
-        float sx = slotStartX + col * (slotSize + slotGap); // ← sx défini ici
-        float sy = (row == 0) ? row0Y : row1Y;              // ← sy défini ici
+                        float sx = slotStartX + col * (slotSize + slotGap); // ← sx défini ici
+                        float sy = (row == 0) ? row0Y : row1Y;              // ← sy défini ici
 
-        // unique building per faction
-        //slot 0
-        if (b == 0) {
-            if (bt == BuildingType::Settlement_Village_Knight||bt == BuildingType::Settlement_Castle_Knight||bt == BuildingType::Settlement_Capital_Knight) {
-                SDL_SetRenderDrawColor(renderer, 255, 215, 0,   255); // or
+                        // unique building per faction
+                        //slot 0
+                        if (b == 0) {
+                            if (buildingType == BuildingType::Settlement_Village_Knight||buildingType == BuildingType::Settlement_Castle_Knight||buildingType == BuildingType::Settlement_Capital_Knight) {
+                                SDL_SetRenderDrawColor(renderer, 255, 215, 0,   255); // or
+                            }
+                            else if (buildingType == BuildingType::Settlement_Village_Viking ||buildingType == BuildingType::Settlement_Castle_Viking  ||buildingType == BuildingType::Settlement_Capital_Viking) {
+                                SDL_SetRenderDrawColor(renderer, 255, 50,  50,  255); // rouge
+                            }
+                            else if (buildingType == BuildingType::Settlement_Village_Samurai||buildingType == BuildingType::Settlement_Castle_Samurai||buildingType == BuildingType::Settlement_Capital_Samurai) {
+                                SDL_SetRenderDrawColor(renderer, 0,   200, 160, 255); // teal
+                            }
+                            else {
+                                SDL_SetRenderDrawColor(renderer, 255, 0,   255, 255); // pink is error
+                            }
+                        } else {
+                            bool built = (buildingType != BuildingType::None);
+                            SDL_SetRenderDrawColor(renderer, built ? 80 : 45,
+                                                             built ? 160 : 45,
+                                                             built ? 80 : 45, 255);
+                        }
+
+                        SDL_FRect slot = {sx, sy, slotSize, slotSize};
+                        SDL_RenderFillRect(renderer, &slot);
+                        SDL_SetRenderDrawColor(renderer, 90, 90, 90, 255);
+                        SDL_RenderRect(renderer, &slot);
+                        if (b == 0) {
+                            std::string tierStr = "T" + std::to_string(s->settlementData.settlementTier);
+                            TTF_SetTextString(gameStatUIText, tierStr.c_str(), 0);
+                            TTF_SetTextColor(gameStatUIText, 255, 255, 255, 255);
+                            TTF_DrawRendererText(gameStatUIText, sx + 4.f, sy + 4.f);
+
+                            if (isSelected) {
+                                mainBuildingSlotScreenRect = slot;
+                            }
+                        }
+                    }
+                }
             }
-            else if (bt == BuildingType::Settlement_Village_Viking ||bt == BuildingType::Settlement_Castle_Viking  ||bt == BuildingType::Settlement_Capital_Viking) {
-                SDL_SetRenderDrawColor(renderer, 255, 50,  50,  255); // rouge
-            }
-            else if (bt == BuildingType::Settlement_Village_Samurai||bt == BuildingType::Settlement_Castle_Samurai||bt == BuildingType::Settlement_Capital_Samurai) {
-                SDL_SetRenderDrawColor(renderer, 0,   200, 160, 255); // teal
-            }
-            else {
-                SDL_SetRenderDrawColor(renderer, 255, 0,   255, 255); // pink is error
-            }
-        } else {
-            bool built = (bt != BuildingType::None);
-            SDL_SetRenderDrawColor(renderer, built ? 80 : 45,
-                                             built ? 160 : 45,
-                                             built ? 80 : 45, 255);
-        }
+        //TIER CHAIN POPUP
+if (hoveredSlotIndex == 0 && bButtonUIBuildingIsPressed && selectedSettlementIndex >= 0) {
+    const Settlement* sel = &settlements[selectedSettlementIndex];
+    int currentTier = sel->settlementData.settlementTier;
+    constexpr int maxTier = 5;
 
-        SDL_FRect slot = {sx, sy, slotSize, slotSize};
-        SDL_RenderFillRect(renderer, &slot);
-        SDL_SetRenderDrawColor(renderer, 90, 90, 90, 255);
-        SDL_RenderRect(renderer, &slot);
-        if (b == 0) {
-            std::string tierStr = "T" + std::to_string(s->settlementData.settlementTier);
-            TTF_SetTextString(gameStatUIText, tierStr.c_str(), 0);
-            TTF_SetTextColor(gameStatUIText, 255, 255, 255, 255);
-            TTF_DrawRendererText(gameStatUIText, sx + 4.f, sy + 4.f);
+    float tileW  = 64.f;
+    float tileH  = 64.f;
+    float arrowH = 22.f;
+    float totalH = maxTier * tileH + (maxTier - 1) * arrowH;
 
-            int maxTier = (s->settlementData.type == SettlementType::Village) ? 3 : 5;
-            std::string maxStr = "/" + std::to_string(maxTier);
-            TTF_SetTextString(gameStatUIText, maxStr.c_str(), 0);
-            TTF_SetTextColor(gameStatUIText, 180, 180, 180, 255);
-            TTF_DrawRendererText(gameStatUIText, sx + 4.f, sy + 22.f);
+    float popX = mainBuildingSlotScreenRect.x + (mainBuildingSlotScreenRect.w - tileW) / 2.f;
+    float popY = mainBuildingSlotScreenRect.y - totalH - 15.f;
+    if (popY < 5.f) popY = 5.f;
+
+    // Fond du popup
+    SDL_SetRenderDrawColor(renderer, 10, 10, 10, 230);
+    SDL_FRect bgRect = {popX - 12.f, popY - 8.f, tileW + 24.f, totalH + 16.f};
+    SDL_RenderFillRect(renderer, &bgRect);
+    SDL_SetRenderDrawColor(renderer, factionColor.r, factionColor.g, factionColor.b, 120);
+    SDL_RenderRect(renderer, &bgRect);
+
+    // Tier 5 en haut → Tier 1 en bas
+    for (int t = maxTier; t >= 1; t--) {
+        int idx = maxTier - t;  // 0 = tier5(top), 4 = tier1(bas)
+        float ty = popY + idx * (tileH + arrowH);
+
+        bool isCurrent  = (t == currentTier);
+        bool isUnlocked = (t < currentTier);
+
+        // Carré du tier
+        if (isCurrent)
+            SDL_SetRenderDrawColor(renderer, factionColor.r/3, factionColor.g/3, factionColor.b/3, 255);
+        else if (isUnlocked)
+            SDL_SetRenderDrawColor(renderer, 55, 55, 55, 255);
+        else
+            SDL_SetRenderDrawColor(renderer, 22, 22, 22, 255);
+
+        SDL_FRect tierRect = {popX, ty, tileW, tileH};
+        SDL_RenderFillRect(renderer, &tierRect);
+
+        // Bordure
+        SDL_SetRenderDrawColor(renderer,
+            isCurrent ? factionColor.r : 65,
+            isCurrent ? factionColor.g : 65,
+            isCurrent ? factionColor.b : 65, 255);
+        SDL_RenderRect(renderer, &tierRect);
+
+        // Chiffre romain
+        const char* rn[] = {"I", "II", "III", "IV", "V"};
+        TTF_SetTextString(gameStatUIText, rn[t - 1], 0);
+        Uint8 la = isCurrent ? 255 : (isUnlocked ? 180 : 80);
+        TTF_SetTextColor(gameStatUIText, la, la, la, 255);
+        int tw = 0, th = 0;
+        TTF_GetTextSize(gameStatUIText, &tw, &th);
+        TTF_DrawRendererText(gameStatUIText,
+            popX + (tileW - tw) / 2.f,
+            ty + tileH - th - 5.f);
+
+        // Flèche vers le haut (entre ce tier et le suivant)
+        if (t > 1) {
+            float cx        = popX + tileW / 2.f;
+            float tipY      = ty + tileH + 2.f;
+            float baseY     = ty + tileH + arrowH - 2.f;
+            SDL_SetRenderDrawColor(renderer, 0, 180, 0, 200);
+            SDL_RenderLine(renderer, (int)cx, (int)tipY,  (int)cx, (int)baseY);
+            SDL_RenderLine(renderer, (int)cx, (int)tipY,  (int)(cx - 6), (int)(tipY + 8));
+            SDL_RenderLine(renderer, (int)cx, (int)tipY,  (int)(cx + 6), (int)(tipY + 8));
         }
     }
 }
-        }
+
         if (bButtonUIGarrisonIsPressed) {
             //To Do later the garrison with Their Unit cards
-
         }
         // Title bottomProvince Title
         float middleTitlePositionX = 835.f;
@@ -1516,8 +1588,6 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
             app.bButtonUIBuildingIsPressed = false;
             return SDL_APP_CONTINUE; // ← stop ici, pas de reset
         }
-
-            return SDL_APP_CONTINUE;
     }
 
     // dection if clicked a settlement
@@ -1540,6 +1610,7 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
         app.bHasClickedOnASettlement = false;
         app.bButtonUIBuildingIsPressed = true;//so it always go back to the base one
         app.selectedSettlementIndex = -1;
+        app.hoveredSlotIndex = -1;
     }
 }
         //TUTORIAL
@@ -1595,6 +1666,13 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
         app.camera.Movement(-(mx - app.lastMouseX), -(my - app.lastMouseY));
         app.lastMouseX = mx;
         app.lastMouseY = my;
+    }// Hover slot of the principal building
+    if (event->type == SDL_EVENT_MOUSE_MOTION &&app.StateActuel == State::Game &&app.bHasClickedOnASettlement &&app.bButtonUIBuildingIsPressed)
+    {
+        float mx, my;
+        SDL_RenderCoordinatesFromWindow(app.renderer, event->motion.x, event->motion.y, &mx, &my);
+        SDL_FPoint pt = {mx, my};
+        app.hoveredSlotIndex = SDL_PointInRectFloat(&pt, &app.mainBuildingSlotScreenRect) ? 0 : -1;
     }
 
     // Zoom
