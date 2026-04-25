@@ -4,7 +4,7 @@
 
 #ifndef TOTALWAR2D_COMPONENTS_H
 #define TOTALWAR2D_COMPONENTS_H
-
+#include "Buildings.h"
 #include "State.h"
 #include <SDL3/SDL_pixels.h>
 #include <SDL3/SDL_rect.h>
@@ -66,5 +66,34 @@ class TransformComponents : public Components
 	TransformComponents () = default;
 };
 
+struct SettlementComponent {
+    std::string cityName = "Settlement";
+    SettlementType type = SettlementType::Village;
+    int provinceID = -1;
+    int baseIncome = 0;
+    int basePopulation = 0;
+    int publicOrder  = 0;
+
+    std::vector<BuildingType> buildings;
+
+    // Totals base + all built bonuses
+    int GetTotalIncome() const {
+        int total = baseIncome;
+        for (auto bt : buildings) {
+            const BuildingData* data = GetBuildingData(bt);
+            if (data) total += data->incomeBonus;
+        }
+        return total;
+    }
+
+    int GetTotalPublicOrder() const {
+        int total = publicOrder;
+        for (auto bt : buildings) {
+            const BuildingData* data = GetBuildingData(bt);
+            if (data) total += data->publicOrderBonus;
+        }
+        return total;
+    }
+};
 
 #endif //TOTALWAR2D_COMPONENTS_H

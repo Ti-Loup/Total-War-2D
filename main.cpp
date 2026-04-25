@@ -385,55 +385,55 @@ private://constructor
         //CREATION OF THE SETTLEMENTS
         //KNIGHT
         //CAPITAL REGION
-        settlements.emplace_back(SettlementType::Capital, 0, 42, 50);
+        settlements.emplace_back(SettlementType::Capital, 0, 42, 50, FactionZone::Knight);
         settlements.back().settlementData.cityName = "Patate";
-        settlements.emplace_back(SettlementType::Village, 0, 46, 35);
+        settlements.emplace_back(SettlementType::Village, 0, 46, 35, FactionZone::Knight);
         settlements.back().settlementData.cityName = "Patate2";
-        settlements.emplace_back(SettlementType::Village, 0, 52, 42);
+        settlements.emplace_back(SettlementType::Village, 0, 52, 42, FactionZone::Knight);
         settlements.back().settlementData.cityName = "Patate3";
-        settlements.emplace_back(SettlementType::Village, 0, 37, 61);
+        settlements.emplace_back(SettlementType::Village, 0, 37, 61, FactionZone::Knight);
         settlements.back().settlementData.cityName = "Patate4";
         //NORTH REGION
-        settlements.emplace_back(SettlementType::Castle, 1, 22, 28);
-        settlements.emplace_back(SettlementType::Village, 1, 16, 12);
-        settlements.emplace_back(SettlementType::Village, 1, 29, 34);
-        settlements.emplace_back(SettlementType::Village, 1, 25, 46);
+        settlements.emplace_back(SettlementType::Castle, 1, 22, 28, FactionZone::Knight);
+        settlements.emplace_back(SettlementType::Village, 1, 16, 12, FactionZone::Knight);
+        settlements.emplace_back(SettlementType::Village, 1, 29, 34, FactionZone::Knight);
+        settlements.emplace_back(SettlementType::Village, 1, 25, 46, FactionZone::Knight);
         //SOUTH REGION
-        settlements.emplace_back(SettlementType::Castle, 2, 61,56);
-        settlements.emplace_back(SettlementType::Village, 2, 67, 50);
-        settlements.emplace_back(SettlementType::Village, 2, 56, 67);
+        settlements.emplace_back(SettlementType::Castle, 2, 61,56, FactionZone::Knight);
+        settlements.emplace_back(SettlementType::Village, 2, 67, 50, FactionZone::Knight);
+        settlements.emplace_back(SettlementType::Village, 2, 56, 67, FactionZone::Knight);
 
         // Vikings
         //NORTH CAPITAL
-        settlements.emplace_back(SettlementType::Capital, 3, 60, 10);
-        settlements.emplace_back(SettlementType::Village, 3, 50, 15);
-        settlements.emplace_back(SettlementType::Village, 3, 70, 8);
-        settlements.emplace_back(SettlementType::Village, 3, 83, 15);
+        settlements.emplace_back(SettlementType::Capital, 3, 60, 10, FactionZone::Viking);
+        settlements.emplace_back(SettlementType::Village, 3, 50, 15, FactionZone::Viking);
+        settlements.emplace_back(SettlementType::Village, 3, 70, 8, FactionZone::Viking);
+        settlements.emplace_back(SettlementType::Village, 3, 83, 15, FactionZone::Viking);
         //OUEST REGION
-        settlements.emplace_back(SettlementType::Castle, 4, 63, 25);
-        settlements.emplace_back(SettlementType::Village, 4, 36, 21);
-        settlements.emplace_back(SettlementType::Village, 4, 64, 34);
-        settlements.emplace_back(SettlementType::Village, 4, 68, 16);
+        settlements.emplace_back(SettlementType::Castle, 4, 63, 25, FactionZone::Viking);
+        settlements.emplace_back(SettlementType::Village, 4, 36, 21, FactionZone::Viking);
+        settlements.emplace_back(SettlementType::Village, 4, 64, 34, FactionZone::Viking);
+        settlements.emplace_back(SettlementType::Village, 4, 68, 16, FactionZone::Viking);
         //EST REGION
-        settlements.emplace_back(SettlementType::Castle, 5, 78, 34);
-        settlements.emplace_back(SettlementType::Village, 5, 88, 30);
-        settlements.emplace_back(SettlementType::Village, 5, 97, 24);
+        settlements.emplace_back(SettlementType::Castle, 5, 78, 34, FactionZone::Viking);
+        settlements.emplace_back(SettlementType::Village, 5, 88, 30, FactionZone::Viking);
+        settlements.emplace_back(SettlementType::Village, 5, 97, 24, FactionZone::Viking);
 
         // Samurai
         //CAPITAL REGION
-        settlements.emplace_back(SettlementType::Capital, 6, 103, 53);
-        settlements.emplace_back(SettlementType::Village, 6, 108, 66);
-        settlements.emplace_back(SettlementType::Village, 6, 101, 44);
-        settlements.emplace_back(SettlementType::Village, 6, 89, 41);
+        settlements.emplace_back(SettlementType::Capital, 6, 103, 53, FactionZone::Samurai);
+        settlements.emplace_back(SettlementType::Village, 6, 108, 66, FactionZone::Samurai);
+        settlements.emplace_back(SettlementType::Village, 6, 101, 44, FactionZone::Samurai);
+        settlements.emplace_back(SettlementType::Village, 6, 89, 41, FactionZone::Samurai);
         //EST REGION
-        settlements.emplace_back(SettlementType::Castle, 7, 80, 50);
-        settlements.emplace_back(SettlementType::Village, 7, 72, 62);
-        settlements.emplace_back(SettlementType::Village, 7, 80, 71);
-        settlements.emplace_back(SettlementType::Village, 7, 87, 64);
+        settlements.emplace_back(SettlementType::Castle, 7, 80, 50, FactionZone::Samurai);
+        settlements.emplace_back(SettlementType::Village, 7, 72, 62, FactionZone::Samurai);
+        settlements.emplace_back(SettlementType::Village, 7, 80, 71, FactionZone::Samurai);
+        settlements.emplace_back(SettlementType::Village, 7, 87, 64, FactionZone::Samurai);
         //OUEST REGION
-        settlements.emplace_back(SettlementType::Castle, 8, 107, 29);
-        settlements.emplace_back(SettlementType::Village, 8, 119, 59);
-        settlements.emplace_back(SettlementType::Village, 8, 118, 18);
+        settlements.emplace_back(SettlementType::Castle, 8, 107, 29, FactionZone::Samurai);
+        settlements.emplace_back(SettlementType::Village, 8, 119, 59, FactionZone::Samurai);
+        settlements.emplace_back(SettlementType::Village, 8, 118, 18, FactionZone::Samurai);
 
 
         gameKingdomNameFont = TTF_OpenFont("assets/KnightFont.ttf", 40);
@@ -986,34 +986,55 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
 
                 // building slots
                 if (bButtonUIBuildingIsPressed) {
-                float slotSize = 60.f;
-                float slotGap  = 6.f;
-                int cols = 0;
-                if      (s->settlementData.type == SettlementType::Village) cols = 2; // 2x2 = 4 slots
-                else if (s->settlementData.type == SettlementType::Castle)  cols = 3; // 2x3 = 6 slots
-                else if (s->settlementData.type == SettlementType::Capital) cols = 4; // 2x4 = 8 slots
+    float slotSize = 60.f;
+    float slotGap  = 6.f;
+    int cols = 0;
+    if      (s->settlementData.type == SettlementType::Village) cols = 2;
+    else if (s->settlementData.type == SettlementType::Castle)  cols = 3;
+    else if (s->settlementData.type == SettlementType::Capital) cols = 4;
 
-                float gridW     = cols * slotSize + (cols - 1) * slotGap;
-                float slotStartX = cx + (cardW - gridW) / 2.f; // centré dans la carte
-                float row0Y     = panelY + cardH - (slotSize * 2 + slotGap) - 12.f;
-                float row1Y     = row0Y + slotSize + slotGap;
+    float gridW      = cols * slotSize + (cols - 1) * slotGap;
+    float slotStartX = cx + (cardW - gridW) / 2.f;
+    float row0Y      = panelY + cardH - (slotSize * 2 + slotGap) - 12.f;
+    float row1Y      = row0Y + slotSize + slotGap;
 
+    for (int b = 0; b < (int)s->settlementData.buildings.size(); b++) {
+        BuildingType bt = s->settlementData.buildings[b];
 
-                for (int b = 0; b < (int)s->settlementData.buildings.size(); b++) {
-                    int col = b % cols;
-                    int row = b / cols;
+        int col = b % cols;
+        int row = b / cols;
 
-                    float sx = slotStartX + col * (slotSize + slotGap);
-                    float sy = (row == 0) ? row0Y : row1Y;
+        float sx = slotStartX + col * (slotSize + slotGap); // ← sx défini ici
+        float sy = (row == 0) ? row0Y : row1Y;              // ← sy défini ici
 
-                    bool built = (s->settlementData.buildings[b] != BuildingType::None);
-                    SDL_SetRenderDrawColor(renderer, built ? 80 : 45, built ? 160 : 45, built ? 80 : 45, 255);
-                    SDL_FRect slot = {sx, sy, slotSize, slotSize};
-                    SDL_RenderFillRect(renderer, &slot);
-                    SDL_SetRenderDrawColor(renderer, 90, 90, 90, 255);
-                    SDL_RenderRect(renderer, &slot);
-                }
+        // unique building per faction
+        //slot 0
+        if (b == 0) {
+            if (bt == BuildingType::Settlement_Village_Knight||bt == BuildingType::Settlement_Castle_Knight||bt == BuildingType::Settlement_Capital_Knight) {
+                SDL_SetRenderDrawColor(renderer, 255, 215, 0,   255); // or
             }
+            else if (bt == BuildingType::Settlement_Village_Viking ||bt == BuildingType::Settlement_Castle_Viking  ||bt == BuildingType::Settlement_Capital_Viking) {
+                SDL_SetRenderDrawColor(renderer, 255, 50,  50,  255); // rouge
+            }
+            else if (bt == BuildingType::Settlement_Village_Samurai||bt == BuildingType::Settlement_Castle_Samurai||bt == BuildingType::Settlement_Capital_Samurai) {
+                SDL_SetRenderDrawColor(renderer, 0,   200, 160, 255); // teal
+            }
+            else {
+                SDL_SetRenderDrawColor(renderer, 255, 0,   255, 255); // pink is error
+            }
+        } else {
+            bool built = (bt != BuildingType::None);
+            SDL_SetRenderDrawColor(renderer, built ? 80 : 45,
+                                             built ? 160 : 45,
+                                             built ? 80 : 45, 255);
+        }
+
+        SDL_FRect slot = {sx, sy, slotSize, slotSize};
+        SDL_RenderFillRect(renderer, &slot);
+        SDL_SetRenderDrawColor(renderer, 90, 90, 90, 255);
+        SDL_RenderRect(renderer, &slot);
+    }
+}
         }
         if (bButtonUIGarrisonIsPressed) {
             //To Do later the garrison with Their Unit cards

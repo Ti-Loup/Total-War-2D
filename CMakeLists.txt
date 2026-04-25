@@ -22,6 +22,8 @@ add_executable(TotalWar2D main.cpp
         Province.h
         Settlements.cpp
         Settlements.h
+        Buildings.cpp
+        Buildings.h
 )
 
 target_include_directories(TotalWar2D PRIVATE "${MIXER_PATH}/include")
