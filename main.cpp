@@ -138,9 +138,29 @@ public:
     SDL_Texture *provinceTextureUIBuilding = nullptr;
     SDL_Texture *provinceTextureUIGarrison = nullptr;
 
+    //Buildings Texture
+    //hammer
     SDL_Texture *hammerUIBuildingUpgradeTexture = nullptr;
+    //                 ~ KNIGHT ~
+    //capital
+    SDL_Texture *capitalBuildingUpgrade1Knight = nullptr;
+    SDL_Texture *capitalBuildingUpgrade2Knight = nullptr;
+    SDL_Texture *capitalBuildingUpgrade3Knight = nullptr;
+    SDL_Texture *capitalBuildingUpgrade4Knight = nullptr;
+    SDL_Texture *capitalBuildingUpgrade5Knight = nullptr;
+    //castle
+    SDL_Texture *castleBuildingUpgrade1Knight = nullptr;
+    SDL_Texture *castleBuildingUpgrade2Knight = nullptr;
+    SDL_Texture *castleBuildingUpgrade3Knight = nullptr;
+    SDL_Texture *castleBuildingUpgrade4Knight = nullptr;
+    SDL_Texture *castleBuildingUpgrade5Knight = nullptr;
+    //Village
+    SDL_Texture *villageBuildingUpgrade1Knight = nullptr;
+    SDL_Texture *villageBuildingUpgrade2Knight = nullptr;
+    SDL_Texture *villageBuildingUpgrade3Knight = nullptr;
     //UI TextFont
     TTF_Font *gameStatUITitleFont = nullptr;
+
     TTF_Font *gameStatUIFont = nullptr;
     TTF_Text *gameStatUITitleText = nullptr;
     TTF_Text *gameStatUIText = nullptr;
@@ -224,12 +244,12 @@ public:
         {2, "NameRegion3", FactionZone::Knight, false},//south
         //viking
         {3, "NameRegion1", FactionZone::Viking, true},
-        {4, "NameRegion2", FactionZone::Viking, false},
-        {5, "NameRegion3", FactionZone::Viking, false},
+        {4, "NameRegion2", FactionZone::Viking, false},//west
+        {5, "NameRegion3", FactionZone::Viking, false},//est
         //samurai
         {6, "NameRegion1", FactionZone::Samurai,true},
-        {7, "NameRegion2", FactionZone::Samurai,false},
-        {8, "NameRegion3", FactionZone::Samurai,false},
+        {7, "NameRegion2", FactionZone::Samurai,false},//est
+        {8, "NameRegion3", FactionZone::Samurai,false},//west
     };
 
     std::vector<SDL_FRect> tierPopupRects; // 1 rect per building
@@ -512,6 +532,71 @@ private://constructor
             SDL_LogWarn(0,"failed to load the texture of hammerUIBuildingUpgradeTexture",SDL_GetError());
         }
         SDL_SetTextureScaleMode(hammerUIBuildingUpgradeTexture, SDL_SCALEMODE_NEAREST);
+
+        // BUILDING UIS
+        //                  ! KNIGHT !
+        //capitals
+        capitalBuildingUpgrade1Knight = IMG_LoadTexture(renderer, "assets/Knight/CapitalBuildingUpgrade1Knight.png");
+        if (capitalBuildingUpgrade1Knight == nullptr) {
+            SDL_LogWarn(0, "failed to load the texture of capitalBuildingUpgrade1Knight", SDL_GetError());
+        }
+        capitalBuildingUpgrade2Knight = IMG_LoadTexture(renderer, "assets/Knight/CapitalBuildingUpgrade2Knight.png");
+        if (capitalBuildingUpgrade2Knight == nullptr) {
+            SDL_LogWarn(0, "failed to load the texture of capitalBuildingUpgrade2Knight", SDL_GetError());
+        }
+        capitalBuildingUpgrade3Knight = IMG_LoadTexture(renderer, "assets/Knight/CapitalBuildingUpgrade3Knight.png");
+        if (capitalBuildingUpgrade3Knight == nullptr) {
+            SDL_LogWarn(0, "failed to load the texture of capitalBuildingUpgrade3Knight", SDL_GetError());
+        }
+        capitalBuildingUpgrade4Knight = IMG_LoadTexture(renderer, "assets/Knight/CapitalBuildingUpgrade4Knight.png");
+        if (capitalBuildingUpgrade4Knight == nullptr) {
+            SDL_LogWarn(0, "failed to load the texture of capitalBuildingUpgrade4Knight", SDL_GetError());
+        }
+        capitalBuildingUpgrade5Knight = IMG_LoadTexture(renderer, "assets/Knight/CapitalBuildingUpgrade5Knight.png");
+        if (capitalBuildingUpgrade4Knight == nullptr) {
+            SDL_LogWarn(0, "failed to load the texture of capitalBuildingUpgrade5Knight", SDL_GetError());
+        }
+        //castle
+        castleBuildingUpgrade1Knight = IMG_LoadTexture(renderer, "assets/Knight/CastleBuildingUpgrade1Knight.png");
+        if (castleBuildingUpgrade1Knight == nullptr) {
+            SDL_LogWarn(0,"failed to load the texture of castleBuildingUpgrade1Knight", SDL_GetError());
+        }
+        castleBuildingUpgrade2Knight = IMG_LoadTexture(renderer, "assets/Knight/CastleBuildingUpgrade2Knight.png");
+        if (castleBuildingUpgrade2Knight == nullptr) {
+            SDL_LogWarn(0,"failed to load the texture of castleBuildingUpgrade2Knight", SDL_GetError());
+        }
+        castleBuildingUpgrade3Knight = IMG_LoadTexture(renderer, "assets/Knight/CastleBuildingUpgrade3Knight.png");
+        if (castleBuildingUpgrade3Knight == nullptr) {
+            SDL_LogWarn(0,"failed to load the texture of castleBuildingUpgrade3Knight", SDL_GetError());
+        }
+        castleBuildingUpgrade4Knight = IMG_LoadTexture(renderer, "assets/Knight/CastleBuildingUpgrade4Knight.png");
+        if (castleBuildingUpgrade4Knight == nullptr) {
+            SDL_LogWarn(0,"failed to load the texture of castleBuildingUpgrade4Knight", SDL_GetError());
+        }
+        castleBuildingUpgrade5Knight = IMG_LoadTexture(renderer, "assets/Knight/CastleBuildingUpgrade5Knight.png");
+        if (castleBuildingUpgrade5Knight == nullptr) {
+            SDL_LogWarn(0,"failed to load the texture of castleBuildingUpgrade5Knight", SDL_GetError());
+        }
+        //village
+        villageBuildingUpgrade1Knight = IMG_LoadTexture(renderer, "assets/Knight/VillageBuildingUpgrade1Knight.png");
+        if (villageBuildingUpgrade1Knight == nullptr) {
+            SDL_LogWarn(0,"failed to load the texture of villageBuildingUpgrade1knight",SDL_GetError());
+        }
+        villageBuildingUpgrade2Knight = IMG_LoadTexture(renderer, "assets/Knight/VillageBuildingUpgrade2Knight.png");
+        if (villageBuildingUpgrade2Knight == nullptr) {
+            SDL_LogWarn(0,"failed to load the texture of villageBuildingUpgrade2knight",SDL_GetError());
+        }
+        villageBuildingUpgrade3Knight = IMG_LoadTexture(renderer, "assets/Knight/VillageBuildingUpgrade3Knight.png");
+        if (villageBuildingUpgrade3Knight == nullptr) {
+            SDL_LogWarn(0,"failed to load the texture of villageBuildingUpgrade3knight",SDL_GetError());
+        }
+        //                  ! VIKING !
+        //capitals
+        //Castles
+        //Villages
+
+
+
         // -> CREDITS <-
         creditsTitleFont = TTF_OpenFont("assets/font.ttf", 50);
         creditsRoleTitleFont = TTF_OpenFont("assets/font.ttf", 40);
@@ -603,6 +688,19 @@ private://constructor
         SDL_DestroyTexture(provinceTextureUIBuilding);
         SDL_DestroyTexture(provinceTextureUIGarrison);
         SDL_DestroyTexture(hammerUIBuildingUpgradeTexture);
+        SDL_DestroyTexture(capitalBuildingUpgrade1Knight);
+        SDL_DestroyTexture(capitalBuildingUpgrade2Knight);
+        SDL_DestroyTexture(capitalBuildingUpgrade3Knight);
+        SDL_DestroyTexture(capitalBuildingUpgrade4Knight);
+        SDL_DestroyTexture(capitalBuildingUpgrade5Knight);
+        SDL_DestroyTexture(castleBuildingUpgrade1Knight);
+        SDL_DestroyTexture(castleBuildingUpgrade2Knight);
+        SDL_DestroyTexture(castleBuildingUpgrade3Knight);
+        SDL_DestroyTexture(castleBuildingUpgrade4Knight);
+        SDL_DestroyTexture(castleBuildingUpgrade5Knight);
+        SDL_DestroyTexture(villageBuildingUpgrade1Knight);
+        SDL_DestroyTexture(villageBuildingUpgrade2Knight);
+        SDL_DestroyTexture(villageBuildingUpgrade3Knight);
     // ---------------------------------
         SDL_DestroyCursor(cursor);
         delete tileMap;
@@ -1203,7 +1301,7 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
 
 }
     //The top UI bar for the money
-    void RenderMoneyUI(){
+    void RenderTopPartUI(){
 
     }
 
