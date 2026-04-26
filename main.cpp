@@ -137,6 +137,8 @@ public:
     SDL_FRect provinceButtonUIGarrison = {firstButton + 50.f,1030.f,40.f,40.f};
     SDL_Texture *provinceTextureUIBuilding = nullptr;
     SDL_Texture *provinceTextureUIGarrison = nullptr;
+
+    SDL_Texture *hammerUIBuildingUpgradeTexture = nullptr;
     //UI TextFont
     TTF_Font *gameStatUITitleFont = nullptr;
     TTF_Font *gameStatUIFont = nullptr;
@@ -502,7 +504,12 @@ private://constructor
         SDL_SetTextureScaleMode(provinceTextureUIBuilding, SDL_SCALEMODE_NEAREST);
         SDL_SetTextureScaleMode(provinceTextureUIGarrison, SDL_SCALEMODE_NEAREST);
 
-
+        //Texture construction Hammer
+        hammerUIBuildingUpgradeTexture = IMG_LoadTexture(renderer, "assets/UIHammer.png");
+        if (hammerUIBuildingUpgradeTexture == nullptr) {
+            SDL_LogWarn(0,"failed to load the texture of hammerUIBuildingUpgradeTexture",SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(hammerUIBuildingUpgradeTexture, SDL_SCALEMODE_NEAREST);
         // -> CREDITS <-
         creditsTitleFont = TTF_OpenFont("assets/font.ttf", 50);
         creditsRoleTitleFont = TTF_OpenFont("assets/font.ttf", 40);
@@ -593,6 +600,7 @@ private://constructor
         SDL_DestroyTexture(provinceSamuraiBannerTexture);
         SDL_DestroyTexture(provinceTextureUIBuilding);
         SDL_DestroyTexture(provinceTextureUIGarrison);
+        SDL_DestroyTexture(hammerUIBuildingUpgradeTexture);
     // ---------------------------------
         SDL_DestroyCursor(cursor);
         delete tileMap;
