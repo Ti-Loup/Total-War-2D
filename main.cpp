@@ -232,6 +232,8 @@ public:
         {8, "NameRegion3", FactionZone::Samurai,false},
     };
 
+    std::vector<SDL_FRect> tierPopupRects; // 1 rect per building
+    int tierPopupMaxTier = 0;
 
 private://constructor
     GameApp() {
@@ -1057,12 +1059,25 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
                         SDL_RenderFillRect(renderer, &slot);
                         SDL_SetRenderDrawColor(renderer, 90, 90, 90, 255);
                         SDL_RenderRect(renderer, &slot);
+                        //Main settlement (0)
                         if (b == 0) {
                             std::string tierStr = "T" + std::to_string(s->settlementData.settlementTier);
                             TTF_SetTextString(gameStatUIText, tierStr.c_str(), 0);
                             TTF_SetTextColor(gameStatUIText, 255, 255, 255, 255);
                             TTF_DrawRendererText(gameStatUIText, sx + 4.f, sy + 4.f);
 
+                            int maxTierCheck = 3;
+                            if (s->settlementData.type == SettlementType::Castle)  maxTierCheck = 4;
+                            if (s->settlementData.type == SettlementType::Capital) maxTierCheck = 5;
+
+                            if (s->settlementData.settlementTier < maxTierCheck && hammerUIBuildingUpgradeTexture) {
+                                SDL_FRect hammerRect = {
+                                    sx + slotSize - 30.f,
+                                    sy + 4.f,
+                                    35.f, 35.f
+                                };
+                                SDL_RenderTexture(renderer, hammerUIBuildingUpgradeTexture, nullptr, &hammerRect);
+                            }
 
                                 mainBuildingSlotRects[i] = slot;
                             //which card is the mouse on
@@ -1113,13 +1128,19 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
         float ty = popY + idx * (tileH + arrowH);
 
         bool isCurrent  = (t == currentTier);
+        bool isNext = t == currentTier + 1 && currentTier < maxTier;
         bool isUnlocked = (t < currentTier);
 
         // Carré du tier
-        if (isCurrent)
+        if (isCurrent) {
             SDL_SetRenderDrawColor(renderer, factionColor.r/3, factionColor.g/3, factionColor.b/3, 255);
-        else if (isUnlocked)
+        }
+        else if (isNext) {
+            SDL_SetRenderDrawColor(renderer, 100,100,100,255);
+        }
+        else if (isUnlocked) {
             SDL_SetRenderDrawColor(renderer, 55, 55, 55, 255);
+        }
         else
             SDL_SetRenderDrawColor(renderer, 22, 22, 22, 255);
 
@@ -1154,6 +1175,12 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
             SDL_RenderLine(renderer, (int)cx, (int)tipY,  (int)(cx - 6), (int)(tipY + 8));
             SDL_RenderLine(renderer, (int)cx, (int)tipY,  (int)(cx + 6), (int)(tipY + 8));
         }
+        // Sauvegarder le rect pour la détection de clic
+        if ((int)tierPopupRects.size() < maxTier)
+            tierPopupRects.resize(maxTier);
+        tierPopupRects[t - 1] = tierRect;
+        tierPopupMaxTier = maxTier;
+
     }
 }
 
@@ -1174,8 +1201,12 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
     // Restore
     TTF_SetTextColor(gameStatUITitleText, 255, 255, 255, 255);
 
-
 }
+    //The top UI bar for the money
+    void RenderMoneyUI(){
+
+    }
+
 
     void UpdateBackgroundTint(const float deltaTime) {
         constexpr float speed = 5.0f;
@@ -1616,6 +1647,40 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
             return SDL_APP_CONTINUE; // ← stop ici, pas de reset
         }
     }
+
+            // Clic sur un tier du popup
+            if (app.bHasClickedOnASettlement &&
+                app.hoveredSlotIndex == 0 &&
+                app.hoveredCardIndex >= 0 &&
+                !app.tierPopupRects.empty())
+            {
+                SDL_FPoint pt = {nouveauX, nouveauY};
+                for (int t = 1; t <= app.tierPopupMaxTier; t++) {
+                    if (SDL_PointInRectFloat(&pt, &app.tierPopupRects[t - 1])) {
+                        // Récupérer le settlement survolé
+                        // Rebuild provinceSettlements pour trouver le bon
+                        const Settlement& clicked = app.settlements[app.selectedSettlementIndex];
+                        int provID = clicked.settlementData.provinceID;
+                        std::vector<Settlement*> provS;
+                        for (auto& s : app.settlements)
+                            if (s.settlementData.provinceID == provID)
+                                provS.push_back(&s);
+
+                        if (app.hoveredCardIndex < (int)provS.size()) {
+                            Settlement* sel = provS[app.hoveredCardIndex];
+                            // Upgrade seulement si c'est le tier suivant
+                            if (t == sel->settlementData.settlementTier + 1 &&
+                                t <= app.tierPopupMaxTier) {
+                                sel->settlementData.settlementTier = t;
+                                SDL_Log("Upgraded to tier %d", t);
+                                }
+                        }
+                        return SDL_APP_CONTINUE;
+                    }
+                }
+            }
+
+
 
     // dection if clicked a settlement
     bool bClickedOutsideOfUI = false;
