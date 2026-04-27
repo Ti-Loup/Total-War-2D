@@ -540,56 +540,69 @@ private://constructor
         if (capitalBuildingUpgrade1Knight == nullptr) {
             SDL_LogWarn(0, "failed to load the texture of capitalBuildingUpgrade1Knight", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(capitalBuildingUpgrade1Knight, SDL_SCALEMODE_NEAREST);
         capitalBuildingUpgrade2Knight = IMG_LoadTexture(renderer, "assets/Knight/CapitalBuildingUpgrade2Knight.png");
         if (capitalBuildingUpgrade2Knight == nullptr) {
             SDL_LogWarn(0, "failed to load the texture of capitalBuildingUpgrade2Knight", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(capitalBuildingUpgrade2Knight, SDL_SCALEMODE_NEAREST);
         capitalBuildingUpgrade3Knight = IMG_LoadTexture(renderer, "assets/Knight/CapitalBuildingUpgrade3Knight.png");
         if (capitalBuildingUpgrade3Knight == nullptr) {
             SDL_LogWarn(0, "failed to load the texture of capitalBuildingUpgrade3Knight", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(capitalBuildingUpgrade3Knight, SDL_SCALEMODE_NEAREST);
         capitalBuildingUpgrade4Knight = IMG_LoadTexture(renderer, "assets/Knight/CapitalBuildingUpgrade4Knight.png");
         if (capitalBuildingUpgrade4Knight == nullptr) {
             SDL_LogWarn(0, "failed to load the texture of capitalBuildingUpgrade4Knight", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(capitalBuildingUpgrade4Knight, SDL_SCALEMODE_NEAREST);
         capitalBuildingUpgrade5Knight = IMG_LoadTexture(renderer, "assets/Knight/CapitalBuildingUpgrade5Knight.png");
         if (capitalBuildingUpgrade4Knight == nullptr) {
             SDL_LogWarn(0, "failed to load the texture of capitalBuildingUpgrade5Knight", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(capitalBuildingUpgrade5Knight, SDL_SCALEMODE_NEAREST);
         //castle
         castleBuildingUpgrade1Knight = IMG_LoadTexture(renderer, "assets/Knight/CastleBuildingUpgrade1Knight.png");
         if (castleBuildingUpgrade1Knight == nullptr) {
             SDL_LogWarn(0,"failed to load the texture of castleBuildingUpgrade1Knight", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(castleBuildingUpgrade1Knight, SDL_SCALEMODE_NEAREST);
         castleBuildingUpgrade2Knight = IMG_LoadTexture(renderer, "assets/Knight/CastleBuildingUpgrade2Knight.png");
         if (castleBuildingUpgrade2Knight == nullptr) {
             SDL_LogWarn(0,"failed to load the texture of castleBuildingUpgrade2Knight", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(castleBuildingUpgrade2Knight, SDL_SCALEMODE_NEAREST);
         castleBuildingUpgrade3Knight = IMG_LoadTexture(renderer, "assets/Knight/CastleBuildingUpgrade3Knight.png");
         if (castleBuildingUpgrade3Knight == nullptr) {
             SDL_LogWarn(0,"failed to load the texture of castleBuildingUpgrade3Knight", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(castleBuildingUpgrade3Knight, SDL_SCALEMODE_NEAREST);
         castleBuildingUpgrade4Knight = IMG_LoadTexture(renderer, "assets/Knight/CastleBuildingUpgrade4Knight.png");
         if (castleBuildingUpgrade4Knight == nullptr) {
             SDL_LogWarn(0,"failed to load the texture of castleBuildingUpgrade4Knight", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(castleBuildingUpgrade4Knight, SDL_SCALEMODE_NEAREST);
         castleBuildingUpgrade5Knight = IMG_LoadTexture(renderer, "assets/Knight/CastleBuildingUpgrade5Knight.png");
         if (castleBuildingUpgrade5Knight == nullptr) {
             SDL_LogWarn(0,"failed to load the texture of castleBuildingUpgrade5Knight", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(castleBuildingUpgrade5Knight, SDL_SCALEMODE_NEAREST);
         //village
         villageBuildingUpgrade1Knight = IMG_LoadTexture(renderer, "assets/Knight/VillageBuildingUpgrade1Knight.png");
         if (villageBuildingUpgrade1Knight == nullptr) {
             SDL_LogWarn(0,"failed to load the texture of villageBuildingUpgrade1knight",SDL_GetError());
         }
+        SDL_SetTextureScaleMode(villageBuildingUpgrade1Knight, SDL_SCALEMODE_NEAREST);
         villageBuildingUpgrade2Knight = IMG_LoadTexture(renderer, "assets/Knight/VillageBuildingUpgrade2Knight.png");
         if (villageBuildingUpgrade2Knight == nullptr) {
             SDL_LogWarn(0,"failed to load the texture of villageBuildingUpgrade2knight",SDL_GetError());
         }
+        SDL_SetTextureScaleMode(villageBuildingUpgrade2Knight, SDL_SCALEMODE_NEAREST);
         villageBuildingUpgrade3Knight = IMG_LoadTexture(renderer, "assets/Knight/VillageBuildingUpgrade3Knight.png");
         if (villageBuildingUpgrade3Knight == nullptr) {
             SDL_LogWarn(0,"failed to load the texture of villageBuildingUpgrade3knight",SDL_GetError());
         }
+        SDL_SetTextureScaleMode(villageBuildingUpgrade3Knight, SDL_SCALEMODE_NEAREST);
         //                  ! VIKING !
         //capitals
         //Castles
@@ -1058,7 +1071,7 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
                     SDL_SetRenderDrawColor(renderer, 70, 70, 70, 255);
                 SDL_RenderRect(renderer, &card);
 
-                // title of each settlement UI
+                // title of each settlement UI changes the color
                 SDL_Color typeColor;
                 std::string typeName;
                 if (s->settlementData.type == SettlementType::Capital) {
@@ -1148,10 +1161,61 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
                             }
                         } else {
                             bool built = (buildingType != BuildingType::None);
-                            SDL_SetRenderDrawColor(renderer, built ? 80 : 45,
-                                                             built ? 160 : 45,
-                                                             built ? 80 : 45, 255);
+                            SDL_SetRenderDrawColor(renderer, built ? 80 : 45,built ? 160 : 45,built ? 80 : 45, 255);
                         }
+
+                        //texture
+                        if (province.owner == FactionZone::Knight) {
+                            if (s->settlementData.type == SettlementType::Capital) {
+                                if (s->settlementData.settlementTier == 1) {
+                                    SDL_RenderTexture(renderer, capitalBuildingUpgrade1Knight, nullptr, &mainBuildingSlotRects[i]);
+                                }
+                                else if (s->settlementData.settlementTier == 2) {
+                                    SDL_RenderTexture(renderer, capitalBuildingUpgrade2Knight, nullptr, &mainBuildingSlotRects[i]);
+                                }
+                                else if (s->settlementData.settlementTier == 3) {
+                                    SDL_RenderTexture(renderer, capitalBuildingUpgrade3Knight, nullptr, &mainBuildingSlotRects[i]);
+                                }
+                                else if (s->settlementData.settlementTier == 4) {
+                                    SDL_RenderTexture(renderer, capitalBuildingUpgrade4Knight, nullptr, &mainBuildingSlotRects[i]);
+                                }
+                                else if (s->settlementData.settlementTier == 5) {
+                                    SDL_RenderTexture(renderer, capitalBuildingUpgrade5Knight, nullptr, &mainBuildingSlotRects[i]);
+                                }
+                            }
+                            else if (s->settlementData.type == SettlementType::Castle) {
+                                if (s->settlementData.settlementTier == 1) {
+                                    SDL_RenderTexture(renderer, castleBuildingUpgrade1Knight, nullptr, &mainBuildingSlotRects[i]);
+                                }
+                                else if (s->settlementData.settlementTier == 2) {
+                                    SDL_RenderTexture(renderer, castleBuildingUpgrade2Knight, nullptr, &mainBuildingSlotRects[i]);
+                                }
+                                else if (s->settlementData.settlementTier == 3) {
+                                    SDL_RenderTexture(renderer, castleBuildingUpgrade3Knight, nullptr, &mainBuildingSlotRects[i]);
+                                }
+                                else if (s->settlementData.settlementTier == 4) {
+                                    SDL_RenderTexture(renderer, castleBuildingUpgrade4Knight, nullptr, &mainBuildingSlotRects[i]);
+                                }
+                                else if (s->settlementData.settlementTier == 5) {
+                                    SDL_RenderTexture(renderer, castleBuildingUpgrade5Knight, nullptr, &mainBuildingSlotRects[i]);
+                                }
+                            }
+                            else if (s->settlementData.type == SettlementType::Village) {
+                                if (s->settlementData.settlementTier == 1) {
+                                    SDL_RenderTexture(renderer, villageBuildingUpgrade1Knight,nullptr, &mainBuildingSlotRects[i]);
+                                }
+                                else if (s->settlementData.settlementTier == 2) {
+                                    SDL_RenderTexture(renderer, villageBuildingUpgrade2Knight,nullptr, &mainBuildingSlotRects[i]);
+                                }
+                                else if (s->settlementData.settlementTier == 3) {
+                                    SDL_RenderTexture(renderer, villageBuildingUpgrade3Knight,nullptr, &mainBuildingSlotRects[i]);
+                                }
+                            }
+
+                        }
+
+
+
 
                         SDL_FRect slot = {sx, sy, slotSize, slotSize};
                         SDL_RenderFillRect(renderer, &slot);
