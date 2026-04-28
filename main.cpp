@@ -158,6 +158,40 @@ public:
     SDL_Texture *villageBuildingUpgrade1Knight = nullptr;
     SDL_Texture *villageBuildingUpgrade2Knight = nullptr;
     SDL_Texture *villageBuildingUpgrade3Knight = nullptr;
+    //                 ~ VIKING ~
+    //capital
+    SDL_Texture *capitalBuildingUpgrade1Viking = nullptr;
+    SDL_Texture *capitalBuildingUpgrade2Viking = nullptr;
+    SDL_Texture *capitalBuildingUpgrade3Viking = nullptr;
+    SDL_Texture *capitalBuildingUpgrade4Viking = nullptr;
+    SDL_Texture *capitalBuildingUpgrade5Viking = nullptr;
+    //Castle
+    SDL_Texture *castleBuildingUpgrade1Viking = nullptr;
+    SDL_Texture *castleBuildingUpgrade2Viking = nullptr;
+    SDL_Texture *castleBuildingUpgrade3Viking = nullptr;
+    SDL_Texture *castleBuildingUpgrade4Viking = nullptr;
+    SDL_Texture *castleBuildingUpgrade5Viking = nullptr;
+    //Village
+    SDL_Texture *villageBuildingUpgrade1Viking = nullptr;
+    SDL_Texture *villageBuildingUpgrade2Viking = nullptr;
+    SDL_Texture *villageBuildingUpgrade3Viking = nullptr;
+    //                 ~ SAMURAI ~
+    //capital
+    SDL_Texture *capitalBuildingUpgrade1Samurai = nullptr;
+    SDL_Texture *capitalBuildingUpgrade2Samurai = nullptr;
+    SDL_Texture *capitalBuildingUpgrade3Samurai = nullptr;
+    SDL_Texture *capitalBuildingUpgrade4Samurai = nullptr;
+    SDL_Texture *capitalBuildingUpgrade5Samurai = nullptr;
+    //castle
+    SDL_Texture *castleBuildingUpgrade1Samurai = nullptr;
+    SDL_Texture *castleBuildingUpgrade2Samurai = nullptr;
+    SDL_Texture *castleBuildingUpgrade3Samurai = nullptr;
+    SDL_Texture *castleBuildingUpgrade4Samurai = nullptr;
+    SDL_Texture *castleBuildingUpgrade5Samurai = nullptr;
+    //village
+    SDL_Texture *villageBuildingUpgrade1Samurai = nullptr;
+    SDL_Texture *villageBuildingUpgrade2Samurai = nullptr;
+    SDL_Texture *villageBuildingUpgrade3Samurai = nullptr;
     //UI TextFont
     TTF_Font *gameStatUITitleFont = nullptr;
 
@@ -714,6 +748,32 @@ private://constructor
         SDL_DestroyTexture(villageBuildingUpgrade1Knight);
         SDL_DestroyTexture(villageBuildingUpgrade2Knight);
         SDL_DestroyTexture(villageBuildingUpgrade3Knight);
+        SDL_DestroyTexture(capitalBuildingUpgrade1Viking);
+        SDL_DestroyTexture(capitalBuildingUpgrade2Viking);
+        SDL_DestroyTexture(capitalBuildingUpgrade3Viking);
+        SDL_DestroyTexture(capitalBuildingUpgrade4Viking);
+        SDL_DestroyTexture(capitalBuildingUpgrade5Viking);
+        SDL_DestroyTexture(castleBuildingUpgrade1Viking);
+        SDL_DestroyTexture(castleBuildingUpgrade2Viking);
+        SDL_DestroyTexture(castleBuildingUpgrade3Viking);
+        SDL_DestroyTexture(castleBuildingUpgrade4Viking);
+        SDL_DestroyTexture(castleBuildingUpgrade5Viking);
+        SDL_DestroyTexture(villageBuildingUpgrade1Viking);
+        SDL_DestroyTexture(villageBuildingUpgrade2Viking);
+        SDL_DestroyTexture(villageBuildingUpgrade3Viking);
+        SDL_DestroyTexture(capitalBuildingUpgrade1Samurai);
+        SDL_DestroyTexture(capitalBuildingUpgrade2Samurai);
+        SDL_DestroyTexture(capitalBuildingUpgrade3Samurai);
+        SDL_DestroyTexture(capitalBuildingUpgrade4Samurai);
+        SDL_DestroyTexture(capitalBuildingUpgrade5Samurai);
+        SDL_DestroyTexture(castleBuildingUpgrade1Samurai);
+        SDL_DestroyTexture(castleBuildingUpgrade2Samurai);
+        SDL_DestroyTexture(castleBuildingUpgrade3Samurai);
+        SDL_DestroyTexture(castleBuildingUpgrade4Samurai);
+        SDL_DestroyTexture(castleBuildingUpgrade5Samurai);
+        SDL_DestroyTexture(villageBuildingUpgrade1Samurai);
+        SDL_DestroyTexture(villageBuildingUpgrade2Samurai);
+        SDL_DestroyTexture(villageBuildingUpgrade3Samurai);
     // ---------------------------------
         SDL_DestroyCursor(cursor);
         delete tileMap;
