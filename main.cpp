@@ -639,8 +639,23 @@ private://constructor
         SDL_SetTextureScaleMode(villageBuildingUpgrade3Knight, SDL_SCALEMODE_NEAREST);
         //                  ! VIKING !
         //capitals
+        capitalBuildingUpgrade1Viking = IMG_LoadTexture(renderer, "assets/Viking/CapitalBuildingUpgrade1Viking.png");
+        if (capitalBuildingUpgrade1Viking == nullptr) {
+            SDL_LogWarn(0,"failed to load texture capitalBuildingUpgrade1Viking", SDL_GetError());
+        }
+        capitalBuildingUpgrade2Viking = IMG_LoadTexture(renderer, "assets/Viking/CapitalBuildingUpgrade2Viking.png");
+        if (capitalBuildingUpgrade2Viking == nullptr) {
+            SDL_LogWarn(0,"failed to load texture capitalBuildingUpgrade2Viking", SDL_GetError());
+        }
+
+
+
         //Castles
         //Villages
+        //                  ! SAMURAI !
+        //capitals
+        //castles
+        //villages
 
 
 
