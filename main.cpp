@@ -20,6 +20,7 @@
 #include "Camera.h"
 #include "Province.h"
 #include "Settlements.h"
+#include "Player.h"
 
 /*
  *TODO LIST For version 0.1.0
@@ -129,6 +130,10 @@ public:
     TTF_Text *gameKingdomKnightNameText = nullptr;
     TTF_Text *gameKingdomVikingNameText = nullptr;
     TTF_Text *gameKingdomSamuraiNameText = nullptr;
+    TTF_Font *gameGeneralFont = nullptr;
+    TTF_Text *gameCurrentMoneyUiText = nullptr;
+    TTF_Text *gameAnticipatedMoneyUiText = nullptr;
+
     //Buttons UI
     bool bButtonUIBuildingIsPressed = true;
     bool bButtonUIGarrisonIsPressed = false;
@@ -288,6 +293,9 @@ public:
 
     std::vector<SDL_FRect> tierPopupRects; // 1 rect per building
     int tierPopupMaxTier = 0;
+
+    //Player
+    Player player;
 
 private://constructor
     GameApp() {
@@ -468,6 +476,16 @@ private://constructor
         if (gameStatUIText == nullptr) {
             SDL_LogWarn(0,"failed to create the text gameStatUIText",SDL_GetError());
         }
+        gameGeneralFont = TTF_OpenFont("assets/Rubik.ttf", 30);
+        gameCurrentMoneyUiText = TTF_CreateText(textEngine, gameGeneralFont, "0", 25);
+        if (gameCurrentMoneyUiText == nullptr) {
+            SDL_LogWarn(0, "failed to create the text gameCurrentMoneyUiText",SDL_GetError());
+        }
+        gameAnticipatedMoneyUiText = TTF_CreateText(textEngine, gameGeneralFont, "(0)", 25);
+        if (gameAnticipatedMoneyUiText == nullptr) {
+            SDL_LogWarn(0,"failed to create the text gameAnticipatedMoneyUiText", SDL_GetError());
+        }
+
         //CREATION OF THE SETTLEMENTS
         //KNIGHT
         //CAPITAL REGION
@@ -806,6 +824,7 @@ private://constructor
         TTF_CloseFont(gameKingdomNameFont);
         TTF_CloseFont(gameStatUITitleFont);
         TTF_CloseFont(gameStatUIFont);
+        TTF_CloseFont(gameGeneralFont);
     // ---------------------------------
         TTF_DestroyText(fpsText);
         TTF_DestroyText(menuText);
@@ -833,6 +852,8 @@ private://constructor
         TTF_DestroyText(gameKingdomSamuraiNameText);
         TTF_DestroyText(gameStatUITitleText);
         TTF_DestroyText(gameStatUIText);
+        TTF_DestroyText(gameCurrentMoneyUiText);
+        TTF_DestroyText(gameAnticipatedMoneyUiText);
     // ---------------------------------
         SDL_DestroyTexture(provinceKnightBannerTexture);
         SDL_DestroyTexture(provinceVikingBannerTexture);
@@ -1530,7 +1551,7 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
 
 }
     //The top UI bar for the money
-    void RenderTopPartUI(){
+    void RenderGeneralUI(){
 
     }
 
@@ -1768,8 +1789,9 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
             TTF_DrawRendererText(gameKingdomSamuraiNameText, sScreen.x - textW/2.f, sScreen.y - textH/2.f);;
         }
 
-        //Render the UI
+        //Render the UI of provinces
         RenderProvinceUI();
+        RenderGeneralUI();
 
         //fps
         TTF_DrawRendererText(fpsText, 10, 10);
