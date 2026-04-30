@@ -7,15 +7,17 @@
 
 #include "Entity.h"
 #include "State.h"
-
+#include "Buildings.h"
 class Player : public Entity {
 public :
     int currentGold = 2500;
-    int nextTurnGold
+    int nextTurnGold = 0;//next turn money
+
     FactionZone faction = FactionZone::Knight;
-    int GetUpgradeCost(int fromBuildingTier);
+
+    int GetUpgradeCost(int fromBuildingTier, BuildingType type);
     void AddGold(int amount);
-    bool SpendGold(int amount);//if enought money than buy -> 
+    bool SpendGold(int amount);//if enought money than buy ->
 
     Player (SDL_Texture *texture = nullptr);
     ~Player();
