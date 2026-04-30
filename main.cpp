@@ -1418,7 +1418,10 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
                             if (s->settlementData.type == SettlementType::Castle)  maxTierCheck = 4;
                             if (s->settlementData.type == SettlementType::Capital) maxTierCheck = 5;
 
-                            if (s->settlementData.settlementTier < maxTierCheck && hammerUIBuildingUpgradeTexture) {
+                            //if not full tier than the hammer shows
+                            BuildingType mainBuilding = s->settlementData.buildings[0];
+                            int upgradeCost = player.GetUpgradeCost(s->settlementData.settlementTier, mainBuilding);
+                            if (s->settlementData.settlementTier < maxTierCheck && hammerUIBuildingUpgradeTexture && player.currentGold >= upgradeCost) {
                                 SDL_FRect hammerRect = {
                                     sx + slotSize - 30.f,
                                     sy + 4.f,
@@ -2018,11 +2021,17 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
                         if (app.hoveredCardIndex < (int)provS.size()) {
                             Settlement* sel = provS[app.hoveredCardIndex];
                             // Upgrade seulement si c'est le tier suivant
-                            if (t == sel->settlementData.settlementTier + 1 &&
-                                t <= app.tierPopupMaxTier) {
-                                sel->settlementData.settlementTier = t;
-                                SDL_Log("Upgraded to tier %d", t);
+                            if (t == sel->settlementData.settlementTier + 1 && t <= app.tierPopupMaxTier) {
+                                BuildingType mainBuilding = sel->settlementData.buildings[0];
+                                //cost of each settlement + if money of player is higher than the price -> can purchase other it doesnt
+                                int cost = app.player.GetUpgradeCost(sel->settlementData.settlementTier, mainBuilding);
+                                if (app.player.SpendGold(cost)) {
+                                    sel->settlementData.settlementTier = t;
+                                    SDL_Log("Upgraded to tier %d, gold remaining: %d", t, app.player.currentGold);
+                                } else {
+                                    SDL_Log("Not enough gold! Need %d, have %d", cost, app.player.currentGold);
                                 }
+                            }
                         }
                         return SDL_APP_CONTINUE;
                     }
