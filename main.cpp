@@ -476,7 +476,7 @@ private://constructor
         if (gameStatUIText == nullptr) {
             SDL_LogWarn(0,"failed to create the text gameStatUIText",SDL_GetError());
         }
-        gameGeneralFont = TTF_OpenFont("assets/Rubik.ttf", 30);
+        gameGeneralFont = TTF_OpenFont("assets/Rubik.ttf", 20);
         gameCurrentMoneyUiText = TTF_CreateText(textEngine, gameGeneralFont, "0", 25);
         if (gameCurrentMoneyUiText == nullptr) {
             SDL_LogWarn(0, "failed to create the text gameCurrentMoneyUiText",SDL_GetError());
@@ -661,112 +661,138 @@ private://constructor
         if (capitalBuildingUpgrade1Viking == nullptr) {
             SDL_LogWarn(0,"failed to load texture capitalBuildingUpgrade1Viking", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(capitalBuildingUpgrade1Viking, SDL_SCALEMODE_NEAREST);
         capitalBuildingUpgrade2Viking = IMG_LoadTexture(renderer, "assets/Viking/CapitalBuildingUpgrade2Viking.png");
         if (capitalBuildingUpgrade2Viking == nullptr) {
             SDL_LogWarn(0,"failed to load texture capitalBuildingUpgrade2Viking", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(capitalBuildingUpgrade2Viking, SDL_SCALEMODE_NEAREST);
         capitalBuildingUpgrade3Viking = IMG_LoadTexture(renderer, "assets/Viking/CapitalBuildingUpgrade3Viking.png");
         if (capitalBuildingUpgrade3Viking == nullptr) {
             SDL_LogWarn(0,"failed to load texture capitalBuildingUpgrade3Viking", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(capitalBuildingUpgrade3Viking, SDL_SCALEMODE_NEAREST);
         capitalBuildingUpgrade4Viking = IMG_LoadTexture(renderer, "assets/Viking/CapitalBuildingUpgrade4Viking.png");
         if (capitalBuildingUpgrade4Viking == nullptr) {
             SDL_LogWarn(0,"failed to load texture capitalBuildingUpgrade4Viking", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(capitalBuildingUpgrade4Viking, SDL_SCALEMODE_NEAREST);
         capitalBuildingUpgrade5Viking = IMG_LoadTexture(renderer, "assets/Viking/CapitalBuildingUpgrade5Viking.png");
         if (capitalBuildingUpgrade5Viking == nullptr) {
             SDL_LogWarn(0,"failed to load texture capitalBuildingUpgrade5Viking", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(capitalBuildingUpgrade5Viking, SDL_SCALEMODE_NEAREST);
         //Castles
         castleBuildingUpgrade1Viking = IMG_LoadTexture(renderer, "assets/Viking/CastleBuildingUpgrade1Viking.png");
         if (castleBuildingUpgrade1Viking == nullptr) {
             SDL_LogWarn(0,"failed to load texture castleBuildingUpgrade1Viking",SDL_GetError());
         }
+        SDL_SetTextureScaleMode(castleBuildingUpgrade1Viking, SDL_SCALEMODE_NEAREST);
         castleBuildingUpgrade2Viking = IMG_LoadTexture(renderer, "assets/Viking/CastleBuildingUpgrade2Viking.png");
         if (castleBuildingUpgrade2Viking == nullptr) {
             SDL_LogWarn(0,"failed to load texture castleBuildingUpgrade2Viking", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(castleBuildingUpgrade2Viking, SDL_SCALEMODE_NEAREST);
         castleBuildingUpgrade3Viking = IMG_LoadTexture(renderer, "assets/Viking/CastleBuildingUpgrade3Viking.png");
         if (castleBuildingUpgrade3Viking == nullptr) {
             SDL_LogWarn(0,"failed to load texture castleBuildingUpgrade3Viking", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(castleBuildingUpgrade3Viking, SDL_SCALEMODE_NEAREST);
         castleBuildingUpgrade4Viking = IMG_LoadTexture(renderer, "assets/Viking/CastleBuildingUpgrade4Viking.png");
         if (castleBuildingUpgrade4Viking == nullptr) {
             SDL_LogWarn(0,"failed to load texture castleBuildingUpgrade4Viking", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(castleBuildingUpgrade4Viking, SDL_SCALEMODE_NEAREST);
         castleBuildingUpgrade5Viking = IMG_LoadTexture(renderer, "assets/Viking/CastleBuildingUpgrade5Viking.png");
         if (castleBuildingUpgrade4Viking == nullptr) {
             SDL_LogWarn(0,"failed to load texture castleBuildingUpgrade5Viking", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(castleBuildingUpgrade5Viking, SDL_SCALEMODE_NEAREST);
         //Villages
         villageBuildingUpgrade1Viking = IMG_LoadTexture(renderer, "assets/Viking/VillageBuildingUpgrade1Viking.png");
         if (villageBuildingUpgrade1Viking == nullptr) {
             SDL_LogWarn(0,"failed to load texture villageBuildingUpgrade1Viking", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(villageBuildingUpgrade1Viking, SDL_SCALEMODE_NEAREST);
         villageBuildingUpgrade2Viking = IMG_LoadTexture(renderer, "assets/Viking/VillageBuildingUpgrade2Viking.png");
         if (villageBuildingUpgrade2Viking == nullptr) {
             SDL_LogWarn(0,"failed to load texture villageBuildingUpgrade2Viking", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(villageBuildingUpgrade2Viking, SDL_SCALEMODE_NEAREST);
         villageBuildingUpgrade3Viking = IMG_LoadTexture(renderer, "assets/Viking/VillageBuildingUpgrade3Viking.png");
         if (villageBuildingUpgrade3Viking == nullptr) {
             SDL_LogWarn(0,"failed to load texture villageBuildingUpgrade3Viking", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(villageBuildingUpgrade3Viking, SDL_SCALEMODE_NEAREST);
         //                  ! SAMURAI !
         //capitals
         capitalBuildingUpgrade1Samurai = IMG_LoadTexture(renderer, "assets/Samurai/CapitalBuildingUpgrade1Samurai.png");
         if (capitalBuildingUpgrade1Samurai == nullptr) {
             SDL_LogWarn(0, "failed to load texture capitalBuildingUpgrade1Samurai");
         }
+        SDL_SetTextureScaleMode(capitalBuildingUpgrade1Samurai, SDL_SCALEMODE_NEAREST);
         capitalBuildingUpgrade2Samurai = IMG_LoadTexture(renderer, "assets/Samurai/CapitalBuildingUpgrade2Samurai.png");
         if (capitalBuildingUpgrade2Samurai == nullptr) {
             SDL_LogWarn(0, "failed to load texture capitalBuildingUpgrade2Samurai");
         }
+        SDL_SetTextureScaleMode(capitalBuildingUpgrade2Samurai, SDL_SCALEMODE_NEAREST);
         capitalBuildingUpgrade3Samurai = IMG_LoadTexture(renderer, "assets/Samurai/CapitalBuildingUpgrade3Samurai.png");
         if (capitalBuildingUpgrade3Samurai == nullptr) {
             SDL_LogWarn(0, "failed to load texture capitalBuildingUpgrade3Samurai");
         }
+        SDL_SetTextureScaleMode(capitalBuildingUpgrade3Samurai, SDL_SCALEMODE_NEAREST);
         capitalBuildingUpgrade4Samurai = IMG_LoadTexture(renderer, "assets/Samurai/CapitalBuildingUpgrade4Samurai.png");
         if (capitalBuildingUpgrade4Samurai == nullptr) {
             SDL_LogWarn(0, "failed to load texture capitalBuildingUpgrade4Samurai");
         }
+        SDL_SetTextureScaleMode(capitalBuildingUpgrade4Samurai, SDL_SCALEMODE_NEAREST);
         capitalBuildingUpgrade5Samurai = IMG_LoadTexture(renderer, "assets/Samurai/CapitalBuildingUpgrade5Samurai.png");
         if (capitalBuildingUpgrade5Samurai == nullptr) {
             SDL_LogWarn(0, "failed to load texture capitalBuildingUpgrade5Samurai");
         }
+        SDL_SetTextureScaleMode(capitalBuildingUpgrade5Samurai, SDL_SCALEMODE_NEAREST);
         //castles
         castleBuildingUpgrade1Samurai = IMG_LoadTexture(renderer, "assets/Samurai/CastleBuildingUpgrade1Samurai.png");
         if (castleBuildingUpgrade1Samurai == nullptr) {
             SDL_LogWarn(0, "failed to load texture castleBuildingUpgrade1Samurai", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(castleBuildingUpgrade1Samurai, SDL_SCALEMODE_NEAREST);
         castleBuildingUpgrade2Samurai = IMG_LoadTexture(renderer, "assets/Samurai/CastleBuildingUpgrade2Samurai.png");
         if (castleBuildingUpgrade2Samurai == nullptr) {
             SDL_LogWarn(0, "failed to load texture castleBuildingUpgrade2Samurai", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(castleBuildingUpgrade2Samurai, SDL_SCALEMODE_NEAREST);
         castleBuildingUpgrade3Samurai = IMG_LoadTexture(renderer, "assets/Samurai/CastleBuildingUpgrade3Samurai.png");
         if (castleBuildingUpgrade3Samurai == nullptr) {
             SDL_LogWarn(0, "failed to load texture castleBuildingUpgrade3Samurai", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(castleBuildingUpgrade3Samurai, SDL_SCALEMODE_NEAREST);
         castleBuildingUpgrade4Samurai = IMG_LoadTexture(renderer, "assets/Samurai/CastleBuildingUpgrade4Samurai.png");
         if (castleBuildingUpgrade4Samurai == nullptr) {
             SDL_LogWarn(0, "failed to load texture castleBuildingUpgrade4Samurai", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(castleBuildingUpgrade4Samurai, SDL_SCALEMODE_NEAREST);
         castleBuildingUpgrade5Samurai = IMG_LoadTexture(renderer, "assets/Samurai/CastleBuildingUpgrade5Samurai.png");
         if (castleBuildingUpgrade5Samurai == nullptr) {
             SDL_LogWarn(0, "failed to load texture castleBuildingUpgrade5Samurai", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(castleBuildingUpgrade5Samurai, SDL_SCALEMODE_NEAREST);
         //villages
         villageBuildingUpgrade1Samurai = IMG_LoadTexture(renderer, "assets/Samurai/VillageBuildingUpgrade1Samurai.png");
         if (villageBuildingUpgrade1Samurai == nullptr) {
             SDL_LogWarn(0,"failed to load texture villageBuildingUpgrade1Samurai", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(villageBuildingUpgrade1Samurai, SDL_SCALEMODE_NEAREST);
         villageBuildingUpgrade2Samurai = IMG_LoadTexture(renderer, "assets/Samurai/VillageBuildingUpgrade2Samurai.png");
         if (villageBuildingUpgrade2Samurai == nullptr) {
             SDL_LogWarn(0,"failed to load texture villageBuildingUpgrade2Samurai", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(villageBuildingUpgrade2Samurai, SDL_SCALEMODE_NEAREST);
         villageBuildingUpgrade3Samurai = IMG_LoadTexture(renderer, "assets/Samurai/VillageBuildingUpgrade3Samurai.png");
         if (villageBuildingUpgrade3Samurai == nullptr) {
             SDL_LogWarn(0,"failed to load texture villageBuildingUpgrade3Samurai", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(villageBuildingUpgrade3Samurai, SDL_SCALEMODE_NEAREST);
         // -> CREDITS <-
         creditsTitleFont = TTF_OpenFont("assets/font.ttf", 50);
         creditsRoleTitleFont = TTF_OpenFont("assets/font.ttf", 40);
@@ -1553,8 +1579,35 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
     TTF_SetTextColor(gameStatUITitleText, 255, 255, 255, 255);
 
 }
-    //The top UI bar for the money
+    //The top UI bar for the money / turn area
     void RenderGeneralUI(){
+    //rectangle of the top ui part
+        // Bordure
+        float thickness = 5.0f;
+        SDL_SetRenderDrawColor(renderer, 20, 20, 20, 255);
+        SDL_FRect borderRect = {600, 0, 800, 40};
+        SDL_RenderFillRect(renderer, &borderRect);
+
+       //inner UI rectangle
+        SDL_SetRenderDrawColor(renderer, 80, 80, 80, 255);
+        SDL_FRect contentRect = {600 + thickness,0 + thickness,800 - (thickness * 2),40 - (thickness * 2)};
+        SDL_RenderFillRect(renderer, &contentRect);
+
+        //icon Gold
+        SDL_FRect goldIcon = {contentRect.x + 50.f, borderRect.y + 13.f,15.f,15.f};
+        SDL_SetRenderDrawColor(renderer, 255,234,90,255);
+        SDL_RenderFillRect(renderer, &goldIcon);
+
+        //current Gold
+        std::string goldStr = std::to_string(player.currentGold);
+        TTF_SetTextString(gameCurrentMoneyUiText, goldStr.c_str(), 0);
+        TTF_SetTextColor(gameCurrentMoneyUiText, 255, 255, 255, 255); // keep in white
+        TTF_DrawRendererText (gameCurrentMoneyUiText, contentRect.x + 70.f, contentRect.y + 4.f);
+        //Gold Next turn + (green) - (red)
+        std::string nextTurnStr = "(+" + std::to_string(player.nextTurnGold) + ")";
+        TTF_SetTextString(gameAnticipatedMoneyUiText, nextTurnStr.c_str(), 0);
+        TTF_SetTextColor(gameAnticipatedMoneyUiText, 127, 255, 0, 255);
+        TTF_DrawRendererText(gameAnticipatedMoneyUiText,contentRect.x + 125.f, contentRect.y + 4.f);
 
     }
 
