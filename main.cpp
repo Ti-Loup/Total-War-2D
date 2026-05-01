@@ -2023,6 +2023,15 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
                 app.selectedFaction = 2;
             }
             if (SDL_PointInRectFloat(&MousePT, &app.BoutonStartCampaign)) {
+                if (app.selectedFaction == 0) {
+                    app.player.faction = FactionZone::Knight;
+                }
+                else if (app.selectedFaction == 1) {
+                    app.player.faction = FactionZone::Viking;
+                }
+                else if (app.selectedFaction == 2) {
+                    app.player.faction = FactionZone::Samurai;
+                }
                 app.StateActuel= State::Game;
             }
             //Circle
@@ -2073,8 +2082,14 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
 
                         if (app.hoveredCardIndex < (int)provS.size()) {
                             Settlement* sel = provS[app.hoveredCardIndex];
-                            // Upgrade seulement si c'est le tier suivant
+                            // Upgrade seulement si c'est le tier suivant + faction player
                             if (t == sel->settlementData.settlementTier + 1 && t <= app.tierPopupMaxTier) {
+                                //continue if not player Faction
+                                int provID = clicked.settlementData.provinceID;
+                                if (app.provinces[provID].owner != app.player.faction) {
+                                    return SDL_APP_CONTINUE;
+                                }
+
                                 BuildingType mainBuilding = sel->settlementData.buildings[0];
                                 //cost of each settlement + if money of player is higher than the price -> can purchase other it doesnt
                                 int cost = app.player.GetUpgradeCost(sel->settlementData.settlementTier, mainBuilding);
