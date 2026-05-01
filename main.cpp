@@ -142,6 +142,7 @@ public:
     SDL_FRect provinceButtonUIGarrison = {firstButton + 50.f,1030.f,40.f,40.f};
     SDL_Texture *provinceTextureUIBuilding = nullptr;
     SDL_Texture *provinceTextureUIGarrison = nullptr;
+    Circle NextTurnButton = {1800.f, 950.f, 80};
 
     //Buildings Texture
     //hammer
@@ -299,6 +300,12 @@ public:
 
 private://constructor
     GameApp() {
+
+        //SDL INIT
+        if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == false) {
+            SDL_LogCritical(1, "failed to initialize SDL %s", SDL_GetError());
+            abort();
+        }
         //window + renderer
         window = SDL_CreateWindow("Total Battle 2D",1280,720,0);
         if (window == nullptr) {
@@ -316,11 +323,6 @@ private://constructor
         textEngine = TTF_CreateRendererTextEngine(renderer);
         if (textEngine == nullptr) {
             SDL_LogCritical(1, "Failed to create textEngine", SDL_GetError());
-        }
-        //SDL INIT
-        if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == false) {
-            SDL_LogCritical(1, "failed to initialize SDL %s", SDL_GetError());
-            abort();
         }
         //TTF_INIT
         if (TTF_Init() == false) {
@@ -609,7 +611,7 @@ private://constructor
         }
         SDL_SetTextureScaleMode(capitalBuildingUpgrade4Knight, SDL_SCALEMODE_NEAREST);
         capitalBuildingUpgrade5Knight = IMG_LoadTexture(renderer, "assets/Knight/CapitalBuildingUpgrade5Knight.png");
-        if (capitalBuildingUpgrade4Knight == nullptr) {
+        if (capitalBuildingUpgrade5Knight == nullptr) {
             SDL_LogWarn(0, "failed to load the texture of capitalBuildingUpgrade5Knight", SDL_GetError());
         }
         SDL_SetTextureScaleMode(capitalBuildingUpgrade5Knight, SDL_SCALEMODE_NEAREST);
@@ -704,7 +706,7 @@ private://constructor
         }
         SDL_SetTextureScaleMode(castleBuildingUpgrade4Viking, SDL_SCALEMODE_NEAREST);
         castleBuildingUpgrade5Viking = IMG_LoadTexture(renderer, "assets/Viking/CastleBuildingUpgrade5Viking.png");
-        if (castleBuildingUpgrade4Viking == nullptr) {
+        if (castleBuildingUpgrade5Viking == nullptr) {
             SDL_LogWarn(0,"failed to load texture castleBuildingUpgrade5Viking", SDL_GetError());
         }
         SDL_SetTextureScaleMode(castleBuildingUpgrade5Viking, SDL_SCALEMODE_NEAREST);
@@ -1447,13 +1449,15 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
                             //if not full tier than the hammer shows
                             BuildingType mainBuilding = s->settlementData.buildings[0];
                             int upgradeCost = player.GetUpgradeCost(s->settlementData.settlementTier, mainBuilding);
-                            if (s->settlementData.settlementTier < maxTierCheck && hammerUIBuildingUpgradeTexture && player.currentGold >= upgradeCost) {
-                                SDL_FRect hammerRect = {
-                                    sx + slotSize - 30.f,
-                                    sy + 4.f,
-                                    35.f, 35.f
-                                };
-                                SDL_RenderTexture(renderer, hammerUIBuildingUpgradeTexture, nullptr, &hammerRect);
+                            if (provinces[s->settlementData.provinceID].owner == player.faction) {
+                                if (s->settlementData.settlementTier < maxTierCheck && hammerUIBuildingUpgradeTexture && player.currentGold >= upgradeCost) {
+                                    SDL_FRect hammerRect = {
+                                        sx + slotSize - 30.f,
+                                        sy + 4.f,
+                                        35.f, 35.f
+                                    };
+                                    SDL_RenderTexture(renderer, hammerUIBuildingUpgradeTexture, nullptr, &hammerRect);
+                                }
                             }
 
                                 mainBuildingSlotRects[i] = slot;
@@ -1616,6 +1620,12 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
         TTF_SetTextString(gameAnticipatedMoneyUiText, nextTurnStr.c_str(), 0);
         TTF_SetTextColor(gameAnticipatedMoneyUiText, 127, 255, 0, 255);
         TTF_DrawRendererText(gameAnticipatedMoneyUiText,contentRect.x + 125.f, contentRect.y + 4.f);
+
+
+        //circle  button for the NextTurn Button
+        SDL_SetRenderDrawColor(renderer, 0,80,255,255);
+        RenderBoutonCercle(NextTurnButton, nullptr, nullptr,180, 180, 180);
+
 
     }
 
@@ -1917,7 +1927,7 @@ public:
         }
     }
     void RenderBoutonCercle(const Circle &circle, TTF_Text *buttonText, SDL_Texture *texture,Uint8 buttonr, Uint8 buttong, Uint8 buttonb) {
-        SDL_SetRenderDrawColor(renderer, 120,40,120,255);
+        //SDL_SetRenderDrawColor(renderer, 120,40,120,255);
         RenderCircle(circle.circleX, circle.circleY, circle.radius);
 
         // Render texture
