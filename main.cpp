@@ -133,7 +133,7 @@ public:
     TTF_Font *gameGeneralFont = nullptr;
     TTF_Text *gameCurrentMoneyUiText = nullptr;
     TTF_Text *gameAnticipatedMoneyUiText = nullptr;
-
+    TTF_Text *gameNumberOfTurnText = nullptr;
     //Buttons UI
     bool bButtonUIBuildingIsPressed = true;
     bool bButtonUIGarrisonIsPressed = false;
@@ -142,7 +142,12 @@ public:
     SDL_FRect provinceButtonUIGarrison = {firstButton + 50.f,1030.f,40.f,40.f};
     SDL_Texture *provinceTextureUIBuilding = nullptr;
     SDL_Texture *provinceTextureUIGarrison = nullptr;
-    Circle NextTurnButton = {1800.f, 950.f, 70};
+    Circle NextTurnButton = {1825.f, 1000.f, 55};
+
+    //End Turn
+    int currentTurn = 1;
+    FactionZone currentFactionTurn = FactionZone::Knight;//start with player
+
 
     //Buildings Texture
     //hammer
@@ -486,6 +491,10 @@ private://constructor
         gameAnticipatedMoneyUiText = TTF_CreateText(textEngine, gameGeneralFont, "(0)", 25);
         if (gameAnticipatedMoneyUiText == nullptr) {
             SDL_LogWarn(0,"failed to create the text gameAnticipatedMoneyUiText", SDL_GetError());
+        }
+        gameNumberOfTurnText = TTF_CreateText(textEngine, gameGeneralFont, "0", 25);
+        if (gameNumberOfTurnText == nullptr) {
+            SDL_LogWarn(0,"failed to create the text gameNumberOfTurn",SDL_GetError());
         }
 
         //CREATION OF THE SETTLEMENTS
@@ -882,6 +891,7 @@ private://constructor
         TTF_DestroyText(gameStatUIText);
         TTF_DestroyText(gameCurrentMoneyUiText);
         TTF_DestroyText(gameAnticipatedMoneyUiText);
+        TTF_DestroyText(gameNumberOfTurnText);
     // ---------------------------------
         SDL_DestroyTexture(provinceKnightBannerTexture);
         SDL_DestroyTexture(provinceVikingBannerTexture);
@@ -1799,7 +1809,11 @@ if (tierTexturePopUp) {
         //circle  button for the NextTurn Button
         SDL_SetRenderDrawColor(renderer, 0,80,255,255);
         RenderBoutonCercle(NextTurnButton, nullptr, nullptr,180, 180, 180);
-
+        //text to show the current Turn
+        std::string endTurn = std::to_string(currentTurn);
+        TTF_SetTextString(gameNumberOfTurnText, endTurn.c_str(), 0);
+        TTF_SetTextColor(gameNumberOfTurnText, 255, 255, 255, 255);
+        TTF_DrawRendererText(gameNumberOfTurnText, NextTurnButton.circleX+45.f, NextTurnButton.circleY+35.f);
 
     }
 
@@ -2128,6 +2142,41 @@ public:
         return (distanceX* distanceX + distanceY * distanceY) <= (circle.radius * circle.radius);
     }
 
+    //fonction to end a turn
+    void EndTurn() {
+        player.AddGold(player.nextTurnGold);
+
+        // Order of who's playing first
+        std::vector<FactionZone> turnOrder = {
+            FactionZone::Knight,
+            FactionZone::Viking,
+            FactionZone::Samurai
+        };
+
+        //Always start new turn with the player
+        // Player = Viking -> order = Viking, Samurai, Knight
+        // Player = Samurai -> order = Samurai, Knight, Viking
+        // Player = Knight -> order = Knight, Viking, Samurai
+        int playerIndex = 0;
+        for (int i = 0; i < (int)turnOrder.size(); i++) {
+            if (turnOrder[i] == player.faction) {
+                playerIndex = i;
+                break;
+            }
+        }
+
+        // //play the turns of the AI
+        for (int i = 1; i < (int)turnOrder.size(); i++) {
+            FactionZone aiTurn = turnOrder[(playerIndex + i) % turnOrder.size()];
+            // IA placeholder
+            SDL_Log("AI turn: faction %d", (int)aiTurn);
+            //AIPlayTurn(aiTurn);
+        }
+
+        currentTurn++;
+        SDL_Log("Turn %d || your turn (%d)", currentTurn, (int)player.faction);
+    }
+
     SDL_AppResult RunCallBacks() {
         static uint64_t lastTime = SDL_GetTicks();
         //temps global
@@ -2298,8 +2347,6 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
                 }
             }
 
-
-
     // dection if clicked a settlement
     bool bClickedOutsideOfUI = false;
     for (int i = 0; i < (int)app.settlements.size(); i++) {
@@ -2322,6 +2369,13 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
         app.selectedSettlementIndex = -1;
         app.hoveredSlotIndex = -1;
     }
+
+
+    if (app.ClickInsideCircle(nouveauX,nouveauY, app.NextTurnButton)) {
+        app.EndTurn();
+        return SDL_APP_CONTINUE;
+    }
+
 }
         //TUTORIAL
         if (app.StateActuel == State::Tutorial) {
