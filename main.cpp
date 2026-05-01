@@ -1628,77 +1628,77 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
         SDL_FRect tierRect = {popX, ty, tileW, tileH};
         SDL_RenderFillRect(renderer, &tierRect);
 
-        SDL_Texture* tierTex = nullptr;
+        SDL_Texture* tierTexturePopUp = nullptr;
 if (province.owner == FactionZone::Knight) {
     if (sel->settlementData.type == SettlementType::Capital) {
-        if      (t == 1) tierTex = capitalBuildingUpgrade1Knight;
-        else if (t == 2) tierTex = capitalBuildingUpgrade2Knight;
-        else if (t == 3) tierTex = capitalBuildingUpgrade3Knight;
-        else if (t == 4) tierTex = capitalBuildingUpgrade4Knight;
-        else if (t == 5) tierTex = capitalBuildingUpgrade5Knight;
+        if (t == 1) tierTexturePopUp = capitalBuildingUpgrade1Knight;
+        else if (t == 2) tierTexturePopUp = capitalBuildingUpgrade2Knight;
+        else if (t == 3) tierTexturePopUp = capitalBuildingUpgrade3Knight;
+        else if (t == 4) tierTexturePopUp = capitalBuildingUpgrade4Knight;
+        else if (t == 5) tierTexturePopUp = capitalBuildingUpgrade5Knight;
     }
     else if (sel->settlementData.type == SettlementType::Castle) {
-        if      (t == 1) tierTex = castleBuildingUpgrade1Knight;
-        else if (t == 2) tierTex = castleBuildingUpgrade2Knight;
-        else if (t == 3) tierTex = castleBuildingUpgrade3Knight;
-        else if (t == 4) tierTex = castleBuildingUpgrade4Knight;
-        else if (t == 5) tierTex = castleBuildingUpgrade5Knight;
+        if (t == 1) tierTexturePopUp = castleBuildingUpgrade1Knight;
+        else if (t == 2) tierTexturePopUp = castleBuildingUpgrade2Knight;
+        else if (t == 3) tierTexturePopUp = castleBuildingUpgrade3Knight;
+        else if (t == 4) tierTexturePopUp = castleBuildingUpgrade4Knight;
+        else if (t == 5) tierTexturePopUp = castleBuildingUpgrade5Knight;
     }
     else if (sel->settlementData.type == SettlementType::Village) {
-        if      (t == 1) tierTex = villageBuildingUpgrade1Knight;
-        else if (t == 2) tierTex = villageBuildingUpgrade2Knight;
-        else if (t == 3) tierTex = villageBuildingUpgrade3Knight;
+        if (t == 1) tierTexturePopUp = villageBuildingUpgrade1Knight;
+        else if (t == 2) tierTexturePopUp = villageBuildingUpgrade2Knight;
+        else if (t == 3) tierTexturePopUp = villageBuildingUpgrade3Knight;
     }
 }
 else if (province.owner == FactionZone::Viking) {
     if (sel->settlementData.type == SettlementType::Capital) {
-        if      (t == 1) tierTex = capitalBuildingUpgrade1Viking;
-        else if (t == 2) tierTex = capitalBuildingUpgrade2Viking;
-        else if (t == 3) tierTex = capitalBuildingUpgrade3Viking;
-        else if (t == 4) tierTex = capitalBuildingUpgrade4Viking;
-        else if (t == 5) tierTex = capitalBuildingUpgrade5Viking;
+        if (t == 1) tierTexturePopUp = capitalBuildingUpgrade1Viking;
+        else if (t == 2) tierTexturePopUp = capitalBuildingUpgrade2Viking;
+        else if (t == 3) tierTexturePopUp = capitalBuildingUpgrade3Viking;
+        else if (t == 4) tierTexturePopUp = capitalBuildingUpgrade4Viking;
+        else if (t == 5) tierTexturePopUp = capitalBuildingUpgrade5Viking;
     }
     else if (sel->settlementData.type == SettlementType::Castle) {
-        if      (t == 1) tierTex = castleBuildingUpgrade1Viking;
-        else if (t == 2) tierTex = castleBuildingUpgrade2Viking;
-        else if (t == 3) tierTex = castleBuildingUpgrade3Viking;
-        else if (t == 4) tierTex = castleBuildingUpgrade4Viking;
-        else if (t == 5) tierTex = castleBuildingUpgrade5Viking;
+        if (t == 1) tierTexturePopUp = castleBuildingUpgrade1Viking;
+        else if (t == 2) tierTexturePopUp = castleBuildingUpgrade2Viking;
+        else if (t == 3) tierTexturePopUp = castleBuildingUpgrade3Viking;
+        else if (t == 4) tierTexturePopUp = castleBuildingUpgrade4Viking;
+        else if (t == 5) tierTexturePopUp = castleBuildingUpgrade5Viking;
     }
     else if (sel->settlementData.type == SettlementType::Village) {
-        if      (t == 1) tierTex = villageBuildingUpgrade1Viking;
-        else if (t == 2) tierTex = villageBuildingUpgrade2Viking;
-        else if (t == 3) tierTex = villageBuildingUpgrade3Viking;
+        if (t == 1) tierTexturePopUp = villageBuildingUpgrade1Viking;
+        else if (t == 2) tierTexturePopUp = villageBuildingUpgrade2Viking;
+        else if (t == 3) tierTexturePopUp = villageBuildingUpgrade3Viking;
     }
 }
 else if (province.owner == FactionZone::Samurai) {
     if (sel->settlementData.type == SettlementType::Capital) {
-        if      (t == 1) tierTex = capitalBuildingUpgrade1Samurai;
-        else if (t == 2) tierTex = capitalBuildingUpgrade2Samurai;
-        else if (t == 3) tierTex = capitalBuildingUpgrade3Samurai;
-        else if (t == 4) tierTex = capitalBuildingUpgrade4Samurai;
-        else if (t == 5) tierTex = capitalBuildingUpgrade5Samurai;
+        if (t == 1) tierTexturePopUp = capitalBuildingUpgrade1Samurai;
+        else if (t == 2) tierTexturePopUp = capitalBuildingUpgrade2Samurai;
+        else if (t == 3) tierTexturePopUp = capitalBuildingUpgrade3Samurai;
+        else if (t == 4) tierTexturePopUp = capitalBuildingUpgrade4Samurai;
+        else if (t == 5) tierTexturePopUp = capitalBuildingUpgrade5Samurai;
     }
     else if (sel->settlementData.type == SettlementType::Castle) {
-        if      (t == 1) tierTex = castleBuildingUpgrade1Samurai;
-        else if (t == 2) tierTex = castleBuildingUpgrade2Samurai;
-        else if (t == 3) tierTex = castleBuildingUpgrade3Samurai;
-        else if (t == 4) tierTex = castleBuildingUpgrade4Samurai;
-        else if (t == 5) tierTex = castleBuildingUpgrade5Samurai;
+        if (t == 1) tierTexturePopUp = castleBuildingUpgrade1Samurai;
+        else if (t == 2) tierTexturePopUp = castleBuildingUpgrade2Samurai;
+        else if (t == 3) tierTexturePopUp = castleBuildingUpgrade3Samurai;
+        else if (t == 4) tierTexturePopUp = castleBuildingUpgrade4Samurai;
+        else if (t == 5) tierTexturePopUp = castleBuildingUpgrade5Samurai;
     }
     else if (sel->settlementData.type == SettlementType::Village) {
-        if      (t == 1) tierTex = villageBuildingUpgrade1Samurai;
-        else if (t == 2) tierTex = villageBuildingUpgrade2Samurai;
-        else if (t == 3) tierTex = villageBuildingUpgrade3Samurai;
+        if (t == 1) tierTexturePopUp = villageBuildingUpgrade1Samurai;
+        else if (t == 2) tierTexturePopUp = villageBuildingUpgrade2Samurai;
+        else if (t == 3) tierTexturePopUp = villageBuildingUpgrade3Samurai;
     }
 }
 
 // Appliquer transparence si verrouillé
-if (tierTex) {
+if (tierTexturePopUp) {
     Uint8 alpha = isCurrent ? 255 : (isNext ? 180 : 60);
-    SDL_SetTextureAlphaMod(tierTex, alpha);
-    SDL_RenderTexture(renderer, tierTex, nullptr, &tierRect);
-    SDL_SetTextureAlphaMod(tierTex, 255); // reset
+    SDL_SetTextureAlphaMod(tierTexturePopUp, alpha);
+    SDL_RenderTexture(renderer, tierTexturePopUp, nullptr, &tierRect);
+    SDL_SetTextureAlphaMod(tierTexturePopUp, 255); // reset
 }
 
 
