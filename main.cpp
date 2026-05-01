@@ -1603,6 +1603,14 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
         TTF_SetTextString(gameCurrentMoneyUiText, goldStr.c_str(), 0);
         TTF_SetTextColor(gameCurrentMoneyUiText, 255, 255, 255, 255); // keep in white
         TTF_DrawRendererText (gameCurrentMoneyUiText, contentRect.x + 70.f, contentRect.y + 4.f);
+
+        //calculate gold next turn
+        player.nextTurnGold = 0;
+        for (const auto& s: settlements) {
+            if (provinces[s.settlementData.provinceID].owner == player.faction) {
+                player.nextTurnGold += s.settlementData.baseIncome;
+            }
+        }
         //Gold Next turn + (green) - (red)
         std::string nextTurnStr = "(+" + std::to_string(player.nextTurnGold) + ")";
         TTF_SetTextString(gameAnticipatedMoneyUiText, nextTurnStr.c_str(), 0);
