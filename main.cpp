@@ -107,7 +107,10 @@ public:
     SDL_FRect BoutonViking = {900, 150, 100, 100};
     SDL_FRect BoutonSamurai = {1400, 150, 100, 100};
     SDL_FRect BoutonStartCampaign = {850, 1000, 250, 40};
-
+    //Texture of the Buttons
+    SDL_Texture *chooseFactionKnightIcon = nullptr;
+    SDL_Texture *chooseFactionVikingIcon = nullptr;
+    SDL_Texture *chooseFactionSamuraiIcon = nullptr;
     int selectedFaction = 0;
 
     // -> OPTION <-
@@ -463,7 +466,19 @@ private://constructor
         if (factionSelectionStartCampaignText == nullptr) {
 
         }
-
+        //texture
+        chooseFactionKnightIcon = IMG_LoadTexture(renderer,"assets/ChooseFactionKnightIcon.png");
+        if (chooseFactionKnightIcon == nullptr) {
+            SDL_LogWarn(0, "failed to load the texture chooseFactionKnightIcon", SDL_GetError());
+        }
+        chooseFactionVikingIcon = IMG_LoadTexture(renderer,"assets/ChooseFactionVikingIcon.png");
+        if (chooseFactionVikingIcon == nullptr) {
+            SDL_LogWarn(0, "failed to load the texture chooseFactionVikingIcon", SDL_GetError());
+        }
+        chooseFactionSamuraiIcon = IMG_LoadTexture(renderer,"assets/ChooseFactionSamuraiIcon.png");
+        if (chooseFactionSamuraiIcon == nullptr) {
+            SDL_LogWarn(0, "failed to load the texture chooseFactionSamuraiIcon", SDL_GetError());
+        }
         // -> OPTION <-
         optionsTitleFont = TTF_OpenFont("assets/font.ttf", 50);
         optionsMusicFont = TTF_OpenFont("assets/font.ttf", 20);
@@ -947,6 +962,9 @@ private://constructor
         SDL_DestroyTexture(villageBuildingUpgrade1Samurai);
         SDL_DestroyTexture(villageBuildingUpgrade2Samurai);
         SDL_DestroyTexture(villageBuildingUpgrade3Samurai);
+        SDL_DestroyTexture(chooseFactionKnightIcon);
+        SDL_DestroyTexture(chooseFactionVikingIcon);
+        SDL_DestroyTexture(chooseFactionSamuraiIcon);
     // ---------------------------------
         SDL_DestroyCursor(cursor);
         delete tileMap;
@@ -1374,8 +1392,8 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
                         int col = b % cols;
                         int row = b / cols;
 
-                        float sx = slotStartX + col * (slotSize + slotGap); // ← sx défini ici
-                        float sy = (row == 0) ? row0Y : row1Y;              // ← sy défini ici
+                        float sx = slotStartX + col * (slotSize + slotGap);
+                        float sy = (row == 0) ? row0Y : row1Y;
 
                         // unique building per faction
                         //slot 0
@@ -1926,9 +1944,12 @@ if (tierTexturePopUp) {
         //title
         TTF_DrawRendererText(factionSelectionTitleText, 750, 50);
         TTF_DrawRendererText(factionSelectionFactionBonusText, 1600,400);
-        RenderBoutons(BoutonKnight, nullptr, 255,255,0,255);
-        RenderBoutons(BoutonViking, nullptr, 0,0,255,255);
-        RenderBoutons(BoutonSamurai, nullptr, 255,0,0,255);
+        RenderBoutons(BoutonKnight, nullptr, 255, 215, 0,   255);
+        SDL_RenderTexture(renderer,chooseFactionKnightIcon, nullptr, &BoutonKnight);
+        RenderBoutons(BoutonViking, nullptr, 255, 50,  50,  255);
+        SDL_RenderTexture(renderer, chooseFactionVikingIcon, nullptr, &BoutonViking);
+        RenderBoutons(BoutonSamurai, nullptr, 0,   200, 160, 255);
+        SDL_RenderTexture(renderer, chooseFactionSamuraiIcon, nullptr, &BoutonSamurai);
         RenderBoutons(BoutonStartCampaign, factionSelectionStartCampaignText, 60,60,60,255);
 
         if (selectedFaction == 0) {
