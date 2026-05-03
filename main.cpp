@@ -1625,7 +1625,7 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
     // Tier 5 en haut → Tier 1 en bas
     for (int t = maxTier; t >= 1; t--) {
         int idx = maxTier - t;  // 0 = tier5(top), 4 = tier1(bas)
-        float ty = popY + idx * (tileH + arrowH);
+        float tierSquareY = popY + idx * (tileH + arrowH);
 
         bool isCurrent  = (t == currentTier);
         bool isNext = t == currentTier + 1 && currentTier < maxTier;
@@ -1644,7 +1644,7 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
         else
             SDL_SetRenderDrawColor(renderer, 22, 22, 22, 255);
 
-        SDL_FRect tierRect = {popX, ty, tileW, tileH};
+        SDL_FRect tierRect = {popX, tierSquareY, tileW, tileH};
         SDL_RenderFillRect(renderer, &tierRect);
 
         SDL_Texture* tierTexturePopUp = nullptr;
@@ -1735,7 +1735,7 @@ if (tierTexturePopUp) {
         TTF_SetTextColor(gameStatUIText, la, la, la, 255);
         int tw = 0, th = 0;
         TTF_GetTextSize(gameStatUIText, &tw, &th);
-        TTF_DrawRendererText(gameStatUIText,popX + (tileW - tw) / 2.f,ty + tileH - th - 5.f);
+        TTF_DrawRendererText(gameStatUIText,popX + (tileW - tw) / 2.f,tierSquareY + tileH - th - 5.f);
 
 
         if (t > currentTier && t <= maxTier) {
@@ -1752,10 +1752,18 @@ if (tierTexturePopUp) {
             }
             int costW = 0, costH = 0;
             TTF_GetTextSize(gameBuildingCostUIText, &costW, &costH);
-            TTF_DrawRendererText(gameBuildingCostUIText,popX + (tileW - costW) -2.f,ty + 40.f);
+            TTF_DrawRendererText(gameBuildingCostUIText,popX + (tileW - costW) -2.f,tierSquareY + 45.f);
 
             //texture gold
-            
+            float iconSize = 12.f;
+            float totalRowW = iconSize + 3.f + costW;
+            float rowStartX = popX + (tileW - totalRowW) / 2.f;
+
+            SDL_FRect goldUI = {rowStartX + 57.f, tierSquareY + 48.f, iconSize, iconSize};
+            SDL_SetRenderDrawColor(renderer, 220, 180, 40, 255);
+            SDL_RenderFillRect(renderer, &goldUI);
+            SDL_SetRenderDrawColor(renderer, 180, 140, 20, 255);
+            SDL_RenderRect(renderer, &goldUI);
         }
 
 
@@ -1766,8 +1774,8 @@ if (tierTexturePopUp) {
         // up arrow between this current and next building upgrade
         if (t > 1) {
             float cx  = popX + tileW / 2.f;
-            float tipY = ty + tileH + 2.f;
-            float baseY = ty + tileH + arrowH - 2.f;
+            float tipY = tierSquareY + tileH + 2.f;
+            float baseY = tierSquareY + tileH + arrowH - 2.f;
             SDL_SetRenderDrawColor(renderer, 0, 180, 0, 200);
             SDL_RenderLine(renderer, (int)cx, (int)tipY,  (int)cx, (int)baseY);
             SDL_RenderLine(renderer, (int)cx, (int)tipY,  (int)(cx - 6), (int)(tipY + 8));
