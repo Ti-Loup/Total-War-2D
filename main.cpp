@@ -1531,7 +1531,14 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
                                 SDL_FRect baseTurnConstructionRect = {sx + 8.f, sy + 20.f, slotSize - 15.f, slotSize - 40.f};
                                 SDL_SetRenderDrawColor(renderer, 144, 238, 144, 255);
                                 SDL_RenderFillRect(renderer, &baseTurnConstructionRect);
+
+                                // the number of Turn remaining before the construction is finished
+                                std::string turnRemainingString = std::to_string(s->settlementData.constructionTime);
+                                TTF_SetTextString(gameBuildingConstructionTimeText, turnRemainingString.c_str(), 0);
+                                TTF_DrawRendererText(gameBuildingConstructionTimeText, sx + 25.f, sy + 20.f);
                             }
+
+
 
                                 mainBuildingSlotRects[i] = slot;
                             //which card is the mouse on
