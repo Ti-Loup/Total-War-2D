@@ -139,6 +139,8 @@ public:
     TTF_Text *gameNumberOfTurnText = nullptr;
     TTF_Font *gameBuildingCostUIFont = nullptr;
     TTF_Text *gameBuildingCostUIText = nullptr;
+    TTF_Font *gameBuildingConstructionTimeFont = nullptr;
+    TTF_Text *gameBuildingConstructionTimeText = nullptr;
     //Buttons UI
     bool bButtonUIBuildingIsPressed = true;
     bool bButtonUIGarrisonIsPressed = false;
@@ -496,6 +498,7 @@ private://constructor
         gameStatUITitleFont = TTF_OpenFont("assets/Rubik.ttf", 25);
         gameStatUIFont = TTF_OpenFont("assets/Rubik.ttf", 20);
         gameBuildingCostUIFont = TTF_OpenFont("assets/Rubik.ttf", 15);
+        gameBuildingConstructionTimeFont = TTF_OpenFont("assets/Rubik.ttf", 15);
         gameStatUITitleText = TTF_CreateText(textEngine, gameStatUITitleFont,"GameStatue", 25);
         if (gameStatUITitleText == nullptr) {
             SDL_LogWarn(0,"failed to create the text gameStatUITitleText",SDL_GetError());
@@ -520,6 +523,10 @@ private://constructor
         gameBuildingCostUIText = TTF_CreateText(textEngine, gameBuildingCostUIFont, "0", 25);
         if (gameBuildingCostUIText == nullptr) {
             SDL_LogWarn(0,"failed to create the text gameBuildingCostUIText", SDL_GetError());
+        }
+        gameBuildingConstructionTimeText = TTF_CreateText(textEngine, gameBuildingConstructionTimeFont, "0", 25);
+        if (gameBuildingConstructionTimeText == nullptr) {
+            SDL_LogWarn(0,"failed to create the text gameBuildingConstructionTimeText", SDL_GetError());
         }
 
         //CREATION OF THE SETTLEMENTS
@@ -888,6 +895,7 @@ private://constructor
         TTF_CloseFont(gameStatUIFont);
         TTF_CloseFont(gameGeneralFont);
         TTF_CloseFont(gameBuildingCostUIFont);
+        TTF_CloseFont(gameBuildingConstructionTimeFont);
     // ---------------------------------
         TTF_DestroyText(fpsText);
         TTF_DestroyText(menuText);
@@ -919,6 +927,7 @@ private://constructor
         TTF_DestroyText(gameAnticipatedMoneyUiText);
         TTF_DestroyText(gameNumberOfTurnText);
         TTF_DestroyText(gameBuildingCostUIText);
+        TTF_DestroyText(gameBuildingConstructionTimeText);
     // ---------------------------------
         SDL_DestroyTexture(provinceKnightBannerTexture);
         SDL_DestroyTexture(provinceVikingBannerTexture);
@@ -1008,6 +1017,74 @@ private://constructor
         SDL_RenderFillRect(renderer, &handle);
         std::string percentage = std::to_string((int)(volumeSlider.value * 100)) + "%";
     }
+
+    //To not repeat the texture of settlements
+    SDL_Texture* GetSettlementTexture(FactionZone faction, SettlementType type, int tier) {
+    if (faction == FactionZone::Knight) {
+        if (type == SettlementType::Capital) {
+            if (tier == 1) return capitalBuildingUpgrade1Knight;
+            if (tier == 2) return capitalBuildingUpgrade2Knight;
+            if (tier == 3) return capitalBuildingUpgrade3Knight;
+            if (tier == 4) return capitalBuildingUpgrade4Knight;
+            if (tier == 5) return capitalBuildingUpgrade5Knight;
+        }
+        else if (type == SettlementType::Castle) {
+            if (tier == 1) return castleBuildingUpgrade1Knight;
+            if (tier == 2) return castleBuildingUpgrade2Knight;
+            if (tier == 3) return castleBuildingUpgrade3Knight;
+            if (tier == 4) return castleBuildingUpgrade4Knight;
+            if (tier == 5) return castleBuildingUpgrade5Knight;
+        }
+        else if (type == SettlementType::Village) {
+            if (tier == 1) return villageBuildingUpgrade1Knight;
+            if (tier == 2) return villageBuildingUpgrade2Knight;
+            if (tier == 3) return villageBuildingUpgrade3Knight;
+        }
+    }
+    else if (faction == FactionZone::Viking) {
+        if (type == SettlementType::Capital) {
+            if (tier == 1) return capitalBuildingUpgrade1Viking;
+            if (tier == 2) return capitalBuildingUpgrade2Viking;
+            if (tier == 3) return capitalBuildingUpgrade3Viking;
+            if (tier == 4) return capitalBuildingUpgrade4Viking;
+            if (tier == 5) return capitalBuildingUpgrade5Viking;
+        }
+        else if (type == SettlementType::Castle) {
+            if (tier == 1) return castleBuildingUpgrade1Viking;
+            if (tier == 2) return castleBuildingUpgrade2Viking;
+            if (tier == 3) return castleBuildingUpgrade3Viking;
+            if (tier == 4) return castleBuildingUpgrade4Viking;
+            if (tier == 5) return castleBuildingUpgrade5Viking;
+        }
+        else if (type == SettlementType::Village) {
+            if (tier == 1) return villageBuildingUpgrade1Viking;
+            if (tier == 2) return villageBuildingUpgrade2Viking;
+            if (tier == 3) return villageBuildingUpgrade3Viking;
+        }
+    }
+    else if (faction == FactionZone::Samurai) {
+        if (type == SettlementType::Capital) {
+            if (tier == 1) return capitalBuildingUpgrade1Samurai;
+            if (tier == 2) return capitalBuildingUpgrade2Samurai;
+            if (tier == 3) return capitalBuildingUpgrade3Samurai;
+            if (tier == 4) return capitalBuildingUpgrade4Samurai;
+            if (tier == 5) return capitalBuildingUpgrade5Samurai;
+        }
+        else if (type == SettlementType::Castle) {
+            if (tier == 1) return castleBuildingUpgrade1Samurai;
+            if (tier == 2) return castleBuildingUpgrade2Samurai;
+            if (tier == 3) return castleBuildingUpgrade3Samurai;
+            if (tier == 4) return castleBuildingUpgrade4Samurai;
+            if (tier == 5) return castleBuildingUpgrade5Samurai;
+        }
+        else if (type == SettlementType::Village) {
+            if (tier == 1) return villageBuildingUpgrade1Samurai;
+            if (tier == 2) return villageBuildingUpgrade2Samurai;
+            if (tier == 3) return villageBuildingUpgrade3Samurai;
+        }
+    }
+    return nullptr;
+}
 
     //For the rendering on screen of the settlements. Texture to do
     void RenderSettlements() {
@@ -1590,7 +1667,7 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
                             BuildingType mainBuilding = s->settlementData.buildings[0];
                             int upgradeCost = player.GetUpgradeCost(s->settlementData.settlementTier, mainBuilding);
                             if (provinces[s->settlementData.provinceID].owner == player.faction) {
-                                if (s->settlementData.settlementTier < maxTierCheck && hammerUIBuildingUpgradeTexture && player.currentGold >= upgradeCost) {
+                                if (s->settlementData.settlementTier < maxTierCheck && hammerUIBuildingUpgradeTexture && player.currentGold  >= upgradeCost && s->settlementData.bBuidingUnderConstruction == false) {
                                     SDL_FRect hammerRect = {
                                         sx + slotSize - 30.f,
                                         sy + 4.f,
@@ -1599,6 +1676,10 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
                                     SDL_RenderTexture(renderer, hammerUIBuildingUpgradeTexture, nullptr, &hammerRect);
                                 }
                             }
+
+
+
+
 
                                 mainBuildingSlotRects[i] = slot;
                             //which card is the mouse on
@@ -1617,11 +1698,11 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
             }
         //TIER CHAIN POPUP
     if (hoveredSlotIndex == 0 && bButtonUIBuildingIsPressed && hoveredCardIndex >= 0) {
-        const Settlement* sel = provinceSettlements[hoveredCardIndex];
-    int currentTier = sel->settlementData.settlementTier;
+        const Settlement* provinceSettl = provinceSettlements[hoveredCardIndex];
+    int currentTier = provinceSettl->settlementData.settlementTier;
     int maxTier = 3;//for the villages
     //for castle and capital its 5
-    if (sel->settlementData.type == SettlementType::Castle || sel->settlementData.type == SettlementType::Capital) {
+    if (provinceSettl->settlementData.type == SettlementType::Castle || provinceSettl->settlementData.type == SettlementType::Capital) {
         maxTier = 5;
     }
 
@@ -1670,63 +1751,63 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
 
         SDL_Texture* tierTexturePopUp = nullptr;
 if (province.owner == FactionZone::Knight) {
-    if (sel->settlementData.type == SettlementType::Capital) {
+    if (provinceSettl->settlementData.type == SettlementType::Capital) {
         if (t == 1) tierTexturePopUp = capitalBuildingUpgrade1Knight;
         else if (t == 2) tierTexturePopUp = capitalBuildingUpgrade2Knight;
         else if (t == 3) tierTexturePopUp = capitalBuildingUpgrade3Knight;
         else if (t == 4) tierTexturePopUp = capitalBuildingUpgrade4Knight;
         else if (t == 5) tierTexturePopUp = capitalBuildingUpgrade5Knight;
     }
-    else if (sel->settlementData.type == SettlementType::Castle) {
+    else if (provinceSettl->settlementData.type == SettlementType::Castle) {
         if (t == 1) tierTexturePopUp = castleBuildingUpgrade1Knight;
         else if (t == 2) tierTexturePopUp = castleBuildingUpgrade2Knight;
         else if (t == 3) tierTexturePopUp = castleBuildingUpgrade3Knight;
         else if (t == 4) tierTexturePopUp = castleBuildingUpgrade4Knight;
         else if (t == 5) tierTexturePopUp = castleBuildingUpgrade5Knight;
     }
-    else if (sel->settlementData.type == SettlementType::Village) {
+    else if (provinceSettl->settlementData.type == SettlementType::Village) {
         if (t == 1) tierTexturePopUp = villageBuildingUpgrade1Knight;
         else if (t == 2) tierTexturePopUp = villageBuildingUpgrade2Knight;
         else if (t == 3) tierTexturePopUp = villageBuildingUpgrade3Knight;
     }
 }
 else if (province.owner == FactionZone::Viking) {
-    if (sel->settlementData.type == SettlementType::Capital) {
+    if (provinceSettl->settlementData.type == SettlementType::Capital) {
         if (t == 1) tierTexturePopUp = capitalBuildingUpgrade1Viking;
         else if (t == 2) tierTexturePopUp = capitalBuildingUpgrade2Viking;
         else if (t == 3) tierTexturePopUp = capitalBuildingUpgrade3Viking;
         else if (t == 4) tierTexturePopUp = capitalBuildingUpgrade4Viking;
         else if (t == 5) tierTexturePopUp = capitalBuildingUpgrade5Viking;
     }
-    else if (sel->settlementData.type == SettlementType::Castle) {
+    else if (provinceSettl->settlementData.type == SettlementType::Castle) {
         if (t == 1) tierTexturePopUp = castleBuildingUpgrade1Viking;
         else if (t == 2) tierTexturePopUp = castleBuildingUpgrade2Viking;
         else if (t == 3) tierTexturePopUp = castleBuildingUpgrade3Viking;
         else if (t == 4) tierTexturePopUp = castleBuildingUpgrade4Viking;
         else if (t == 5) tierTexturePopUp = castleBuildingUpgrade5Viking;
     }
-    else if (sel->settlementData.type == SettlementType::Village) {
+    else if (provinceSettl->settlementData.type == SettlementType::Village) {
         if (t == 1) tierTexturePopUp = villageBuildingUpgrade1Viking;
         else if (t == 2) tierTexturePopUp = villageBuildingUpgrade2Viking;
         else if (t == 3) tierTexturePopUp = villageBuildingUpgrade3Viking;
     }
 }
 else if (province.owner == FactionZone::Samurai) {
-    if (sel->settlementData.type == SettlementType::Capital) {
+    if (provinceSettl->settlementData.type == SettlementType::Capital) {
         if (t == 1) tierTexturePopUp = capitalBuildingUpgrade1Samurai;
         else if (t == 2) tierTexturePopUp = capitalBuildingUpgrade2Samurai;
         else if (t == 3) tierTexturePopUp = capitalBuildingUpgrade3Samurai;
         else if (t == 4) tierTexturePopUp = capitalBuildingUpgrade4Samurai;
         else if (t == 5) tierTexturePopUp = capitalBuildingUpgrade5Samurai;
     }
-    else if (sel->settlementData.type == SettlementType::Castle) {
+    else if (provinceSettl->settlementData.type == SettlementType::Castle) {
         if (t == 1) tierTexturePopUp = castleBuildingUpgrade1Samurai;
         else if (t == 2) tierTexturePopUp = castleBuildingUpgrade2Samurai;
         else if (t == 3) tierTexturePopUp = castleBuildingUpgrade3Samurai;
         else if (t == 4) tierTexturePopUp = castleBuildingUpgrade4Samurai;
         else if (t == 5) tierTexturePopUp = castleBuildingUpgrade5Samurai;
     }
-    else if (sel->settlementData.type == SettlementType::Village) {
+    else if (provinceSettl->settlementData.type == SettlementType::Village) {
         if (t == 1) tierTexturePopUp = villageBuildingUpgrade1Samurai;
         else if (t == 2) tierTexturePopUp = villageBuildingUpgrade2Samurai;
         else if (t == 3) tierTexturePopUp = villageBuildingUpgrade3Samurai;
@@ -1760,7 +1841,7 @@ if (tierTexturePopUp) {
 
 
         if (t > currentTier && t <= maxTier) {
-            BuildingType mainBuilding = sel->settlementData.buildings[0];
+            BuildingType mainBuilding = provinceSettl->settlementData.buildings[0];
             int cost = player.GetUpgradeCost(t - 1, mainBuilding);
             std::string costString = std::to_string(cost);
             TTF_SetTextString(gameBuildingCostUIText, costString.c_str(), 0);
@@ -1785,11 +1866,26 @@ if (tierTexturePopUp) {
             SDL_RenderFillRect(renderer, &goldUI);
             SDL_SetRenderDrawColor(renderer, 180, 140, 20, 255);
             SDL_RenderRect(renderer, &goldUI);
+
+            //Show the amount of turn before the building is constructed.
+            int constructionTurns = GetConstructionTurns(provinceSettl->settlementData.type, t - 1);
+            std::string timeConstructionAmountString = std::to_string(constructionTurns);
+            TTF_SetTextString(gameBuildingConstructionTimeText, timeConstructionAmountString.c_str(), 0);
+            int turnW = 0, turnH = 0;
+            TTF_GetTextSize(gameBuildingConstructionTimeText, &turnW, &turnH);
+            TTF_DrawRendererText(gameBuildingConstructionTimeText, popX + (tileW - turnW) -5.f,tierSquareY + 1.f);
+            //texture TurnTime Icon
+            float TurnIconSize = 12.f;
+            float TotalTurnRowW = TurnIconSize + 3.f + turnW;
+            float rowTurnStartX = popX + (tileW - TotalTurnRowW) / 2.f;
+
+            SDL_FRect turnUI = {rowTurnStartX + 43.f, tierSquareY + 5.f, TurnIconSize, TurnIconSize};
+            SDL_SetRenderDrawColor(renderer, 80, 80, 80, 255);
+            SDL_RenderFillRect(renderer, &turnUI);
+            SDL_SetRenderDrawColor(renderer, 180, 180, 180, 255);
+            SDL_RenderFillRect(renderer, &turnUI);
+
         }
-
-
-
-
 
 
         // up arrow between this current and next building upgrade
@@ -2000,7 +2096,7 @@ if (tierTexturePopUp) {
         SDL_RenderCoordinatesFromWindow(renderer, mouseX,mouseY,&logicX,&logicY);
 
         float speed = 400.f;
-        float edgeSize = 25.f;
+        float edgeSize = 5.f;
         //left
         if (logicX < edgeSize) {
             camera.Movement(-speed * deltaTime, 0);
@@ -2213,9 +2309,44 @@ public:
         return (distanceX* distanceX + distanceY * distanceY) <= (circle.radius * circle.radius);
     }
 
+    //To Know the construction time for a building
+    int GetConstructionTurns(SettlementType type, int fromTier) {
+        if (type == SettlementType::Village) {
+            if (fromTier == 1) return 3;
+            if (fromTier == 2) return 4;
+        }
+        else if (type == SettlementType::Castle) {
+            if (fromTier == 1) return 3;
+            if (fromTier == 2) return 4;
+            if (fromTier == 3) return 6;
+            if (fromTier == 4) return 8;
+        }
+        else if (type == SettlementType::Capital) {
+            if (fromTier == 1) return 3;
+            if (fromTier == 2) return 4;
+            if (fromTier == 3) return 6;
+            if (fromTier == 4) return 8;
+        }
+        return 1;
+    }
+
     //fonction to end a turn
     void EndTurn() {
         player.AddGold(player.nextTurnGold);
+
+        //to update the current constructions
+        for (auto &s : settlements) {
+            if (s.settlementData.bBuidingUnderConstruction) {
+                s.settlementData.constructionTime--;
+                if (s.settlementData.constructionTime <= 0) {
+                    s.settlementData.settlementTier = s.settlementData.pendingTier;
+                    s.settlementData.bBuidingUnderConstruction = false;
+                    s.settlementData.pendingTier = 0;
+                    SDL_Log("Construction finished : %s is now tier... %d",s.settlementData.cityName.c_str(),s.settlementData.settlementTier);
+                }
+            }
+        }
+
 
         // Order of who's playing first
         std::vector<FactionZone> turnOrder = {
@@ -2405,11 +2536,17 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
                                 BuildingType mainBuilding = sel->settlementData.buildings[0];
                                 //cost of each settlement + if money of player is higher than the price -> can purchase other it doesnt
                                 int cost = app.player.GetUpgradeCost(sel->settlementData.settlementTier, mainBuilding);
-                                if (app.player.SpendGold(cost)) {
-                                    sel->settlementData.settlementTier = t;
-                                    SDL_Log("Upgraded to tier %d, gold remaining: %d", t, app.player.currentGold);
+                                if (sel->settlementData.bBuidingUnderConstruction) {
+                                    SDL_Log("Already in construction (%d turn remaining)",sel->settlementData.constructionTime);
+                                }
+                                else if (app.player.SpendGold(cost)) {
+                                    int turns = app.GetConstructionTurns(sel->settlementData.type,sel->settlementData.settlementTier);
+                                    sel->settlementData.bBuidingUnderConstruction = true;
+                                    sel->settlementData.pendingTier = t;
+                                    sel->settlementData.constructionTime= turns;
+                                    SDL_Log("Construction started : tier %d in %d turns, or remaining: %d",t, turns, app.player.currentGold);
                                 } else {
-                                    SDL_Log("Not enough gold! Need %d, have %d", cost, app.player.currentGold);
+                                    SDL_Log("not enough gold! Need: %d, get: %d", cost, app.player.currentGold);
                                 }
                             }
                         }

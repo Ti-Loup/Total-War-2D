@@ -220,6 +220,7 @@ struct BuildingData {
     int publicOrderBonus;
     int Tier;
     BuildingType upgradesTo;
+    int constructionTurns;
 };
 
 inline const std::unordered_map<BuildingType, BuildingData>& GetBuildingDatabase() {

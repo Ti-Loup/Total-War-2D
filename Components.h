@@ -75,6 +75,11 @@ struct SettlementComponent {
     int publicOrder  = 0;
     int settlementTier = 1;
 
+    //Construction (turnTime)
+    bool bBuidingUnderConstruction = false;
+    int constructionTime = 0;
+    int pendingTier = 0;
+
     std::vector<BuildingType> buildings;
 
     // Totals base + all built bonuses
