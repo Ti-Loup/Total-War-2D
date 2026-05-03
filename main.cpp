@@ -471,14 +471,17 @@ private://constructor
         if (chooseFactionKnightIcon == nullptr) {
             SDL_LogWarn(0, "failed to load the texture chooseFactionKnightIcon", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(chooseFactionKnightIcon, SDL_SCALEMODE_NEAREST);
         chooseFactionVikingIcon = IMG_LoadTexture(renderer,"assets/ChooseFactionVikingIcon.png");
         if (chooseFactionVikingIcon == nullptr) {
             SDL_LogWarn(0, "failed to load the texture chooseFactionVikingIcon", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(chooseFactionVikingIcon, SDL_SCALEMODE_NEAREST);
         chooseFactionSamuraiIcon = IMG_LoadTexture(renderer,"assets/ChooseFactionSamuraiIcon.png");
         if (chooseFactionSamuraiIcon == nullptr) {
             SDL_LogWarn(0, "failed to load the texture chooseFactionSamuraiIcon", SDL_GetError());
         }
+        SDL_SetTextureScaleMode(chooseFactionSamuraiIcon, SDL_SCALEMODE_NEAREST);
         // -> OPTION <-
         optionsTitleFont = TTF_OpenFont("assets/font.ttf", 50);
         optionsMusicFont = TTF_OpenFont("assets/font.ttf", 20);
