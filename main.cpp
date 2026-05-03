@@ -1947,12 +1947,18 @@ if (tierTexturePopUp) {
         //title
         TTF_DrawRendererText(factionSelectionTitleText, 750, 50);
         TTF_DrawRendererText(factionSelectionFactionBonusText, 1600,400);
-        RenderBoutons(BoutonKnight, nullptr, 255, 215, 0,   255);
+        int knightAlpha = (selectedFaction == 0) ? 255 : 60;
+        RenderBoutons(BoutonKnight, nullptr, 255, 215, 0,   knightAlpha);
         SDL_RenderTexture(renderer,chooseFactionKnightIcon, nullptr, &BoutonKnight);
-        RenderBoutons(BoutonViking, nullptr, 255, 50,  50,  255);
+        SDL_SetTextureAlphaMod(chooseFactionKnightIcon, knightAlpha);
+        int vikingAlpha = (selectedFaction == 1) ? 255 : 60;
+        RenderBoutons(BoutonViking, nullptr, 255, 50,  50,  vikingAlpha);
         SDL_RenderTexture(renderer, chooseFactionVikingIcon, nullptr, &BoutonViking);
-        RenderBoutons(BoutonSamurai, nullptr, 0,   200, 160, 255);
+        SDL_SetTextureAlphaMod(chooseFactionVikingIcon, vikingAlpha);
+        int samuraiAlpha = (selectedFaction == 2) ? 255 : 60;
+        RenderBoutons(BoutonSamurai, nullptr, 0,   200, 160, samuraiAlpha);
         SDL_RenderTexture(renderer, chooseFactionSamuraiIcon, nullptr, &BoutonSamurai);
+        SDL_SetTextureAlphaMod(chooseFactionSamuraiIcon,  samuraiAlpha);
         RenderBoutons(BoutonStartCampaign, factionSelectionStartCampaignText, 60,60,60,255);
 
         if (selectedFaction == 0) {
