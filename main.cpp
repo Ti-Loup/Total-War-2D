@@ -134,6 +134,8 @@ public:
     TTF_Text *gameCurrentMoneyUiText = nullptr;
     TTF_Text *gameAnticipatedMoneyUiText = nullptr;
     TTF_Text *gameNumberOfTurnText = nullptr;
+    TTF_Font *gameBuildingCostUIFont = nullptr;
+    TTF_Text *gameBuildingCostUIText = nullptr;
     //Buttons UI
     bool bButtonUIBuildingIsPressed = true;
     bool bButtonUIGarrisonIsPressed = false;
@@ -475,6 +477,7 @@ private://constructor
         //UI Font
         gameStatUITitleFont = TTF_OpenFont("assets/Rubik.ttf", 25);
         gameStatUIFont = TTF_OpenFont("assets/Rubik.ttf", 20);
+        gameBuildingCostUIFont = TTF_OpenFont("assets/Rubik.ttf", 15);
         gameStatUITitleText = TTF_CreateText(textEngine, gameStatUITitleFont,"GameStatue", 25);
         if (gameStatUITitleText == nullptr) {
             SDL_LogWarn(0,"failed to create the text gameStatUITitleText",SDL_GetError());
@@ -495,6 +498,10 @@ private://constructor
         gameNumberOfTurnText = TTF_CreateText(textEngine, gameGeneralFont, "0", 25);
         if (gameNumberOfTurnText == nullptr) {
             SDL_LogWarn(0,"failed to create the text gameNumberOfTurn",SDL_GetError());
+        }
+        gameBuildingCostUIText = TTF_CreateText(textEngine, gameBuildingCostUIFont, "0", 25);
+        if (gameBuildingCostUIText == nullptr) {
+            SDL_LogWarn(0,"failed to create the text gameBuildingCostUIText", SDL_GetError());
         }
 
         //CREATION OF THE SETTLEMENTS
@@ -862,6 +869,7 @@ private://constructor
         TTF_CloseFont(gameStatUITitleFont);
         TTF_CloseFont(gameStatUIFont);
         TTF_CloseFont(gameGeneralFont);
+        TTF_CloseFont(gameBuildingCostUIFont);
     // ---------------------------------
         TTF_DestroyText(fpsText);
         TTF_DestroyText(menuText);
@@ -892,6 +900,7 @@ private://constructor
         TTF_DestroyText(gameCurrentMoneyUiText);
         TTF_DestroyText(gameAnticipatedMoneyUiText);
         TTF_DestroyText(gameNumberOfTurnText);
+        TTF_DestroyText(gameBuildingCostUIText);
     // ---------------------------------
         SDL_DestroyTexture(provinceKnightBannerTexture);
         SDL_DestroyTexture(provinceVikingBannerTexture);
@@ -1726,9 +1735,33 @@ if (tierTexturePopUp) {
         TTF_SetTextColor(gameStatUIText, la, la, la, 255);
         int tw = 0, th = 0;
         TTF_GetTextSize(gameStatUIText, &tw, &th);
-        TTF_DrawRendererText(gameStatUIText,
-            popX + (tileW - tw) / 2.f,
-            ty + tileH - th - 5.f);
+        TTF_DrawRendererText(gameStatUIText,popX + (tileW - tw) / 2.f,ty + tileH - th - 5.f);
+
+
+        if (t > currentTier && t <= maxTier) {
+            BuildingType mainBuilding = sel->settlementData.buildings[0];
+            int cost = player.GetUpgradeCost(t - 1, mainBuilding);
+            std::string costString = std::to_string(cost);
+            TTF_SetTextString(gameBuildingCostUIText, costString.c_str(), 0);
+
+            //green if can purchase and red if to expensive
+            if (player.currentGold >= cost) {
+                TTF_SetTextColor(gameBuildingCostUIText, 127, 255, 0, 255);
+            }else {
+                TTF_SetTextColor(gameBuildingCostUIText, 220, 60, 60, 255);
+            }
+            int costW = 0, costH = 0;
+            TTF_GetTextSize(gameBuildingCostUIText, &costW, &costH);
+            TTF_DrawRendererText(gameBuildingCostUIText,popX + (tileW - costW) -2.f,ty + 40.f);
+
+            //texture gold
+            
+        }
+
+
+
+
+
 
         // up arrow between this current and next building upgrade
         if (t > 1) {
