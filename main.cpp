@@ -1858,14 +1858,14 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
 
     int tierToShow = (hoveredTierPopupIndex > 0)? hoveredTierPopupIndex: (s->settlementData.bBuidingUnderConstruction? s->settlementData.pendingTier: s->settlementData.settlementTier);
 
-    BuildingType bt   = GetSettlementBuildingType(s->settlementData.type, province.owner, tierToShow);
-    const BuildingData* data = GetBuildingData(bt);
+    BuildingType buildingType  = GetSettlementBuildingType(s->settlementData.type, province.owner, tierToShow); // to get the building name and is tier
+    const BuildingData* data = GetBuildingData(buildingType);
     if (!data) return;
 
     SDL_Color fc;
-    if (province.owner == FactionZone::Knight)       fc = {255, 215,   0, 255};
-    else if (province.owner == FactionZone::Viking)  fc = {255,   0,   0, 255};
-    else                                             fc = {  0, 255, 215, 255};
+    if (province.owner == FactionZone::Knight) fc = {255, 215,   0, 255};
+    else if (province.owner == FactionZone::Viking) fc = {255,   0,   0, 255};
+    else fc = {  0, 255, 215, 255};
 
     float tooltipX = 0.f;
     float tooltipW = 250.f;
