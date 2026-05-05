@@ -1856,11 +1856,7 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
     if (hoveredCardIndex >= (int)provS.size()) return;
     const Settlement* s = provS[hoveredCardIndex];
 
-    int tierToShow = (hoveredTierPopupIndex > 0)
-        ? hoveredTierPopupIndex
-        : (s->settlementData.bBuidingUnderConstruction
-            ? s->settlementData.pendingTier
-            : s->settlementData.settlementTier);
+    int tierToShow = (hoveredTierPopupIndex > 0)? hoveredTierPopupIndex: (s->settlementData.bBuidingUnderConstruction? s->settlementData.pendingTier: s->settlementData.settlementTier);
 
     BuildingType bt   = GetSettlementBuildingType(s->settlementData.type, province.owner, tierToShow);
     const BuildingData* data = GetBuildingData(bt);
@@ -1911,7 +1907,7 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
     SDL_SetRenderDrawColor(renderer, 80, 200, 80, 255);
     SDL_FRect orderIcon = {tooltipX + 8.f, lineY + 3.f, 12.f, 12.f};
     SDL_RenderFillRect(renderer, &orderIcon);
-    TTF_SetTextString(gameStatUIText, "Order:", 0);
+    TTF_SetTextString(gameStatUIText, "Public Order:", 0);
     TTF_SetTextColor(gameStatUIText, 180, 180, 180, 255);
     TTF_DrawRendererText(gameStatUIText, tooltipX + 26.f, lineY);
     TTF_SetTextString(gameStatUIText, ("+" + std::to_string(data->publicOrderBonus)).c_str(), 0);
