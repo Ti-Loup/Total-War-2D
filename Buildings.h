@@ -262,9 +262,10 @@ inline const std::unordered_map<BuildingType, BuildingData>& GetBuildingDatabase
     auto add = [&](BuildingType key, BuildingData data) { db[key] = data; };
 
     // ── KNIGHT SETTLEMENTS ──
-    add(BuildingType::Settlement_Village_Knight_T1, {"Hamlet",        "", 0, 0, 25,  0, 1, 1, BuildingType::None});
-    add(BuildingType::Settlement_Village_Knight_T2, {"Village",       "", 0, 0, 50,  0, 2, 1, BuildingType::None});
-    add(BuildingType::Settlement_Village_Knight_T3, {"Large Village", "", 0, 0, 100, 0, 3, 1, BuildingType::None});
+    //Village
+    add(BuildingType::Settlement_Village_Knight_T1, {"Hamlet",        "VillageTier1", 0, 0, 25,  0, 1, 1, BuildingType::None});
+    add(BuildingType::Settlement_Village_Knight_T2, {"Village",       "VillageTier2", 0, 0, 50,  0, 2, 1, BuildingType::None});
+    add(BuildingType::Settlement_Village_Knight_T3, {"Large Village", "VillageTier3", 0, 0, 100, 0, 3, 1, BuildingType::None});
     add(BuildingType::Settlement_Castle_Knight_T1,  {"Small Fort",    "", 0, 0, 100, 0, 1, 1, BuildingType::None});
     add(BuildingType::Settlement_Castle_Knight_T2,  {"Fort",          "", 0, 0, 175, 0, 2, 1, BuildingType::None});
     add(BuildingType::Settlement_Castle_Knight_T3,  {"Castle",        "", 0, 0, 275, 0, 3, 1, BuildingType::None});
