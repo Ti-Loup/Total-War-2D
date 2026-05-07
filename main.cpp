@@ -1707,8 +1707,13 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
 
 
         if (t > currentTier && t <= maxTier) {
-            BuildingType mainBuilding = provinceSettl->settlementData.buildings[0];
-            int cost = player.GetUpgradeCost(t - 1, mainBuilding);
+            BuildingType buildingAtTier = GetSettlementBuildingType(
+        provinceSettl->settlementData.type, province.owner, t - 1);
+            const BuildingData* tierData = GetBuildingData(buildingAtTier);
+            const BuildingData* nextData = (tierData && tierData->upgradesTo != BuildingType::None)? GetBuildingData(tierData->upgradesTo) : nullptr;
+            int cost              = nextData ? nextData->cost             : 123456;
+            int constructionTurns = nextData ? nextData->constructionTurns : 1;
+
             std::string costString = std::to_string(cost);
             TTF_SetTextString(gameBuildingCostUIText, costString.c_str(), 0);
 
@@ -1734,7 +1739,6 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
             SDL_RenderRect(renderer, &goldUI);
 
             //Show the amount of turn before the building is constructed.
-            int constructionTurns = GetConstructionTurns(provinceSettl->settlementData.type, t - 1);
             std::string timeConstructionAmountString = std::to_string(constructionTurns);
             TTF_SetTextString(gameBuildingConstructionTimeText, timeConstructionAmountString.c_str(), 0);
             int turnW = 0, turnH = 0;

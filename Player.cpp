@@ -82,38 +82,50 @@ static int GetSettlementCategory(BuildingType type) {
 }
 
 int Player::GetUpgradeCost(int fromBuildingTier, BuildingType type) {
-    int category = GetSettlementCategory(type);
+    //hard coded
 
-    // Capital
-    if (category == 0) {
-        switch (fromBuildingTier) {
-            case 1: return 1500;
-            case 2: return 3000;
-            case 3: return 6000;
-            case 4: return 10000;
-            default: return 123456;
-        }
-    }
-    // Castle
-    if (category == 1) {
-        switch (fromBuildingTier) {
-            case 1: return 1000;
-            case 2: return 2500;
-            case 3: return 4000;
-            case 4: return 6000;
-            default: return 123456;
-        }
-    }
-    // Village
-    if (category == 2) {
-        switch (fromBuildingTier) {
-            case 1: return 500;
-            case 2: return 1500;
-            default: return 123456;
-        }
-    }
+    // int category = GetSettlementCategory(type);
+    //
+    // // Capital
+    // if (category == 0) {
+    //     switch (fromBuildingTier) {
+    //         case 1: return 1500;
+    //         case 2: return 3000;
+    //         case 3: return 6000;
+    //         case 4: return 10000;
+    //         default: return 123456;
+    //     }
+    // }
+    // // Castle
+    // if (category == 1) {
+    //     switch (fromBuildingTier) {
+    //         case 1: return 1000;
+    //         case 2: return 2500;
+    //         case 3: return 4000;
+    //         case 4: return 6000;
+    //         default: return 123456;
+    //     }
+    // }
+    // // Village
+    // if (category == 2) {
+    //     switch (fromBuildingTier) {
+    //         case 1: return 500;
+    //         case 2: return 1500;
+    //         default: return 123456;
+    //     }
+    // }
+    //
+    // return 123456;
+//read the database to get the current cost + is next update
+    const BuildingData* currentData = GetBuildingData(type);
+    if (!currentData || currentData->upgradesTo == BuildingType::None)
+        return 123456; // tier max ou type inconnu
 
-    return 123456;
+    const BuildingData* nextData = GetBuildingData(currentData->upgradesTo);
+    if (!nextData) return 123456;
+
+    return nextData->cost;
+
 }
 
 void Player::AddGold(int amount) {

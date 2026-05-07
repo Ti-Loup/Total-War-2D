@@ -260,11 +260,11 @@ inline const std::unordered_map<BuildingType, BuildingData>& GetBuildingDatabase
 
     // Helper lambda to insert cleanly
     auto add = [&](BuildingType key, BuildingData data) { db[key] = data; };
-
+//{"Nom", "Desc", COST, upkeep, income, publicOrder, Tier, constructionTurns, upgradesTo}
     // ── KNIGHT SETTLEMENTS ──
-    add(BuildingType::Settlement_Village_Knight_T1, {"Hamlet",        "", 0, 0, 25,  0, 1, 1, BuildingType::None});
-    add(BuildingType::Settlement_Village_Knight_T2, {"Village",       "", 0, 0, 50,  0, 2, 1, BuildingType::None});
-    add(BuildingType::Settlement_Village_Knight_T3, {"Large Village", "", 0, 0, 100, 0, 3, 1, BuildingType::None});
+    add(BuildingType::Settlement_Village_Knight_T1, {"Hamlet",        "", 0, 0, 25,  0, 1, 1, BuildingType::Settlement_Village_Knight_T2});
+    add(BuildingType::Settlement_Village_Knight_T2, {"Village",       "", 10, 0, 50, 0, 2, 6, BuildingType::Settlement_Village_Knight_T3});
+    add(BuildingType::Settlement_Village_Knight_T3, {"Large Village", "", 100, 0, 100, 0, 3, 1, BuildingType::None});
     add(BuildingType::Settlement_Castle_Knight_T1,  {"Small Fort",    "", 0, 0, 100, 0, 1, 1, BuildingType::None});
     add(BuildingType::Settlement_Castle_Knight_T2,  {"Fort",          "", 0, 0, 175, 0, 2, 1, BuildingType::None});
     add(BuildingType::Settlement_Castle_Knight_T3,  {"Castle",        "", 0, 0, 275, 0, 3, 1, BuildingType::None});
