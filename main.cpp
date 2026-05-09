@@ -176,6 +176,10 @@ public:
     SDL_Texture *villageBuildingUpgrade1Knight = nullptr;
     SDL_Texture *villageBuildingUpgrade2Knight = nullptr;
     SDL_Texture *villageBuildingUpgrade3Knight = nullptr;
+    //Unavailable Slot
+    SDL_Texture *gameNotAvailableSlotKnight = nullptr;
+    //Available Slot
+    SDL_Texture *gameAvailableSlotKnight = nullptr;
     //                 ~ VIKING ~
     //capital
     SDL_Texture *capitalBuildingUpgrade1Viking = nullptr;
@@ -193,6 +197,10 @@ public:
     SDL_Texture *villageBuildingUpgrade1Viking = nullptr;
     SDL_Texture *villageBuildingUpgrade2Viking = nullptr;
     SDL_Texture *villageBuildingUpgrade3Viking = nullptr;
+    //Unavailable Slot
+    SDL_Texture *gameNotAvailableSlotViking = nullptr;
+    //Available Slot
+    SDL_Texture *gameAvailableSlotViking = nullptr;
     //                 ~ SAMURAI ~
     //capital
     SDL_Texture *capitalBuildingUpgrade1Samurai = nullptr;
@@ -210,6 +218,10 @@ public:
     SDL_Texture *villageBuildingUpgrade1Samurai = nullptr;
     SDL_Texture *villageBuildingUpgrade2Samurai = nullptr;
     SDL_Texture *villageBuildingUpgrade3Samurai = nullptr;
+    //Unavailable Slot
+    SDL_Texture *gameNotAvailableSlotSamurai = nullptr;
+    //Available Slot
+    SDL_Texture *gameAvailableSlotSamurai = nullptr;
     //UI TextFont
     TTF_Font *gameStatUITitleFont = nullptr;
 
@@ -713,6 +725,18 @@ private://constructor
             SDL_LogWarn(0,"failed to load the texture of villageBuildingUpgrade3knight",SDL_GetError());
         }
         SDL_SetTextureScaleMode(villageBuildingUpgrade3Knight, SDL_SCALEMODE_NEAREST);
+        //Unavailable Slot
+        gameNotAvailableSlotKnight = IMG_LoadTexture(renderer, "assets/Knight/BuildingNotAvailableKnight.png");
+        if (gameNotAvailableSlotKnight == nullptr) {
+            SDL_LogWarn(0, "failed to load texture gameNotAvailableSlotKnight", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(gameNotAvailableSlotKnight, SDL_SCALEMODE_NEAREST);
+        //Available Slot
+        gameAvailableSlotKnight = IMG_LoadTexture(renderer, "assets/Knight/BuildingAvailableKnight.png");
+        if (gameAvailableSlotKnight == nullptr) {
+            SDL_LogWarn(0, "failed to load texture gameAvailableSlotKnight", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(gameAvailableSlotKnight, SDL_SCALEMODE_NEAREST);
         //                  ! VIKING !
         //capitals
         capitalBuildingUpgrade1Viking = IMG_LoadTexture(renderer, "assets/Viking/CapitalBuildingUpgrade1Viking.png");
@@ -782,6 +806,19 @@ private://constructor
             SDL_LogWarn(0,"failed to load texture villageBuildingUpgrade3Viking", SDL_GetError());
         }
         SDL_SetTextureScaleMode(villageBuildingUpgrade3Viking, SDL_SCALEMODE_NEAREST);
+        //Unavailable Slot
+        gameNotAvailableSlotViking = IMG_LoadTexture(renderer, "assets/Viking/BuildingNotAvailableViking.png");
+        if (gameNotAvailableSlotViking == nullptr) {
+            SDL_LogWarn(0, "failed to load texture gameNotAvailableSlotViking", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(gameNotAvailableSlotViking, SDL_SCALEMODE_NEAREST);
+        //Available Slot
+        gameAvailableSlotViking = IMG_LoadTexture(renderer, "assets/Viking/BuildingAvailableViking.png");
+        if (gameAvailableSlotViking == nullptr) {
+            SDL_LogWarn(0, "failed to load texture gameAvailableSlotViking", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(gameAvailableSlotViking, SDL_SCALEMODE_NEAREST);
+
         //                  ! SAMURAI !
         //capitals
         capitalBuildingUpgrade1Samurai = IMG_LoadTexture(renderer, "assets/Samurai/CapitalBuildingUpgrade1Samurai.png");
@@ -851,6 +888,18 @@ private://constructor
             SDL_LogWarn(0,"failed to load texture villageBuildingUpgrade3Samurai", SDL_GetError());
         }
         SDL_SetTextureScaleMode(villageBuildingUpgrade3Samurai, SDL_SCALEMODE_NEAREST);
+        //Unavailable Slot
+        gameNotAvailableSlotSamurai = IMG_LoadTexture(renderer, "assets/Samurai/BuildingNotAvailableSamurai.png");
+        if (gameNotAvailableSlotSamurai == nullptr) {
+            SDL_LogWarn(0, "failed to load texture gameNotAvailableSlotSamurai", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(gameNotAvailableSlotSamurai, SDL_SCALEMODE_NEAREST);
+        //Available Slot
+        gameAvailableSlotSamurai = IMG_LoadTexture(renderer, "assets/Samurai/BuildingAvailableSamurai.png");
+        if (gameAvailableSlotSamurai == nullptr) {
+            SDL_LogWarn(0, "failed to load texture gameAvailableSlotSamurai", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(gameAvailableSlotSamurai, SDL_SCALEMODE_NEAREST);
         // -> CREDITS <-
         creditsTitleFont = TTF_OpenFont("assets/font.ttf", 50);
         creditsRoleTitleFont = TTF_OpenFont("assets/font.ttf", 40);
@@ -994,6 +1043,12 @@ private://constructor
         SDL_DestroyTexture(chooseFactionKnightIcon);
         SDL_DestroyTexture(chooseFactionVikingIcon);
         SDL_DestroyTexture(chooseFactionSamuraiIcon);
+        SDL_DestroyTexture(gameNotAvailableSlotKnight);
+        SDL_DestroyTexture(gameNotAvailableSlotViking);
+        SDL_DestroyTexture(gameNotAvailableSlotSamurai);
+        SDL_DestroyTexture(gameAvailableSlotKnight);
+        SDL_DestroyTexture(gameAvailableSlotViking);
+        SDL_DestroyTexture(gameAvailableSlotSamurai);
     // ---------------------------------
         SDL_DestroyCursor(cursor);
         delete tileMap;
@@ -1542,7 +1597,7 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
                     float slotSize = 60.f;
                     float slotGap  = 6.f;
                     int cols = 0;
-                    if      (s->settlementData.type == SettlementType::Village) cols = 2;
+                    if (s->settlementData.type == SettlementType::Village) cols = 2;
                     else if (s->settlementData.type == SettlementType::Castle)  cols = 3;
                     else if (s->settlementData.type == SettlementType::Capital) cols = 4;
 
@@ -1573,8 +1628,20 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
                                 SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255);
 
                         } else {
+
+                            // capital start with 2 buildings available instead of 1
                             bool built = (buildingType != BuildingType::None);
-                            SDL_SetRenderDrawColor(renderer, built ? 80 : 45,built ? 160 : 45,built ? 80 : 45, 255);
+                            int tier = s->settlementData.settlementTier;
+
+                            int slotThreshold = tier;
+                            if (s->settlementData.type == SettlementType::Capital) slotThreshold = tier + 1;
+
+                            if (b <= slotThreshold) {
+                                SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255); // available
+
+                            } else {
+                                SDL_SetRenderDrawColor(renderer, 40, 40, 40, 255);  // not available
+                            }
                         }
 
                         SDL_FRect slot = {sx, sy, slotSize, slotSize};
@@ -1621,8 +1688,6 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
                                 TTF_DrawRendererText(gameBuildingConstructionTimeText, sx + 25.f, sy + 20.f);
                             }
 
-
-
                                 mainBuildingSlotRects[i] = slot;
                             //which card is the mouse on
                             float mx, my;
@@ -1633,6 +1698,36 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
                             SDL_FRect slotCheck = {sx, sy, slotSize, slotSize};
                             if (SDL_PointInRectFloat(&mousePt, &slotCheck)) {
                                 hoveredCardIndex = i;
+                            }
+                        }
+                        else {
+                            int tier = s->settlementData.settlementTier;
+                            int slotThreshold = tier;
+                            if (s->settlementData.type == SettlementType::Capital) {
+                                slotThreshold = tier + 1; // capital start with 2 tier
+                            }
+                            if (b <= slotThreshold) {
+                                if (province.owner == FactionZone::Knight) {
+                                    SDL_RenderTexture(renderer, gameAvailableSlotKnight, nullptr, &slot);
+                                }
+                                else if (province.owner == FactionZone::Viking) {
+                                    SDL_RenderTexture(renderer, gameAvailableSlotViking, nullptr, &slot);
+                                }
+                                else if (province.owner == FactionZone::Samurai) {
+                                    SDL_RenderTexture(renderer, gameAvailableSlotSamurai, nullptr, &slot);
+                                }
+
+                            }
+                            else {
+                                if (province.owner == FactionZone::Knight) {
+                                    SDL_RenderTexture(renderer, gameNotAvailableSlotKnight, nullptr, &slot);
+                                }
+                                else if (province.owner == FactionZone::Viking) {
+                                    SDL_RenderTexture(renderer, gameNotAvailableSlotViking, nullptr, &slot);
+                                }
+                                else if (province.owner == FactionZone::Samurai) {
+                                    SDL_RenderTexture(renderer, gameNotAvailableSlotSamurai, nullptr, &slot);
+                                }
                             }
                         }
                     }
@@ -1883,7 +1978,7 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
     float tooltipX = 0.f;
     float tooltipW = 250.f;
     float tooltipH = 175.f;
-    float tooltipY = 600.f - tooltipH - 6.f;
+    float tooltipY = 708.f - tooltipH - 6.f;
 
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
