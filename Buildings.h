@@ -264,17 +264,17 @@ inline const std::unordered_map<BuildingType, BuildingData>& GetBuildingDatabase
     // ── KNIGHT SETTLEMENTS ──
     add(BuildingType::Settlement_Village_Knight_T1, {"Hamlet",        "A small town where farmers\ngrowth their lands", 0, 0, 25,  0, 1, 1, BuildingType::Settlement_Village_Knight_T2});
     add(BuildingType::Settlement_Village_Knight_T2, {"Village",       "The villagers has improved\nfarms and lands.", 500, 0, 50, 0, 2, 3, BuildingType::Settlement_Village_Knight_T3});
-    add(BuildingType::Settlement_Village_Knight_T3, {"Large Village", "The farms are at their fullest\n potencial.", 1500, 0, 100, 0, 3, 4, BuildingType::None});
-    add(BuildingType::Settlement_Castle_Knight_T1,  {"Small Fort",    "", 0, 0, 100, 0, 1, 1, BuildingType::Settlement_Castle_Knight_T2});
-    add(BuildingType::Settlement_Castle_Knight_T2,  {"Fort",          "", 0, 0, 175, 0, 2, 1, BuildingType::Settlement_Castle_Knight_T3});
-    add(BuildingType::Settlement_Castle_Knight_T3,  {"Castle",        "", 0, 0, 275, 0, 3, 1, BuildingType::Settlement_Castle_Knight_T4});
-    add(BuildingType::Settlement_Castle_Knight_T4,  {"Large Castle",  "", 0, 0, 400, 0, 4, 1, BuildingType::Settlement_Castle_Knight_T5});
-    add(BuildingType::Settlement_Castle_Knight_T5,  {"Citadel",       "", 0, 0, 550, 0, 5, 1, BuildingType::None});
-    add(BuildingType::Settlement_Capital_Knight_T1, {"Small Town",    "", 0, 0, 200,  0, 1, 1, BuildingType::Settlement_Capital_Knight_T2});
-    add(BuildingType::Settlement_Capital_Knight_T2, {"Town",          "", 0, 0, 350,  0, 2, 1, BuildingType::Settlement_Capital_Knight_T3});
-    add(BuildingType::Settlement_Capital_Knight_T3, {"City",          "", 0, 0, 550,  0, 3, 1, BuildingType::Settlement_Capital_Knight_T4});
-    add(BuildingType::Settlement_Capital_Knight_T4, {"Large City",    "", 0, 0, 800,  0, 4, 1, BuildingType::Settlement_Capital_Knight_T5});
-    add(BuildingType::Settlement_Capital_Knight_T5, {"Royal Capital", "", 0, 0, 1100, 0, 5, 1, BuildingType::None});
+    add(BuildingType::Settlement_Village_Knight_T3, {"Large Village", "The farms are at their fullest\n potencial.", 1000, 0, 100, 0, 3, 4, BuildingType::None});
+    add(BuildingType::Settlement_Castle_Knight_T1,  {"Small Fort",    "", 1000, 0, 100, 0, 1, 1, BuildingType::Settlement_Castle_Knight_T2});
+    add(BuildingType::Settlement_Castle_Knight_T2,  {"Fort",          "", 1500, 0, 150, 0, 2, 1, BuildingType::Settlement_Castle_Knight_T3});
+    add(BuildingType::Settlement_Castle_Knight_T3,  {"Castle",        "", 2500, 0, 225, 0, 3, 1, BuildingType::Settlement_Castle_Knight_T4});
+    add(BuildingType::Settlement_Castle_Knight_T4,  {"Large Castle",  "", 4000, 0, 300, 0, 4, 1, BuildingType::Settlement_Castle_Knight_T5});
+    add(BuildingType::Settlement_Castle_Knight_T5,  {"Citadel",       "", 8000, 0, 500, 0, 5, 1, BuildingType::None});
+    add(BuildingType::Settlement_Capital_Knight_T1, {"Small Town",    "A small Capital, a proud \nKingdom ready to expend.", 1500, 0, 150,  0, 1, 0, BuildingType::Settlement_Capital_Knight_T2});
+    add(BuildingType::Settlement_Capital_Knight_T2, {"Town",          "", 2500, 0, 200,  0, 2, 3, BuildingType::Settlement_Capital_Knight_T3});
+    add(BuildingType::Settlement_Capital_Knight_T3, {"City",          "", 4000, 0, 300,  0, 3, 5, BuildingType::Settlement_Capital_Knight_T4});
+    add(BuildingType::Settlement_Capital_Knight_T4, {"Large City",    "", 8000, 0, 400,  0, 4, 7, BuildingType::Settlement_Capital_Knight_T5});
+    add(BuildingType::Settlement_Capital_Knight_T5, {"Royal Capital", "", 10000, 0, 600, 0, 5, 10, BuildingType::None});
 
     // ── VIKING SETTLEMENTS ──
     add(BuildingType::Settlement_Village_Viking_T1, {"Small Settlement", "", 0, 0, 25,  0, 1, 1, BuildingType::Settlement_Village_Viking_T2});
