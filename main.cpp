@@ -1887,7 +1887,7 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
         // ~ Buildings Categories ~
         //military, Adv military, Defence, Economy, Religion,
         if (hoveredAvailableSlot >=0) {
-            const char* categoryNames[] = {"Mil", "Adv", "Def", "Eco", "Rel"};
+            //const char* categoryNames[] = {"Mil", "Adv", "Def", "Eco", "Rel"};
             SDL_Color categoryColors[] = {
                 {255, 26,  26,  255},
                 {93, 23,  255,  255},
@@ -1906,13 +1906,35 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
                 SDL_FRect buttonsRect = {buttonStartX + k * (buttonW + buttonGap), btnY, buttonW, buttonH};
 
                 //render textures based of faction culture instead of text
+                if (province.owner == FactionZone::Knight) {
+                    if (k == 0) SDL_RenderTexture(renderer, gameBuildingTypesGroupingMilitaryKnight, nullptr, &buttonsRect);
+                    else if (k == 1) SDL_RenderTexture(renderer, gameBuildingTypesGroupingAdvMilitaryKnight, nullptr, &buttonsRect);
+                    else if (k == 2) SDL_RenderTexture(renderer, gameBuildingTypesGroupingDefenceKnight, nullptr, &buttonsRect);
+                    else if (k == 3) SDL_RenderTexture(renderer, gameBuildingTypesGroupingEconomyKnight, nullptr, &buttonsRect);
+                    else if (k == 4) SDL_RenderTexture(renderer, gameBuildingTypesGroupingReligionKnight, nullptr, &buttonsRect);
+                }
+                else if (province.owner == FactionZone::Viking) {
+                    if (k == 0) SDL_RenderTexture(renderer, gameBuildingTypesGroupingMilitaryViking, nullptr, &buttonsRect);
+                    else if (k == 1) SDL_RenderTexture(renderer, gameBuildingTypesGroupingAdvMilitaryViking, nullptr, &buttonsRect);
+                    else if (k == 2) SDL_RenderTexture(renderer, gameBuildingTypesGroupingDefenceViking, nullptr, &buttonsRect);
+                    else if (k == 3) SDL_RenderTexture(renderer, gameBuildingTypesGroupingEconomyViking, nullptr, &buttonsRect);
+                    else if (k == 4) SDL_RenderTexture(renderer, gameBuildingTypesGroupingReligionViking, nullptr, &buttonsRect);
+                }
+                else if (province.owner == FactionZone::Samurai) {
+                    if (k == 0) SDL_RenderTexture(renderer, gameBuildingTypesGroupingMilitarySamurai, nullptr, &buttonsRect);
+                    else if (k == 1) SDL_RenderTexture(renderer, gameBuildingTypesGroupingAdvMilitarySamurai, nullptr, &buttonsRect);
+                    else if (k == 2) SDL_RenderTexture(renderer, gameBuildingTypesGroupingDefenceSamurai, nullptr, &buttonsRect);
+                    else if (k == 3) SDL_RenderTexture(renderer, gameBuildingTypesGroupingEconomySamurai, nullptr, &buttonsRect);
+                    else if (k == 4) SDL_RenderTexture(renderer, gameBuildingTypesGroupingReligionSamurai, nullptr, &buttonsRect);
+                }
+
 
                 SDL_SetRenderDrawColor(renderer, categoryColors[k].r, categoryColors[k].g, categoryColors[k].b, 220);
                 SDL_RenderFillRect(renderer, &buttonsRect);
                 SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
                 SDL_RenderRect(renderer, &buttonsRect);
 
-                TTF_SetTextString(gameStatUIText, categoryNames[k], 0);
+                //TTF_SetTextString(gameStatUIText, categoryNames[k], 0);
                 TTF_SetTextColor(gameStatUIText, 255, 255, 255, 255);
                 int tw = 0, th = 0;
                 TTF_GetTextSize(gameStatUIText, &tw, &th);
