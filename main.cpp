@@ -1905,6 +1905,12 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
             for (int k = 0; k < 5; k++) {
                 SDL_FRect buttonsRect = {buttonStartX + k * (buttonW + buttonGap), btnY, buttonW, buttonH};
 
+                //font de la couleur
+                SDL_SetRenderDrawColor(renderer, categoryColors[k].r, categoryColors[k].g, categoryColors[k].b, 200);
+                SDL_RenderFillRect(renderer, &buttonsRect);
+                SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
+                SDL_RenderRect(renderer, &buttonsRect);
+
                 //render textures based of faction culture instead of text
                 if (province.owner == FactionZone::Knight) {
                     if (k == 0) SDL_RenderTexture(renderer, gameBuildingTypesGroupingMilitaryKnight, nullptr, &buttonsRect);
@@ -1928,17 +1934,11 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
                     else if (k == 4) SDL_RenderTexture(renderer, gameBuildingTypesGroupingReligionSamurai, nullptr, &buttonsRect);
                 }
 
-
-                SDL_SetRenderDrawColor(renderer, categoryColors[k].r, categoryColors[k].g, categoryColors[k].b, 80);
-                SDL_RenderFillRect(renderer, &buttonsRect);
-                SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
-                SDL_RenderRect(renderer, &buttonsRect);
-
-                //TTF_SetTextString(gameStatUIText, categoryNames[k], 0);
-                TTF_SetTextColor(gameStatUIText, 255, 255, 255, 255);
-                int tw = 0, th = 0;
-                TTF_GetTextSize(gameStatUIText, &tw, &th);
-                TTF_DrawRendererText(gameStatUIText,buttonsRect.x + (buttonW - tw) / 2.f,buttonsRect.y + (buttonH - th) / 2.f);
+                // //TTF_SetTextString(gameStatUIText, categoryNames[k], 0);
+                // TTF_SetTextColor(gameStatUIText, 255, 255, 255, 255);
+                // int tw = 0, th = 0;
+                // TTF_GetTextSize(gameStatUIText, &tw, &th);
+                // TTF_DrawRendererText(gameStatUIText,buttonsRect.x + (buttonW - tw) / 2.f,buttonsRect.y + (buttonH - th) / 2.f);
             }
         }
 
