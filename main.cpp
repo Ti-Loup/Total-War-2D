@@ -1307,6 +1307,162 @@ private://constructor
         }
         SDL_SetTextureScaleMode(gameBuildingTypesGroupingReligionSamurai, SDL_SCALEMODE_NEAREST);
 
+        //Buildings
+        //Military
+        buildingTypeTextures[BuildingType::SwordSchool_T1] = IMG_LoadTexture(renderer, "assets/Samurai/SwordSchoolTier1.png");
+        if (buildingTypeTextures[BuildingType::SwordSchool_T1] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture SwordSchool_T1", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::SwordSchool_T1], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::SwordSchool_T2] = IMG_LoadTexture(renderer, "assets/Samurai/SwordSchoolTier2.png");
+        if (buildingTypeTextures[BuildingType::SwordSchool_T2] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture SwordSchool_T2", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::SwordSchool_T2], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::SwordSchool_T3] = IMG_LoadTexture(renderer, "assets/Samurai/SwordSchoolTier3.png");
+        if (buildingTypeTextures[BuildingType::SwordSchool_T3] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture SwordSchool_T3", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::SwordSchool_T3], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::ArcheryDojo_T1] = IMG_LoadTexture(renderer, "assets/Samurai/ArcheryDojoTier1.png");
+        if (buildingTypeTextures[BuildingType::ArcheryDojo_T1] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture ArcheryDojo_T1", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::ArcheryDojo_T1], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::ArcheryDojo_T2] = IMG_LoadTexture(renderer, "assets/Samurai/ArcheryDojoTier2.png");
+        if (buildingTypeTextures[BuildingType::ArcheryDojo_T2] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture ArcheryDojo_T2", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::ArcheryDojo_T2], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::ArcheryDojo_T3] = IMG_LoadTexture(renderer, "assets/Samurai/ArcheryDojoTier3.png");
+        if (buildingTypeTextures[BuildingType::ArcheryDojo_T3] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture ArcheryDojo_T3", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::ArcheryDojo_T3], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::WarhorseStable_T1] = IMG_LoadTexture(renderer, "assets/Samurai/WarhorseStableTier1.png");
+        if (buildingTypeTextures[BuildingType::WarhorseStable_T1] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture WarhorseStable_T1", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::WarhorseStable_T1], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::WarhorseStable_T2] = IMG_LoadTexture(renderer, "assets/Samurai/WarhorseStableTier2.png");
+        if (buildingTypeTextures[BuildingType::WarhorseStable_T2] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture WarhorseStable_T2", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::WarhorseStable_T2], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::WarhorseStable_T3] = IMG_LoadTexture(renderer, "assets/Samurai/WarhorseStableTier3.png");
+        if (buildingTypeTextures[BuildingType::WarhorseStable_T3] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture WarhorseStable_T3", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::WarhorseStable_T3], SDL_SCALEMODE_NEAREST);
+
+        //Adv Military
+        buildingTypeTextures[BuildingType::SiegeEngineerWorkshop_T4] = IMG_LoadTexture(renderer, "assets/Samurai/SiegeEngineerWorkshopTier4.png");
+        if (buildingTypeTextures[BuildingType::SiegeEngineerWorkshop_T4] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture SiegeEngineerWorkshop_T4", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::SiegeEngineerWorkshop_T4], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::SiegeEngineerWorkshop_T5] = IMG_LoadTexture(renderer, "assets/Samurai/SiegeEngineerWorkshopTier5.png");
+        if (buildingTypeTextures[BuildingType::SiegeEngineerWorkshop_T5] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture SiegeEngineerWorkshop_T5", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::SiegeEngineerWorkshop_T5], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::GunSmith_T4] = IMG_LoadTexture(renderer,"assets/Samurai/GunSmithTier4.png");
+        if (buildingTypeTextures[BuildingType::GunSmith_T4] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture GunSmith_T4", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::GunSmith_T4], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::GunSmith_T5] = IMG_LoadTexture(renderer,"assets/Samurai/GunSmithTier5.png");
+        if (buildingTypeTextures[BuildingType::GunSmith_T5] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture GunSmith_T5", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::GunSmith_T5], SDL_SCALEMODE_NEAREST);
+
+        //Defence
+        buildingTypeTextures[BuildingType::FortifiedCastle_T3] = IMG_LoadTexture(renderer, "assets/Samurai/FortifiedCastleTier3.png");
+        if (buildingTypeTextures[BuildingType::FortifiedCastle_T3] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture FortifiedCastle_T3", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::FortifiedCastle_T3], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::FortifiedCastle_T4] = IMG_LoadTexture(renderer, "assets/Samurai/FortifiedCastleTier4.png");
+        if (buildingTypeTextures[BuildingType::FortifiedCastle_T4] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture FortifiedCastle_T4", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::FortifiedCastle_T4], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::FortifiedCastle_T5] = IMG_LoadTexture(renderer, "assets/Samurai/FortifiedCastleTier5.png");
+        if (buildingTypeTextures[BuildingType::FortifiedCastle_T5] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture FortifiedCastle_T5", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::FortifiedCastle_T5], SDL_SCALEMODE_NEAREST);
+
+        //Economy
+        buildingTypeTextures[BuildingType::Market_T1] = IMG_LoadTexture(renderer, "assets/Samurai/MarketTier1.png");
+        if (buildingTypeTextures[BuildingType::Market_T1] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture Market_T1", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::Market_T1], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::Market_T2] = IMG_LoadTexture(renderer, "assets/Samurai/MarketTier2.png");
+        if (buildingTypeTextures[BuildingType::Market_T2] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture Market_T2", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::Market_T2], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::Market_T3] = IMG_LoadTexture(renderer, "assets/Samurai/MarketTier3.png");
+        if (buildingTypeTextures[BuildingType::Market_T3] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture Market_T3", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::Market_T3], SDL_SCALEMODE_NEAREST);
+
+        //Religion
+        buildingTypeTextures[BuildingType::Hospital_T1] = IMG_LoadTexture(renderer, "assets/Samurai/HospitalTier1.png");
+        if (buildingTypeTextures[BuildingType::Hospital_T1] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture Hospital_T1", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::Hospital_T1], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::Hospital_T2] = IMG_LoadTexture(renderer, "assets/Samurai/HospitalTier2.png");
+        if (buildingTypeTextures[BuildingType::Hospital_T2] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture Hospital_T2", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::Hospital_T2], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::Hospital_T3] = IMG_LoadTexture(renderer, "assets/Samurai/HospitalTier3.png");
+        if (buildingTypeTextures[BuildingType::Hospital_T3] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture Hospital_T3", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::Hospital_T3], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::Chapel_T1] = IMG_LoadTexture(renderer, "assets/Samurai/ChapelTier1.png");
+        if (buildingTypeTextures[BuildingType::Chapel_T1] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture Chapel_T1", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::Chapel_T1], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::Chapel_T2] = IMG_LoadTexture(renderer, "assets/Samurai/ChapelTier2.png");
+        if (buildingTypeTextures[BuildingType::Chapel_T2] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture Chapel_T2", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::Chapel_T2], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::Chapel_T3] = IMG_LoadTexture(renderer, "assets/Samurai/ChapelTier3.png");
+        if (buildingTypeTextures[BuildingType::Chapel_T3] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture Chapel_T3", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::Chapel_T3], SDL_SCALEMODE_NEAREST);
+
 
         // -> CREDITS <-
         creditsTitleFont = TTF_OpenFont("assets/font.ttf", 50);
