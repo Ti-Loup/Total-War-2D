@@ -901,6 +901,63 @@ private://constructor
             SDL_LogWarn(0, "failed to load texture ReinforceWalls_T5", SDL_GetError());
         }
         SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::ReinforceWalls_T5], SDL_SCALEMODE_NEAREST);
+
+        //Economy
+        buildingTypeTextures[BuildingType::Economy_T1] = IMG_LoadTexture(renderer, "assets/Knight/EconomyTier1.png");
+        if (buildingTypeTextures[BuildingType::Economy_T1]  == nullptr) {
+            SDL_LogWarn(0,"failed to load texture Economy_T1", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::Economy_T1], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::Economy_T2] = IMG_LoadTexture(renderer, "assets/Knight/EconomyTier2.png");
+        if (buildingTypeTextures[BuildingType::Economy_T2]  == nullptr) {
+            SDL_LogWarn(0,"failed to load texture Economy_T2", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::Economy_T2], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::Economy_T3] = IMG_LoadTexture(renderer, "assets/Knight/EconomyTier3.png");
+        if (buildingTypeTextures[BuildingType::Economy_T3]  == nullptr) {
+            SDL_LogWarn(0,"failed to load texture Economy_T3", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::Economy_T3], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::Growth_T1] = IMG_LoadTexture(renderer, "assets/Knight/GrowthTier1.png");
+        if (buildingTypeTextures[BuildingType::Growth_T1]  == nullptr) {
+            SDL_LogWarn(0, "failed to load texture Growth_T1", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::Growth_T1], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::Growth_T2] = IMG_LoadTexture(renderer, "assets/Knight/GrowthTier2.png");
+        if (buildingTypeTextures[BuildingType::Growth_T2]  == nullptr) {
+            SDL_LogWarn(0, "failed to load texture Growth_T2", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::Growth_T2], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::Growth_T3] = IMG_LoadTexture(renderer, "assets/Knight/GrowthTier3.png");
+        if (buildingTypeTextures[BuildingType::Growth_T3]  == nullptr) {
+            SDL_LogWarn(0, "failed to load texture Growth_T3", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::Growth_T3], SDL_SCALEMODE_NEAREST);
+
+        //Religion
+        buildingTypeTextures[BuildingType::Church_T1] = IMG_LoadTexture(renderer, "assets/Knight/ChurchTier1.png");
+        if (buildingTypeTextures[BuildingType::Church_T1] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture Church_T1", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::Church_T1], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::Church_T2] = IMG_LoadTexture(renderer, "assets/Knight/ChurchTier2.png");
+        if (buildingTypeTextures[BuildingType::Church_T2] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture Church_T2", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::Church_T2], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::Church_T3] = IMG_LoadTexture(renderer, "assets/Knight/ChurchTier3.png");
+        if (buildingTypeTextures[BuildingType::Church_T3] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture Church_T3", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::Church_T3], SDL_SCALEMODE_NEAREST);
+
         //                  ! VIKING !
         //capitals
         capitalBuildingUpgrade1Viking = IMG_LoadTexture(renderer, "assets/Viking/CapitalBuildingUpgrade1Viking.png");
