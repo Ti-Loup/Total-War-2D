@@ -1067,6 +1067,137 @@ private://constructor
         }
         SDL_SetTextureScaleMode(gameBuildingTypesGroupingReligionViking, SDL_SCALEMODE_NEAREST);
 
+        //Buildings Texture
+        //Military
+        buildingTypeTextures[BuildingType::WarLodge_T1] = IMG_LoadTexture(renderer, "assets/Viking/WarLodgeTier1.png");
+        if (buildingTypeTextures[BuildingType::WarLodge_T1] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture WarLodge_T1", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::WarLodge_T1], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::WarLodge_T2] = IMG_LoadTexture(renderer, "assets/Viking/WarLodgeTier2.png");
+        if (buildingTypeTextures[BuildingType::WarLodge_T2] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture WarLodge_T2", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::WarLodge_T2], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::WarLodge_T3] = IMG_LoadTexture(renderer, "assets/Viking/WarLodgeTier3.png");
+        if (buildingTypeTextures[BuildingType::WarLodge_T3] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture WarLodge_T3", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::WarLodge_T3], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::ShootingGround_T1] = IMG_LoadTexture(renderer, "assets/Viking/ShootingGroundTier1.png");
+        if (buildingTypeTextures[BuildingType::ShootingGround_T1] == nullptr){
+            SDL_LogWarn(0, "failed to load texture ShootingGround_T1", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::ShootingGround_T1], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::ShootingGround_T2] = IMG_LoadTexture(renderer, "assets/Viking/ShootingGroundTier2.png");
+        if (buildingTypeTextures[BuildingType::ShootingGround_T2] == nullptr){
+            SDL_LogWarn(0, "failed to load texture ShootingGround_T2", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::ShootingGround_T2], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::ShootingGround_T3] = IMG_LoadTexture(renderer, "assets/Viking/ShootingGroundTier3.png");
+        if (buildingTypeTextures[BuildingType::ShootingGround_T3] == nullptr){
+            SDL_LogWarn(0, "failed to load texture ShootingGround_T3", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::ShootingGround_T3], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::HorseTraining_T1] = IMG_LoadTexture(renderer, "assets/Viking/HorseTrainingTier1.png");
+        if (buildingTypeTextures[BuildingType::HorseTraining_T1] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture HorseTraining_T1", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::HorseTraining_T1], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::HorseTraining_T2] = IMG_LoadTexture(renderer, "assets/Viking/HorseTrainingTier2.png");
+        if (buildingTypeTextures[BuildingType::HorseTraining_T2] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture HorseTraining_T2", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::HorseTraining_T2], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::HorseTraining_T3] = IMG_LoadTexture(renderer, "assets/Viking/HorseTrainingTier3.png");
+        if (buildingTypeTextures[BuildingType::HorseTraining_T3] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture HorseTraining_T3", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::HorseTraining_T3], SDL_SCALEMODE_NEAREST);
+
+        //Adv Military
+        buildingTypeTextures[BuildingType::ChosensOfOdin_T3] = IMG_LoadTexture(renderer, "assets/Viking/ChosensOfOdinTier3.png");
+        if (buildingTypeTextures[BuildingType::ChosensOfOdin_T3] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture ChosensOfOdin_T3", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::ChosensOfOdin_T3], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::ChosensOfOdin_T4] = IMG_LoadTexture(renderer, "assets/Viking/ChosensOfOdinTier4.png");
+        if (buildingTypeTextures[BuildingType::ChosensOfOdin_T4] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture ChosensOfOdin_T4", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::ChosensOfOdin_T4], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::ChosensOfOdin_T5] = IMG_LoadTexture(renderer, "assets/Viking/ChosensOfOdinTier5.png");
+        if (buildingTypeTextures[BuildingType::ChosensOfOdin_T5] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture ChosensOfOdin_T5", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::ChosensOfOdin_T5], SDL_SCALEMODE_NEAREST);
+
+        //Defence
+        buildingTypeTextures[BuildingType::ReinforcedDrakkar_T3] = IMG_LoadTexture(renderer, "assets/Viking/ReinforcedDrakkarTier3.png");
+        if (buildingTypeTextures[BuildingType::ReinforcedDrakkar_T3] == nullptr) {
+            SDL_LogWarn(0,"failed to load texture ReinforcedDrakkar_T3", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::ReinforcedDrakkar_T3], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::ReinforcedDrakkar_T4] = IMG_LoadTexture(renderer, "assets/Viking/ReinforcedDrakkarTier4.png");
+        if (buildingTypeTextures[BuildingType::ReinforcedDrakkar_T4] == nullptr) {
+            SDL_LogWarn(0,"failed to load texture ReinforcedDrakkar_T4", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::ReinforcedDrakkar_T4], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::ReinforcedDrakkar_T5] = IMG_LoadTexture(renderer, "assets/Viking/ReinforcedDrakkarTier5.png");
+        if (buildingTypeTextures[BuildingType::ReinforcedDrakkar_T5] == nullptr) {
+            SDL_LogWarn(0,"failed to load texture ReinforcedDrakkar_T5", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::ReinforcedDrakkar_T5], SDL_SCALEMODE_NEAREST);
+
+        //Religion
+        buildingTypeTextures[BuildingType::Shrine_T1] = IMG_LoadTexture(renderer, "assets/Viking/ShrineTier1.png");
+        if (buildingTypeTextures[BuildingType::Shrine_T1] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture Shrine_T1", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::Shrine_T1], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::Shrine_T2] = IMG_LoadTexture(renderer, "assets/Viking/ShrineTier2.png");
+        if (buildingTypeTextures[BuildingType::Shrine_T2] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture Shrine_T2", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::Shrine_T2], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::Shrine_T3] = IMG_LoadTexture(renderer, "assets/Viking/ShrineTier3.png");
+        if (buildingTypeTextures[BuildingType::Shrine_T3] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture Shrine_T3", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::Shrine_T3], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::SacrificeRitual_T1] = IMG_LoadTexture(renderer, "assets/Viking/SacrificeRitualTier1.png");
+        if (buildingTypeTextures[BuildingType::SacrificeRitual_T1] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture SacrificeRitual_T1", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::SacrificeRitual_T1], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::SacrificeRitual_T2] = IMG_LoadTexture(renderer, "assets/Viking/SacrificeRitualTier2.png");
+        if (buildingTypeTextures[BuildingType::SacrificeRitual_T2] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture SacrificeRitual_T2", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::SacrificeRitual_T2], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::SacrificeRitual_T3] = IMG_LoadTexture(renderer, "assets/Viking/SacrificeRitualTier3.png");
+        if (buildingTypeTextures[BuildingType::SacrificeRitual_T3] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture SacrificeRitual_T3", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::SacrificeRitual_T3], SDL_SCALEMODE_NEAREST);
+
         //                  ! SAMURAI !
         //capitals
         capitalBuildingUpgrade1Samurai = IMG_LoadTexture(renderer, "assets/Samurai/CapitalBuildingUpgrade1Samurai.png");
