@@ -154,7 +154,8 @@ public:
     //End Turn
     int currentTurn = 1;
     FactionZone currentFactionTurn = FactionZone::Knight;//start with player
-
+    //texture next turn button
+    SDL_Texture  *gameNextTurnTexture = nullptr;
 
     //Buildings Texture
     //hammer
@@ -660,6 +661,12 @@ private://constructor
         if (gameKingdomSamuraiNameText == nullptr) {
             SDL_LogWarn(0,"failed to load the text of gameKingdomSamuraiNameText");
         }
+        //Texture Next Turn
+        gameNextTurnTexture = IMG_LoadTexture(renderer, "assets/NextTurnTexture.png");
+        if (gameNextTurnTexture == nullptr) {
+            SDL_LogWarn(0,"failed to load the texture of gameNextTurnTexture", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(gameNextTurnTexture, SDL_SCALEMODE_NEAREST);
 
         //texture Province dezoom texture
         provinceKnightBannerTexture = IMG_LoadTexture(renderer, "assets/KnightProvinceTexture.png");
@@ -840,6 +847,24 @@ private://constructor
         }
         SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::ArcheryRange_T3], SDL_SCALEMODE_NEAREST);
 
+        //Stable
+        buildingTypeTextures[BuildingType::Stable_T1] = IMG_LoadTexture(renderer, "assets/Knight/StableTier1.png");
+        if (buildingTypeTextures[BuildingType::Stable_T1] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture Stable_T1", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::Stable_T1], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::Stable_T2] = IMG_LoadTexture(renderer, "assets/Knight/StableTier2.png");
+        if (buildingTypeTextures[BuildingType::Stable_T2] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture stable_T2", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::Stable_T2], SDL_SCALEMODE_NEAREST);
+
+        buildingTypeTextures[BuildingType::Stable_T3] = IMG_LoadTexture(renderer, "assets/Knight/StableTier3.png");
+        if (buildingTypeTextures[BuildingType::Stable_T3] == nullptr) {
+            SDL_LogWarn(0, "failed to load texture stable_T3", SDL_GetError());
+        }
+        SDL_SetTextureScaleMode(buildingTypeTextures[BuildingType::Stable_T3], SDL_SCALEMODE_NEAREST);
         //                  ! VIKING !
         //capitals
         capitalBuildingUpgrade1Viking = IMG_LoadTexture(renderer, "assets/Viking/CapitalBuildingUpgrade1Viking.png");
@@ -2429,8 +2454,8 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
 
 
         //circle  button for the NextTurn Button
-        SDL_SetRenderDrawColor(renderer, 0,80,255,255);
-        RenderBoutonCercle(NextTurnButton, nullptr, nullptr,180, 180, 180);
+        SDL_SetRenderDrawColor(renderer, 0,80,255,0);
+        RenderBoutonCercle(NextTurnButton, nullptr, gameNextTurnTexture,180, 180, 180);
         //text to show the current Turn
         std::string endTurn = std::to_string(currentTurn);
         TTF_SetTextString(gameNumberOfTurnText, endTurn.c_str(), 0);
