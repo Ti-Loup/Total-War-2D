@@ -2249,6 +2249,14 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
         }
         chains.push_back(c);
     }
+
+        int maxTierOverall = 0;
+        for (auto& c : chains) {
+            for (BuildingType bt : c.tiers) {
+                const BuildingData* d = GetBuildingData(bt);
+                if (d) maxTierOverall = std::max(maxTierOverall, d->Tier);
+            }
+        }
         //Main building Building W/H
         // float buttonW = 65.f;
         // float buttonH = 65.f;
@@ -2263,7 +2271,7 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
     for (auto& c : chains) maxLen = std::max(maxLen, (int)c.tiers.size());
 
     float totalW = (float)chains.size() * tileW + ((float)chains.size() - 1.f) * colGap;
-    float totalH = (float)maxLen * tileH + ((float)maxLen - 1.f) * arrowH;
+    float totalH = (float)maxTierOverall * tileH + ((float)(maxTierOverall - 1)) * arrowH;
 
     // Position on top
     float popX = 400.f, popY = 300.f;
@@ -2297,7 +2305,8 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
             const BuildingData* data = GetBuildingData(bt);
             if (!data) continue;
 
-            float tileY = popY + ti * (tileH + arrowH);
+            int rowIndex = maxTierOverall - data->Tier; // 0 = top (tier le plus haut)
+            float tileY = popY + rowIndex * (tileH + arrowH);
             bool isUnlocked = (data->Tier <= settlementTier);
 
             // Fond de la tuile
@@ -2324,7 +2333,11 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
                 SDL_SetTextureAlphaMod(texture, 255); // reset
             }
 
-
+            std::string tierStr = "T" + std::to_string(data->Tier);
+            TTF_SetTextString(gameStatUIText, tierStr.c_str(), 0);
+            Uint8 tierAlpha = isUnlocked ? 255 : 120;
+            TTF_SetTextColor(gameStatUIText, tierAlpha, tierAlpha, tierAlpha, 255);
+            TTF_DrawRendererText(gameStatUIText, colX - 5.f, tileY + tileH - 18.f);
             categoryEvolutionTileRects.push_back({tileRect, bt});//detection click
             // // Building name
             // TTF_SetTextString(gameStatUIText, data->name.c_str(), 0);
@@ -2356,13 +2369,19 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
 
             //arrow towards next tier
             if (ti < numTiers - 1) {
-                float cx   = colX + tileW / 2.f;
-                float tipY = tileY + tileH + 2.f;
-                float botY = tileY + tileH + arrowH - 2.f;
-                SDL_SetRenderDrawColor(renderer, 0, 180, 0, 200);
-                SDL_RenderLine(renderer, (int)cx, (int)tipY,  (int)cx,      (int)botY);
-                SDL_RenderLine(renderer, (int)cx, (int)tipY,  (int)(cx - 5),(int)(tipY + 7));
-                SDL_RenderLine(renderer, (int)cx, (int)tipY,  (int)(cx + 5),(int)(tipY + 7));
+                BuildingType nextBt = chain.tiers[numTiers - 1 - (ti + 1)];
+                const BuildingData* nextData = GetBuildingData(nextBt);
+                if (nextData) {
+                    int nextRowIndex = maxTierOverall - nextData->Tier;
+                    float nextTileY = popY + nextRowIndex * (tileH + arrowH);
+                    float cx   = colX + tileW / 2.f;
+                    float tipY = tileY + tileH + 2.f;
+                    float botY = nextTileY - 2.f;
+                    SDL_SetRenderDrawColor(renderer, 0, 180, 0, 200);
+                    SDL_RenderLine(renderer, (int)cx, (int)tipY, (int)cx,      (int)botY);
+                    SDL_RenderLine(renderer, (int)cx, (int)tipY, (int)(cx - 5),(int)(tipY + 7));
+                    SDL_RenderLine(renderer, (int)cx, (int)tipY, (int)(cx + 5),(int)(tipY + 7));
+                }
             }
         }
     }
