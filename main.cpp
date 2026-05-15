@@ -588,7 +588,7 @@ private://constructor
         if (gameBuildingDescriptionText == nullptr) {
             SDL_LogWarn(0,"failed to create the text gameBuildingDescriptionText", SDL_GetError());
         }
-        gameBuildingCategoriesNameFont = TTF_OpenFont("assets/Rubik.ttf", 13);
+        gameBuildingCategoriesNameFont = TTF_OpenFont("assets/Rubik.ttf",  16);
         gameBuildingCategoriesNameText = TTF_CreateText(textEngine, gameBuildingCategoriesNameFont, "Military", 25);
         if (gameBuildingCategoriesNameText == nullptr) {
             SDL_LogWarn(0, "failed to load text gameBuildingCategoriesNameText" , SDL_GetError());
@@ -2470,16 +2470,25 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
                     }
                 }
             }
-
+            // INDICATOR ON TOP OF THE BUILDING CATEGORIES
             if (hoveredBuildingCategoryIndex >= 0 && hoveredBuildingCategoryIndex < 5) {
                 const char* categoryNames[] = {"Military", "Adv. Military", "Defence", "Economy", "Religion"};
-                TTF_SetTextString(gameBuildingCategoriesNameText, categoryNames[hoveredBuildingCategoryIndex], 0);
-                TTF_SetTextColor(gameBuildingCategoriesNameText, 180, 180, 180, 255);
 
-                // Position
                 int tw = 0, th = 0;
                 TTF_GetTextSize(gameBuildingCategoriesNameText, &tw, &th);
-                TTF_DrawRendererText(gameBuildingCategoriesNameText,lenghtX + 15.f, lenghtY - th);
+
+                float textX = lenghtX + 15.f;
+                float textY = lenghtY - th;
+
+                //rect
+                SDL_SetRenderDrawColor(renderer, 10, 10, 10, 200);
+                SDL_FRect categoryNamesBackground = {textX - 4.f, textY - 2.f, (float)tw + 8.f, (float)th + 4.f};
+                SDL_RenderFillRect(renderer, &categoryNamesBackground);
+
+                //text name
+                TTF_SetTextString(gameBuildingCategoriesNameText, categoryNames[hoveredBuildingCategoryIndex], 0);
+                TTF_SetTextColor(gameBuildingCategoriesNameText, 240, 240, 240, 255);
+                TTF_DrawRendererText(gameBuildingCategoriesNameText, textX, textY);
             }
 
 
