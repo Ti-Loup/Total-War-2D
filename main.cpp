@@ -2323,35 +2323,55 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
                             if (s->settlementData.type == SettlementType::Capital) {
                                 slotThreshold = tier + 1; // capital start with 2 tier
                             }
-                            if (b <= slotThreshold) {
-                                if (province.owner == FactionZone::Knight) {
+                            bool slotAvailable = (b <= slotThreshold);
+                            bool hasBuilding   = (buildingType != BuildingType::None);
+
+                            if (hasBuilding) {
+                                SDL_SetRenderDrawColor(renderer, 60, 60, 60, 255);
+                                SDL_RenderFillRect(renderer, &slot);
+
+                                SDL_Texture* buildTex = GetBuildingTexture(buildingType);
+                                if (buildTex) SDL_RenderTexture(renderer, buildTex, nullptr, &slot);
+
+                                // Tier
+                                const BuildingData* bd = GetBuildingData(buildingType);
+                                if (bd) {
+                                    std::string tierStr = "T" + std::to_string(bd->Tier);
+                                    TTF_SetTextString(gameStatUIText, tierStr.c_str(), 0);
+                                    TTF_SetTextColor(gameStatUIText, 255, 255, 255, 255);
+                                    TTF_DrawRendererText(gameStatUIText, sx + 4.f, sy + 4.f);
+
+                                    // Hammer if building can be upgraded
+                                    if (bd->upgradesTo != BuildingType::None && hammerUIBuildingUpgradeTexture
+                                        && provinces[s->settlementData.provinceID].owner == player.faction) {
+                                        const BuildingData* nextBd = GetBuildingData(bd->upgradesTo);
+                                        if (nextBd && player.currentGold >= nextBd->cost) {
+                                            SDL_FRect hammerRect = { sx + slotSize - 30.f, sy + 4.f, 35.f, 35.f };
+                                            SDL_RenderTexture(renderer, hammerUIBuildingUpgradeTexture, nullptr, &hammerRect);
+                                        }
+                                    }
+                                }
+                            }
+                            else if (slotAvailable) {
+                                // Show texture available
+                                if (province.owner == FactionZone::Knight)
                                     SDL_RenderTexture(renderer, gameAvailableSlotKnight, nullptr, &slot);
-                                }
-                                else if (province.owner == FactionZone::Viking) {
+                                else if (province.owner == FactionZone::Viking)
                                     SDL_RenderTexture(renderer, gameAvailableSlotViking, nullptr, &slot);
-                                }
-                                else if (province.owner == FactionZone::Samurai) {
+                                else if (province.owner == FactionZone::Samurai)
                                     SDL_RenderTexture(renderer, gameAvailableSlotSamurai, nullptr, &slot);
-                                }
 
-                            }
-                            else {
-                                if (province.owner == FactionZone::Knight) {
-                                    SDL_RenderTexture(renderer, gameNotAvailableSlotKnight, nullptr, &slot);
-                                }
-                                else if (province.owner == FactionZone::Viking) {
-                                    SDL_RenderTexture(renderer, gameNotAvailableSlotViking, nullptr, &slot);
-                                }
-                                else if (province.owner == FactionZone::Samurai) {
-                                    SDL_RenderTexture(renderer, gameNotAvailableSlotSamurai, nullptr, &slot);
-                                }
-                            }
-
-                            int settlementBuildingTier= s->settlementData.settlementTier;
-                            int slotThreshold2 = (s->settlementData.type == SettlementType::Capital) ? settlementBuildingTier + 1 : settlementBuildingTier;
-                            if (b <= slotThreshold2) {
                                 availableSlotRects.push_back(slot);
                                 availableSlotInfo.push_back({i, b});
+                            }
+                            else {
+                                // Not Available Slot
+                                if (province.owner == FactionZone::Knight)
+                                    SDL_RenderTexture(renderer, gameNotAvailableSlotKnight, nullptr, &slot);
+                                else if (province.owner == FactionZone::Viking)
+                                    SDL_RenderTexture(renderer, gameNotAvailableSlotViking, nullptr, &slot);
+                                else if (province.owner == FactionZone::Samurai)
+                                    SDL_RenderTexture(renderer, gameNotAvailableSlotSamurai, nullptr, &slot);
                             }
                         }
                     }
@@ -2371,12 +2391,13 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
         hoveredAvailableBuilding = -1;
         bool keepPopupOpen = SDL_PointInRectFloat(&mousePt, &categoryButtonsPopupRect);
         for (int s = 0; s < (int)availableSlotRects.size(); s++) {
-            if (SDL_PointInRectFloat(&mousePt, &availableSlotRects[s])) {
+            if (SDL_PointInRectFloat(&mousePt, &availableSlotRects[s])){
                 hoveredAvailableBuilding = availableSlotInfo[s].first;
                 hoveredAvailableSlot = availableSlotInfo[s].second;
                 hoveredAvailableSlotRect = availableSlotRects[s];
                 hoveredCardIndex = availableSlotInfo[s].first;
                 categoryPopupCardIndex = hoveredCardIndex;
+                buildMenuSlotIndex = hoveredAvailableSlot;
             }
         }
 
@@ -2471,7 +2492,7 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
                 }
             }
             // INDICATOR ON TOP OF THE BUILDING CATEGORIES
-            if (hoveredBuildingCategoryIndex >= 0 && hoveredBuildingCategoryIndex < 5) {
+            if (hoveredBuildingCategoryIndex >= 0 && hoveredBuildingCategoryIndex < 5 && !mouseOnEvolutionPopup) {
                 const char* categoryNames[] = {"Military", "Adv. Military", "Defence", "Economy", "Religion"};
 
                 int tw = 0, th = 0;
@@ -3588,7 +3609,7 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
         }
     }
 
-            // Clic sur un tier du popup
+            // Clic on a popup of the main menu
             if (app.bHasClickedOnASettlement &&
                 app.hoveredSlotIndex == 0 &&
                 app.hoveredCardIndex >= 0 &&
@@ -3597,8 +3618,6 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
                 SDL_FPoint pt = {nouveauX, nouveauY};
                 for (int t = 1; t <= app.tierPopupMaxTier; t++) {
                     if (SDL_PointInRectFloat(&pt, &app.tierPopupRects[t - 1])) {
-                        // Récupérer le settlement survolé
-                        // Rebuild provinceSettlements pour trouver le bon
                         const Settlement& clicked = app.settlements[app.selectedSettlementIndex];
                         int provID = clicked.settlementData.provinceID;
                         std::vector<Settlement*> provS;
@@ -3608,7 +3627,7 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
 
                         if (app.hoveredCardIndex < (int)provS.size()) {
                             Settlement* sel = provS[app.hoveredCardIndex];
-                            // Upgrade seulement si c'est le tier suivant + faction player
+                            // Only upgrade if next tier
                             if (t == sel->settlementData.settlementTier + 1 && t <= app.tierPopupMaxTier) {
                                 //continue if not player Faction
                                 int provID = clicked.settlementData.provinceID;
@@ -3641,6 +3660,58 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
                     }
                 }
             }
+
+            // Clic sur un building du popup de catégorie
+            if (app.bHasClickedOnASettlement &&
+                app.categoryEvolutionPopupRect.w > 0 &&
+                !app.categoryEvolutionTileRects.empty())
+            {
+                SDL_FPoint pt = {nouveauX, nouveauY};
+                for (auto& [rect, bt] : app.categoryEvolutionTileRects) {
+                    if (SDL_PointInRectFloat(&pt, &rect)) {
+                        const BuildingData* data = GetBuildingData(bt);
+                        if (!data) return SDL_APP_CONTINUE;//if no database foudn
+
+                        const Settlement& clicked = app.settlements[app.selectedSettlementIndex];
+                        int provID = clicked.settlementData.provinceID;
+                        if (app.provinces[provID].owner != app.player.faction) return SDL_APP_CONTINUE;
+
+                        std::vector<Settlement*> provS;
+                        for (auto& s : app.settlements)
+                            if (s.settlementData.provinceID == provID)
+                                provS.push_back(&s);
+
+                        if (app.categoryPopupCardIndex >= (int)provS.size()) return SDL_APP_CONTINUE;
+                        Settlement* sel = provS[app.categoryPopupCardIndex];
+
+                        // if available slot
+                        int slotB = app.buildMenuSlotIndex;
+                        if (slotB <= 0 || slotB >= (int)sel->settlementData.buildings.size()) return SDL_APP_CONTINUE;
+
+                        // Verifie if tier unlocked
+                        if (data->Tier > sel->settlementData.settlementTier) {
+                            SDL_Log("Tier not unlocked yet");
+                            return SDL_APP_CONTINUE;
+                        }
+
+                        //verify the slot is not already occupy to not pay over
+                        if (sel->settlementData.buildings[slotB] != BuildingType::None) {
+                            SDL_Log("Slot already occupied!");
+                            return SDL_APP_CONTINUE;
+                        }
+                        // paid buildings
+                        if (app.player.SpendGold(data->cost)) {
+                            sel->settlementData.buildings[slotB] = bt;
+                            SDL_Log("Building purchased: %s for %d gold in %d turns", data->name.c_str(), data->cost, data->constructionTurns);
+                        } else {
+                            SDL_Log("Not enough gold! Need: %d, have: %d", data->cost, app.player.currentGold);
+                        }
+                        return SDL_APP_CONTINUE;
+                    }
+                }
+            }
+
+
 
     // dection if clicked a settlement
     bool bClickedOutsideOfUI = false;
