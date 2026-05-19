@@ -7,11 +7,14 @@
 #include <SDL3_image/SDL_image.h>
 
 //Knight Unit cards Stats
-UnitCardStats::unitCardKnight_Peasant() {
+UnitCardKnight_Peasant::unitCardKnight_Peasant() {
     AddComponent(HEALTH);
-    health.maxHealth = 8400;
-    health.currentHealth = 8400;
+    health.max_health = 8400;
+    health.current_health = 8400;
+    AddComponent(MOVEMENT);
     AddComponent(MELEE);
+
+    AddComponent(RENDER);
 
 
 }

@@ -12,7 +12,7 @@ class UnitCardStats {
 };
 
 //Knight Units
-class unitCardKnight_Peasant : public Entity {
+class UnitCardKnight_Peasant : public Entity {
     public:
     unitCardKnight_Peasant();
 
