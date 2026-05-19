@@ -14,10 +14,12 @@
  //Creation du enum des components
  typedef enum
  {
- HEALTH = 1ULL << 0,
- MOVEMENT = 1ULL << 1,
- RENDER = 1ULL << 2,
- TRANSFORM = 1ULL << 3,
+ HEALTH = 1ULL << 0, //Heal, Armour, Leadership
+ MOVEMENT = 1ULL << 1, //Speed
+ MELEE = 1ULL << 2, // Melee Attack, Melee Defence, Weapon Strengh, Charge Bonus
+ RANGED = 1ULL << 3, // Munition, Portée, Puissance des tirs
+ RENDER = 1ULL << 4,
+ TRANSFORM = 1ULL << 5,
  } ComponentType;
 
 //class de base
@@ -39,13 +41,47 @@ class MovementComponents : public Components
 {
 
   public:
-	SDL_FPoint velocity = { 0.f, 0.f };
+	SDL_FPoint velocity = { 0.f, 0.f }; //Must be int not float
 
 
 	//Ajout timer pour les cerfs
 	float Timer = 0.0f;
 
 	MovementComponents () = default;
+};
+
+// Melee Attack, Melee Defence, Weapon Strengh, Charge Bonus
+class MeleeComponent : public Components {
+public:
+	//melee
+	Sint32 current_meleeAttack = 0;
+	Sint32 max_meleeAttack = 0;
+	//Defence
+	Sint32 current_meleeDefence = 0;
+	Sint32 max_meleeDefence = 0;
+	//Weapon Strengh
+	Sint32 current_weaponStrengh = 0;
+	Sint32 max_weaponStrengh = 0;
+	//Charge bonus
+	Sint32 current_chargeBonus = 0;
+	Sint32 max_chargeBonus = 0;
+
+	MeleeComponent () = default;
+};
+// Munition, Portée, Puissance des tirs
+class RangedComponents : public Components {
+public:
+	//Munitions
+	Sint32 current_ammunition = 0;
+	Sint32 max_ammunition = 0;
+	//Range
+	Sint32 current_range = 0;
+	Sint32 max_range = 0;
+	//Missile Damage
+	Sint32 current_missileDamage = 0;
+	Sint32 max_missileDamage = 0;
+
+	RangedComponents () = default;
 };
 
 class RenderComponents : public Components
