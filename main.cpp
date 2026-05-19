@@ -2373,37 +2373,48 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
                             bool slotAvailable = (b <= slotThreshold);
                             bool hasBuilding   = (buildingType != BuildingType::None);
 
-                            if (hasBuilding) {
-                                SDL_SetRenderDrawColor(renderer, 60, 60, 60, 255);
-                                SDL_RenderFillRect(renderer, &slot);
+                           if (hasBuilding) {
+                            SDL_SetRenderDrawColor(renderer, 60, 60, 60, 255);
+                            SDL_RenderFillRect(renderer, &slot);
 
-                                SDL_Texture* buildTex = GetBuildingTexture(buildingType);
-                                if (buildTex) SDL_RenderTexture(renderer, buildTex, nullptr, &slot);
+                            bool upgradePending = (s->settlementData.pendingBuildings[b] != BuildingType::None);
 
-                                // Tier
-                                const BuildingData* bd = GetBuildingData(buildingType);
-                                if (bd) {
-                                    std::string tierStr = "T" + std::to_string(bd->Tier);
-                                    TTF_SetTextString(gameStatUIText, tierStr.c_str(), 0);
-                                    TTF_SetTextColor(gameStatUIText, 255, 255, 255, 255);
-                                    TTF_DrawRendererText(gameStatUIText, sx + 4.f, sy + 4.f);
+    // Render T2 if in construction, else T1
+    SDL_Texture* texToRender = upgradePending
+        ? GetBuildingTexture(s->settlementData.pendingBuildings[b])
+        : GetBuildingTexture(buildingType);
+    if (texToRender) SDL_RenderTexture(renderer, texToRender, nullptr, &slot);
 
-                                    // Hammer if building can be upgraded
-                                    if (bd->upgradesTo != BuildingType::None && hammerUIBuildingUpgradeTexture && provinces[s->settlementData.provinceID].owner == player.faction) {
-                                        const BuildingData* nextBd = GetBuildingData(bd->upgradesTo);
-                                        // Le tier du prochain building doit être <= tier du settlement
-                                        if (nextBd && nextBd->Tier <= s->settlementData.settlementTier) {
-                                            if (player.currentGold >= nextBd->cost) {
-                                                SDL_FRect hammerRect = { sx + slotSize - 30.f, sy + 4.f, 35.f, 35.f };
-                                                SDL_RenderTexture(renderer, hammerUIBuildingUpgradeTexture, nullptr, &hammerRect);
-                                            }
-                                            availableSlotRects.push_back(slot);
-                                            availableSlotInfo.push_back({i, b});
-                                        }
-                                    }
+    const BuildingData* bd = GetBuildingData(buildingType);
+    if (bd) {
+        std::string tierStr = "T" + std::to_string(bd->Tier);
+        TTF_SetTextString(gameStatUIText, tierStr.c_str(), 0);
+        TTF_SetTextColor(gameStatUIText, 255, 255, 255, 255);
+        TTF_DrawRendererText(gameStatUIText, sx + 4.f, sy + 4.f);
 
-                                }
-                            }
+        if (upgradePending) {
+            SDL_FRect constructionRect = {sx + 8.f, sy + 20.f, slotSize - 15.f, slotSize - 40.f};
+            SDL_SetRenderDrawColor(renderer, 144, 238, 144, 255);
+            SDL_RenderFillRect(renderer, &constructionRect);
+            std::string turnStr = std::to_string(s->settlementData.slotConstructionTimes[b]);
+            TTF_SetTextString(gameBuildingConstructionTimeText, turnStr.c_str(), 0);
+            TTF_DrawRendererText(gameBuildingConstructionTimeText, sx + 25.f, sy + 20.f);
+        } else {
+            // Hammer si upgradable...
+            if (bd->upgradesTo != BuildingType::None && hammerUIBuildingUpgradeTexture && provinces[s->settlementData.provinceID].owner == player.faction) {
+                const BuildingData* nextBd = GetBuildingData(bd->upgradesTo);
+                if (nextBd && nextBd->Tier <= s->settlementData.settlementTier) {
+                    if (player.currentGold >= nextBd->cost) {
+                        SDL_FRect hammerRect = { sx + slotSize - 30.f, sy + 4.f, 35.f, 35.f };
+                        SDL_RenderTexture(renderer, hammerUIBuildingUpgradeTexture, nullptr, &hammerRect);
+                    }
+                    availableSlotRects.push_back(slot);
+                    availableSlotInfo.push_back({i, b});
+                }
+            }
+        }
+    }
+}
                             else if (slotAvailable && s->settlementData.pendingBuildings[b] == BuildingType::None) {
                                 // Show texture available
                                 if (province.owner == FactionZone::Knight)
@@ -2624,8 +2635,6 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
                 categoryButtonsRects[k] = {buttonStartX + k * (buttonW + buttonGap), buttonY, buttonW, buttonH};
             }
         }
-        //Tier chain Popup for the BuildingTypes
-        RenderBuildingCategoryEvolution();
 
         //TIER CHAIN POPUP (FOR THE MAIN SETTLEMENT BUILDING)
     if (hoveredSlotIndex == 0 && bButtonUIBuildingIsPressed && hoveredCardIndex >= 0) {
@@ -2790,6 +2799,9 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
         TTF_SetTextString(gameStatUITitleText, province.name.c_str(), 0);
         TTF_SetTextColor(gameStatUITitleText, 255, 255, 255, 255);
         TTF_DrawRendererText(gameStatUITitleText, middleTitlePositionX + 50.f, middleTitlePositionY + 2.f);
+
+        //Tier chain Popup for the BuildingTypes
+        RenderBuildingCategoryEvolution();
 
     // Restore
     TTF_SetTextColor(gameStatUITitleText, 255, 255, 255, 255);
@@ -3800,89 +3812,75 @@ SDL_AppEvent(void *appstate, SDL_Event *event) {
 
             // Clic sur un building du popup de catégorie
             if (app.bHasClickedOnASettlement &&
-                app.categoryEvolutionPopupRect.w > 0 &&
-                !app.categoryEvolutionTileRects.empty())
-            {
-                SDL_FPoint pt = {nouveauX, nouveauY};
-                for (auto& [rect, bt] : app.categoryEvolutionTileRects) {
-                    if (SDL_PointInRectFloat(&pt, &rect)) {
-                        const BuildingData* data = GetBuildingData(bt);
-                        if (!data) return SDL_APP_CONTINUE;//if no database foudn
+    app.categoryEvolutionPopupRect.w > 0 &&
+    !app.categoryEvolutionTileRects.empty())
+{
+    SDL_FPoint pt = {nouveauX, nouveauY};
+    SDL_Log("=== CLICK CHECK: tiles=%d, popupW=%.1f ===",
+        (int)app.categoryEvolutionTileRects.size(),
+        app.categoryEvolutionPopupRect.w);
 
-                        const Settlement& clicked = app.settlements[app.selectedSettlementIndex];
-                        int provID = clicked.settlementData.provinceID;
-                        if (app.provinces[provID].owner != app.player.faction) return SDL_APP_CONTINUE;
+    for (auto& [rect, bt] : app.categoryEvolutionTileRects) {
+        if (SDL_PointInRectFloat(&pt, &rect)) {
+            SDL_Log("Tile hit! bt=%d", (int)bt);
 
-                        std::vector<Settlement*> provS;
-                        for (auto& s : app.settlements)
-                            if (s.settlementData.provinceID == provID)
-                                provS.push_back(&s);
+            const BuildingData* data = GetBuildingData(bt);
+            if (!data) { SDL_Log("EXIT: no data"); return SDL_APP_CONTINUE; }
 
-                        if (app.categoryPopupCardIndex >= (int)provS.size()) return SDL_APP_CONTINUE;
-                        Settlement* sel = provS[app.categoryPopupCardIndex];
+            const Settlement& clicked = app.settlements[app.selectedSettlementIndex];
+            int provID = clicked.settlementData.provinceID;
+            if (app.provinces[provID].owner != app.player.faction) { SDL_Log("EXIT: wrong faction"); return SDL_APP_CONTINUE; }
 
-                        // if available slot
-                        int slotB = app.buildMenuSlotIndex;
-                        if (slotB <= 0 || slotB >= (int)sel->settlementData.buildings.size()) return SDL_APP_CONTINUE;
+            std::vector<Settlement*> provS;
+            for (auto& s : app.settlements)
+                if (s.settlementData.provinceID == provID) provS.push_back(&s);
 
-                        // Verifie if tier unlocked
-                        // Verifie if tier unlocked
-                        if (data->Tier > sel->settlementData.settlementTier) {
-                            SDL_Log("Tier not unlocked yet");
-                            return SDL_APP_CONTINUE;
-                        }
+            if (app.categoryPopupCardIndex >= (int)provS.size()) { SDL_Log("EXIT: cardIndex %d >= %d", app.categoryPopupCardIndex, (int)provS.size()); return SDL_APP_CONTINUE; }
+            Settlement* sel = provS[app.categoryPopupCardIndex];
 
-                        //verify the slot is not already occupy to not pay over
-                        BuildingType currentInSlot = sel->settlementData.buildings[slotB];
-                        if (currentInSlot == BuildingType::None) {
-                            bool hasPrerequisite = false;
-                            const auto& db = GetBuildingDatabase();
-                            for (const auto& [key, val] : db) {
-                                if (val.upgradesTo == bt) { hasPrerequisite = true; break; }
-                            }
-                            if (hasPrerequisite) {
-                                SDL_Log("Must build base tier first!");
-                                return SDL_APP_CONTINUE;
-                            }
-                        } else {
-                            const BuildingData* currentBd = GetBuildingData(currentInSlot);
-                            if (!currentBd || currentBd->upgradesTo != bt) {
-                                SDL_Log("Invalid upgrade path!");
-                                return SDL_APP_CONTINUE;
-                            }
-                        }
+            int slotB = app.buildMenuSlotIndex;
+            SDL_Log("slotB=%d, buildings.size=%d", slotB, (int)sel->settlementData.buildings.size());
+            if (slotB <= 0 || slotB >= (int)sel->settlementData.buildings.size()) { SDL_Log("EXIT: slotB invalid"); return SDL_APP_CONTINUE; }
 
-                        bool alreadyBuilt = false;
-                        for (const auto& existingBt : sel->settlementData.buildings) {
-                            if (existingBt == bt) {
-                                alreadyBuilt = true;
-                                break;
-                            }
-                        }
-                        if (alreadyBuilt) {
-                            SDL_Log("Building already in settlement");
-                            return SDL_APP_CONTINUE;
-                        }
-                        //a pending building is already built so no doubles
-                        for (const auto& pb : sel->settlementData.pendingBuildings) {
-                            if (pb == bt) {
-                                SDL_Log("Already being built!");
-                                return SDL_APP_CONTINUE;
-                            }
-                        }
+            if (data->Tier > sel->settlementData.settlementTier) { SDL_Log("EXIT: tier %d > settlementTier %d", data->Tier, sel->settlementData.settlementTier); return SDL_APP_CONTINUE; }
 
-                        // paid buildings
-                        if (app.player.SpendGold(data->cost)) {
-                            sel->settlementData.pendingBuildings[slotB]      = bt;
-                            sel->settlementData.slotConstructionTimes[slotB] = data->constructionTurns;
-                            SDL_Log("Construction started: %s in %d turns", data->name.c_str(), data->constructionTurns);
-                        } else {
-                            SDL_Log("Not enough gold! Need: %d, have: %d", data->cost, app.player.currentGold);
-                        }
-                        return SDL_APP_CONTINUE;
-                    }
+            BuildingType currentInSlot = sel->settlementData.buildings[slotB];
+            SDL_Log("currentInSlot=%d, bt=%d", (int)currentInSlot, (int)bt);
+
+            if (currentInSlot == BuildingType::None) {
+                bool hasPrerequisite = false;
+                const auto& db = GetBuildingDatabase();
+                for (const auto& [key, val] : db) {
+                    if (val.upgradesTo == bt) { hasPrerequisite = true; break; }
                 }
+                if (hasPrerequisite) { SDL_Log("EXIT: must build base tier first"); return SDL_APP_CONTINUE; }
+            } else {
+                const BuildingData* currentBd = GetBuildingData(currentInSlot);
+                if (!currentBd || currentBd->upgradesTo != bt) { SDL_Log("EXIT: invalid upgrade path, upgradesTo=%d, bt=%d", currentBd ? (int)currentBd->upgradesTo : -1, (int)bt); return SDL_APP_CONTINUE; }
             }
+
+            bool alreadyBuilt = false;
+            for (const auto& existingBt : sel->settlementData.buildings) {
+                if (existingBt == bt) { alreadyBuilt = true; break; }
+            }
+            if (alreadyBuilt) { SDL_Log("EXIT: already built"); return SDL_APP_CONTINUE; }
+
+            for (const auto& pb : sel->settlementData.pendingBuildings) {
+                if (pb == bt) { SDL_Log("EXIT: already being built"); return SDL_APP_CONTINUE; }
+            }
+
+            if (app.player.SpendGold(data->cost)) {
+                sel->settlementData.pendingBuildings[slotB] = bt;
+                sel->settlementData.slotConstructionTimes[slotB] = data->constructionTurns;
+                SDL_Log("SUCCESS: Construction started %d in %d turns", (int)bt, data->constructionTurns);
+            } else {
+                SDL_Log("EXIT: not enough gold, need=%d have=%d", data->cost, app.player.currentGold);
+            }
+            return SDL_APP_CONTINUE;
+        }
+    }
+    SDL_Log("No tile hit at (%.1f, %.1f)", nouveauX, nouveauY);
+}
 
 
 

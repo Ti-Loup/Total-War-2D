@@ -16,5 +16,4 @@ UnitCardKnight_Peasant::unitCardKnight_Peasant() {
 
     AddComponent(RENDER);
 
-
 }
