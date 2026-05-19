@@ -623,40 +623,65 @@ private://constructor
         settlements.back().settlementData.cityName = "Village3Name";
         //SOUTH REGION
         settlements.emplace_back(SettlementType::Castle, 2, 61,56, FactionZone::Knight);
+        settlements.back().settlementData.cityName = "Castle1Name";
         settlements.emplace_back(SettlementType::Village, 2, 67, 50, FactionZone::Knight);
+        settlements.back().settlementData.cityName = "Village2Name";
         settlements.emplace_back(SettlementType::Village, 2, 56, 67, FactionZone::Knight);
-
+        settlements.back().settlementData.cityName = "Village3Name";
         // Vikings
         //NORTH CAPITAL
         settlements.emplace_back(SettlementType::Capital, 3, 60, 10, FactionZone::Viking);
+        settlements.back().settlementData.cityName = "CapitalName";
         settlements.emplace_back(SettlementType::Village, 3, 50, 15, FactionZone::Viking);
+        settlements.back().settlementData.cityName = "Village1Name";
         settlements.emplace_back(SettlementType::Village, 3, 70, 8, FactionZone::Viking);
+        settlements.back().settlementData.cityName = "Village2Name";
         settlements.emplace_back(SettlementType::Village, 3, 83, 15, FactionZone::Viking);
+        settlements.back().settlementData.cityName = "Village3Name";
         //OUEST REGION
         settlements.emplace_back(SettlementType::Castle, 4, 63, 25, FactionZone::Viking);
+        settlements.back().settlementData.cityName = "Castle1Name";
         settlements.emplace_back(SettlementType::Village, 4, 36, 21, FactionZone::Viking);
+        settlements.back().settlementData.cityName = "Village1Name";
         settlements.emplace_back(SettlementType::Village, 4, 64, 34, FactionZone::Viking);
+        settlements.back().settlementData.cityName = "Village2Name";
         settlements.emplace_back(SettlementType::Village, 4, 68, 16, FactionZone::Viking);
+        settlements.back().settlementData.cityName = "Village3Name";
         //EST REGION
         settlements.emplace_back(SettlementType::Castle, 5, 78, 34, FactionZone::Viking);
+        settlements.back().settlementData.cityName = "Castle1Name";
         settlements.emplace_back(SettlementType::Village, 5, 88, 30, FactionZone::Viking);
+        settlements.back().settlementData.cityName = "Village1Name";
         settlements.emplace_back(SettlementType::Village, 5, 97, 24, FactionZone::Viking);
+        settlements.back().settlementData.cityName = "Village1Name";
+
 
         // Samurai
         //CAPITAL REGION
         settlements.emplace_back(SettlementType::Capital, 6, 103, 53, FactionZone::Samurai);
+        settlements.back().settlementData.cityName = "CapitalName";
         settlements.emplace_back(SettlementType::Village, 6, 108, 66, FactionZone::Samurai);
+        settlements.back().settlementData.cityName = "Village1Name";
         settlements.emplace_back(SettlementType::Village, 6, 101, 44, FactionZone::Samurai);
+        settlements.back().settlementData.cityName = "Village2Name";
         settlements.emplace_back(SettlementType::Village, 6, 89, 41, FactionZone::Samurai);
+        settlements.back().settlementData.cityName = "Village3Name";
         //EST REGION
         settlements.emplace_back(SettlementType::Castle, 7, 80, 50, FactionZone::Samurai);
+        settlements.back().settlementData.cityName = "Castle1Name";
         settlements.emplace_back(SettlementType::Village, 7, 72, 62, FactionZone::Samurai);
+        settlements.back().settlementData.cityName = "Village1Name";
         settlements.emplace_back(SettlementType::Village, 7, 80, 71, FactionZone::Samurai);
+        settlements.back().settlementData.cityName = "Village12Name";
         settlements.emplace_back(SettlementType::Village, 7, 87, 64, FactionZone::Samurai);
+        settlements.back().settlementData.cityName = "Village3Name";
         //OUEST REGION
         settlements.emplace_back(SettlementType::Castle, 8, 107, 29, FactionZone::Samurai);
+        settlements.back().settlementData.cityName = "Castle1Name";
         settlements.emplace_back(SettlementType::Village, 8, 119, 59, FactionZone::Samurai);
+        settlements.back().settlementData.cityName = "Village1Name";
         settlements.emplace_back(SettlementType::Village, 8, 118, 18, FactionZone::Samurai);
+        settlements.back().settlementData.cityName = "Village2Name";
 
         // Initialize buildings[0] and baseIncome for spawned tier
         for (auto& s : settlements) {
@@ -2849,7 +2874,7 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
     // Position on top
         float popX = 400.f, popY = 300.f;
         if (hoveredBuildingSlotUpgradable) {
-            // Positionner directement au-dessus du slot hovered
+            // Position on top of the constructed building
             popX = hoveredAvailableSlotRect.x + hoveredAvailableSlotRect.w / 2.f - totalW / 2.f;
             popY = hoveredAvailableSlotRect.y - totalH - 14.f;
         }
