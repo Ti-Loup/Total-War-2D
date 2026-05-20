@@ -33,6 +33,8 @@ public:
     MovementComponents movement;
     RenderComponents render;
     TransformComponents transform;
+    MeleeComponent meleeStats;
+    RangedComponents rangedStats;
 
     // Gestion des composants
     void AddComponent(Uint64 comps);
