@@ -2413,6 +2413,19 @@ TTF_DrawRendererText(gameStatUIText, leftX + 170.f, statY);
                 }
             }
         }
+        //To check a building name and what they do even if it's not upgradable yet.
+        float mxCheck, myCheck;
+        SDL_GetMouseState(&mxCheck, &myCheck);
+        float lxCheck, lyCheck;
+        SDL_RenderCoordinatesFromWindow(renderer, mxCheck, myCheck, &lxCheck, &lyCheck);
+        SDL_FPoint mpCheck = {lxCheck, lyCheck};
+        if (SDL_PointInRectFloat(&mpCheck, &slot) && categoryEvolutionPopupRect.w <= 0) {
+            // Si upgrade pending, montrer le building en cours de construction
+            bool upgPend = (s->settlementData.pendingBuildings[b] != BuildingType::None);
+            hoveredCategoryBuildingType = upgPend
+                ? s->settlementData.pendingBuildings[b]
+                : buildingType;
+        }
     }
 }
                             else if (slotAvailable && s->settlementData.pendingBuildings[b] == BuildingType::None) {
