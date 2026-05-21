@@ -11,13 +11,23 @@ class UnitCardStats {
 
 };
 
-//Knight Units (TIER 0 / ALREADY UNLOCKED)
+//Knight Units PEASANT(TIER 0 / ALREADY UNLOCKED)
 class UnitCardKnight_Peasant : public Entity {
     public:
     int maxEntities = 60;
     int currentEntities = 60;
 
     UnitCardKnight_Peasant();
+
+};
+
+//PEASANT ARCHERS (TIER 0 / ALREADY UNLOCKED)
+class UnitCardKnight_PeasantArchers : public Entity {
+public:
+    int maxEntities = 60;
+    int currentEntities = 60;
+
+    UnitCardKnight_PeasantArchers();
 
 };
 
